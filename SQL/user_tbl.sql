@@ -1,0 +1,11 @@
+CREATE TABLE `user` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`userid` VARCHAR(50) NOT NULL,
+	`role` INT NOT NULL DEFAULT 0,
+	`userpw` VARCHAR(50) NOT NULL,
+	`location` VARCHAR(2000) NOT NULL,
+	`style` INT NULL DEFAULT 0,
+	`email` VARCHAR(200) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `userid` (`userid`)
+);
