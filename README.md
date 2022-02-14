@@ -24,14 +24,21 @@
     - Image Search
 
 * Table
-  - User Table
-    - ID: Auto Increase, Primary Key, INT
-    - USERID: NOT NULL, Unique, VARCHAR
-    - USERPW: NOT NULL, VARCHAR
-    - LOCATION: NOT NULL, VARCHAR
-    - STYLE: NULL, INT
-    - EMAIL: NOT NULL, VARCHAR -> Mail Authentication
-    - ROLE: NOT NULL, INT
+  - User
+    - User Table
+      - ID: Auto Increase, Primary Key, INT
+      - USERNAME: NOT NULL, Unique, VARCHAR
+      - PASSWORD: NOT NULL, VARCHAR
+      - LOCATION: NOT NULL, VARCHAR
+      - STYLE: NULL, INT
+      - EMAIL: NOT NULL, VARCHAR -> Mail Authentication
+      - ROLE: NOT NULL, INT
+    - Role Table
+      - ID: Auto, Primary Key, INT
+      - NAME: VARCHAR
+    - USER_ROLES TABLE
+      - USER_ID: User Table Foreign Key
+      - ROLES_ID: Role Table Foreign Key
   - Item Table
     - ITEMID: Auto Increase, Primary Key, INT
     - CATEGORYID: NOT NULL, INT
