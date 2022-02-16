@@ -85,8 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean deleteUser(String username) {
-        userRepo.deleteByUsername(username);
-        return true;
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
     }
 }
