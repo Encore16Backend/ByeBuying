@@ -12,8 +12,10 @@ import com.encore.byebuying.service.UserService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -37,25 +39,61 @@ public class UserResource {
     private final RoleRepo roleRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @GetMapping("/users")
+    @GetMapping("/users") // 관리자 유저들 확인
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @GetMapping("/getUser")
-    public ResponseEntity<User> getUser(
+    @PostMapping("/user/getUser") // 회원 확인용 - 수정 or 삭제
+    public ResponseEntity<User> getUser(@RequestBody User userinfo) {
+        User user = userService.getUser(userinfo.getUsername());
+        if (passwordEncoder.matches(userinfo.getPassword(), user.getPassword())){
+            return ResponseEntity.ok().body(user);
+        }
+        return ResponseEntity.badRequest().body(null);
+    }
+
+    @GetMapping("/checkUser") // 아이디 중복 검사 확인
+    public ResponseEntity<?> checkUser(
             @RequestParam(defaultValue = "", value = "username") String username) {
-        return ResponseEntity.ok().body(userService.getUser(username));
+        boolean check = userService.checkUser(username);
+        if (check) {
+            return new ResponseEntity<>("SUCCESS", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("FAIL", HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/user/delete/{userid}") // 토큰 필요X, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
+    public ResponseEntity<?> deleteUser(@PathVariable("userid") Long Userid) {
+        userService.deleteUser(Userid);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+    @Transactional
+    @PutMapping("/user/update")
+    public ResponseEntity<?> updateUser(@RequestBody UserForm userForm) {
+        User user = userService.getUser(userForm.getUsername());
+        if (user == null){
+            return new ResponseEntity<>("FAIL", HttpStatus.OK);
+        }
+
+        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        user.setEmail(userForm.getEmail());
+        user.setStyle(userForm.getStyle());
+        user.setLocation(userForm.getLocation());
+        userService.saveUser(user);
+
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@RequestBody SignUpForm signUpForm) {
+    public ResponseEntity<User> saveUser(@RequestBody UserForm userForm) {
         URI uri = URI.create(
                 ServletUriComponentsBuilder
                         .fromCurrentContextPath()
                         .path("/api/user/save").toUriString());
 
-        User user = signUpForm.toEntity();
+        User user = userForm.toEntity();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepo.findByName("ROLE_USER"));
 
@@ -130,7 +168,7 @@ class RoleToUserForm {
 
 @Data
 @Builder
-class SignUpForm {
+class UserForm {
     private String username;
     private String password;
     private String email;

@@ -2,6 +2,7 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,4 +15,9 @@ public interface UserService {
     User getUser(String username);
     // 사용자들
     List<User> getUsers();
+
+    boolean checkUser(String username);
+
+    @Transactional
+    void deleteUser(Long id);
 }
