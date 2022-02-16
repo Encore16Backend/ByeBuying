@@ -14,4 +14,8 @@ public interface UserService {
     User getUser(String username);
     // 사용자들
     List<User> getUsers();
+
+    boolean checkUser(String username);
+
+    boolean deleteUser(String username);
 }

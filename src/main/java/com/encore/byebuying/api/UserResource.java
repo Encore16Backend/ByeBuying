@@ -12,6 +12,7 @@ import com.encore.byebuying.service.UserService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.MimeTypeUtils;
@@ -37,15 +38,42 @@ public class UserResource {
     private final RoleRepo roleRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @GetMapping("/users")
+    @GetMapping("/users") // 관리자 유저들 확인
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
-    @GetMapping("/getUser")
+    @PostMapping("/user/getUser") // 회원정보 수정 전 비밀번호 확인
     public ResponseEntity<User> getUser(
+            @RequestParam(defaultValue = "", value = "username") String username,
+            @RequestParam(defaultValue = "", value = "password") String password) {
+            User user = userService.getUser(username);
+            if (user.getPassword().equals(password)){
+                return ResponseEntity.ok().body(user);
+            } else{
+                return ResponseEntity.badRequest().body(null);
+            }
+    }
+
+    @GetMapping("/checkUser") // 아이디 중복 검사 확인
+    public ResponseEntity<?> checkUser(
             @RequestParam(defaultValue = "", value = "username") String username) {
-        return ResponseEntity.ok().body(userService.getUser(username));
+        boolean check = userService.checkUser(username);
+        if (check) {
+            return new ResponseEntity<>("SUCCESS", HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("FAIL", HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/user/delete")
+    public ResponseEntity<?> deleteUser(
+            @RequestParam(defaultValue = "", value = "username") String username,
+            @RequestParam(defaultValue = "", value = "password") String password) {
+        User user = userService.getUser(username);
+        if (user.getPassword().equals(password)){
+            userService.deleteUser(username);
+        }
+        return new ResponseEntity<>("SUCCESS", HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/user/save")

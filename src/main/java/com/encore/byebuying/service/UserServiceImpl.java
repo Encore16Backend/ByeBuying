@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -75,5 +76,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         log.info("Fetching all users");
         return userRepo.findAll();
+    }
+
+    @Override
+    public boolean checkUser(String username) {
+        User user = userRepo.findByUsername(username);
+        return user == null;
+    }
+
+    @Override
+    public boolean deleteUser(String username) {
+        userRepo.deleteByUsername(username);
+        return true;
     }
 }
