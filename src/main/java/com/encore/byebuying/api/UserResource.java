@@ -9,9 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.UserService;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -168,6 +166,8 @@ class RoleToUserForm {
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 class UserForm {
     private String username;
     private String password;
