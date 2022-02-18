@@ -49,10 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         // permitAll(): 토큰 유효성 검사하지 않음
-        http.authorizeRequests().antMatchers("/api/login/**", "/api/checkUser", "/api/user/save", "/api/token/refresh/**", "/api/user/delete/**", "/api/user/update").permitAll();
-//        http.authorizeRequests().antMatchers(POST, "/api/user/**").hasAnyAuthority("ROLE_USER");
-//        http.authorizeRequests().antMatchers(DELETE, "/api/user/**").hasAnyAuthority("ROLE_USER");
-//        http.authorizeRequests().antMatchers(PUT, "/api/user/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests()
+                .antMatchers("/api/login/**", "/api/checkUser", "/api/user/save", "/api/token/refresh/**", "/api/user/delete/**", "/api/user/update")
+                .permitAll();
         http.authorizeRequests().antMatchers(GET, "/api/user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
 
