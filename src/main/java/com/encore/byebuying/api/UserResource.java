@@ -61,26 +61,25 @@ public class UserResource {
         return new ResponseEntity<>("FAIL", HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/user/delete/{userid}") // 토큰 필요X, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
-    public ResponseEntity<?> deleteUser(@PathVariable("userid") Long Userid) {
-        userService.deleteUser(Userid);
+    @DeleteMapping("/user/delete") // 토큰 필요, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
+    public ResponseEntity<?> deleteUser(@RequestBody User user) {
+        userService.deleteUser(user.getUsername());
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     @Transactional
-    @PutMapping("/user/update")
+    @PutMapping("/user/update") // 토큰 필요
     public ResponseEntity<?> updateUser(@RequestBody UserForm userForm) {
         User user = userService.getUser(userForm.getUsername());
         if (user == null){
             return new ResponseEntity<>("FAIL", HttpStatus.OK);
         }
-
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        if (userForm.getPassword() != null) // 비밀번호도 수정될 때
+            user.setPassword(userForm.getPassword());
         user.setEmail(userForm.getEmail());
         user.setStyle(userForm.getStyle());
         user.setLocation(userForm.getLocation());
         userService.saveUser(user);
-
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
@@ -92,7 +91,7 @@ public class UserResource {
                         .path("/api/user/save").toUriString());
 
         User user = userForm.toEntity();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepo.findByName("ROLE_USER"));
 
         return ResponseEntity.created(uri).body(userService.saveUser(user));

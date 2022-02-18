@@ -46,7 +46,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User saveUser(User user) {
         log.info("Saving new user {} to the database", user.getUsername());
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword().length() != 60) // 인코딩 안됨
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userRepo.deleteById(id);
+    public void deleteUser(String username) {
+        userRepo.deleteByUsername(username);
     }
 }

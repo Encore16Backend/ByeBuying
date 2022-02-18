@@ -19,5 +19,5 @@ public interface UserService {
     boolean checkUser(String username);
 
     @Transactional
-    void deleteUser(Long id);
+    void deleteUser(String username);
 }
