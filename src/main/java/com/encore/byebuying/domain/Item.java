@@ -20,13 +20,12 @@ public class Item {
     private String itemname;
     // EAGER : 연관 관계에 있는 Entity 들 모두 가져온다 → Eager 전략
     // 관 관계에 있는 Entity 가져오지 않고, getter 로 접근할 때 가져온다 → Lazy 전략
-    @OneToMany(fetch = EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Image> images = new ArrayList<>();
 
-    @ManyToMany(fetch = EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Category> categories = new ArrayList<>();
 
-    private int size;
     private int price;
     private int purchasecnt; // 판매 수량
     private int count; // 상품 수량
