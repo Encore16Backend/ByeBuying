@@ -14,6 +14,7 @@
 	<name>byebuying</name>
 	<description>Final Project Shopping Mall</description>
 	<properties>
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
