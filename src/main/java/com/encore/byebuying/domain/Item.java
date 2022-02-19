@@ -1,0 +1,35 @@
+package com.encore.byebuying.domain;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+
+@Entity @Data
+@NoArgsConstructor @AllArgsConstructor
+public class Item {
+    @Id @GeneratedValue(strategy = AUTO)
+    private Long itemid; // PK
+    private String itemname;
+    // EAGER : 연관 관계에 있는 Entity 들 모두 가져온다 → Eager 전략
+    // 관 관계에 있는 Entity 가져오지 않고, getter 로 접근할 때 가져온다 → Lazy 전략
+    @OneToMany(fetch = EAGER)
+    private Collection<Image> images = new ArrayList<>();
+
+    @ManyToMany(fetch = EAGER)
+    private Collection<Category> categories = new ArrayList<>();
+
+    private int size;
+    private int price;
+    private int purchasecnt; // 판매 수량
+    private int count; // 상품 수량
+    private int reviewmean; // 리뷰 평점
+    private String description; // 상품 설명
+}
