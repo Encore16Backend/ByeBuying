@@ -4,6 +4,7 @@ import com.encore.byebuying.domain.Category;
 import com.encore.byebuying.domain.Image;
 import com.encore.byebuying.domain.Item;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ItemService {
@@ -16,4 +17,13 @@ public interface ItemService {
     void addCategoryToItem(String itemName, String categoryName);
     void addImageToItem(String itemName, String imgPath);
 
+    List<Item> getTopItemOrderReviewMeanDesc();
+    List<Item> getTopItemOrderPriceDesc();
+    List<Item> getTopItemOrderPriceAsc();
+    List<Item> getTopItemOrderPurchasecntDesc();
+
+    List<Item> getTopItemByCategoryNameOrderByReviewMeanDesc(Long cateid);
+    List<Item> getTopItemByCategoryNameOrderByPriceDesc(Long cateid);
+    List<Item> getTopItemByCategoryNameOrderByPriceAsc(Long cateid);
+    List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
 }

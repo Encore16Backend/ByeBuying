@@ -59,5 +59,53 @@ public class ItemServiceImpl implements ItemService {
         item.getImages().add(image);
     }
 
+    @Override
+    public List<Item> getTopItemOrderReviewMeanDesc() {
+        log.info("get Top 5 Item All Category order by ReviewMean");
+        return itemRepo.findTop5ByOrderByReviewmeanDesc();
+    }
+
+    @Override
+    public List<Item> getTopItemOrderPriceDesc() {
+        log.info("get Top 5 Item All Category order by Price Desc");
+        return itemRepo.findTop5ByOrderByPriceDesc();
+    }
+
+    @Override
+    public List<Item> getTopItemOrderPriceAsc() {
+        log.info("get Top 5 Item All Category order by Price Asc");
+        return itemRepo.findTop5ByOrderByPriceAsc();
+    }
+
+    @Override
+    public List<Item> getTopItemOrderPurchasecntDesc() {
+        log.info("get Top 5 Item All Category order by PurchaseCnt");
+        return itemRepo.findTop5ByOrderByPurchasecntDesc();
+    }
+
+    @Override
+    public List<Item> getTopItemByCategoryNameOrderByReviewMeanDesc(Long cateid) {
+        log.info("Get Top 5 Item by category {} Order By ReviewMean", cateid);
+        return itemRepo.findTop5ByCategories_CateidOrderByReviewmeanDesc(cateid);
+    }
+
+    @Override
+    public List<Item> getTopItemByCategoryNameOrderByPriceDesc(Long cateid) {
+        log.info("Get Top 5 Item by category {} Order By Price Desc", cateid);
+        return itemRepo.findTop5ByCategories_CateidOrderByPriceDesc(cateid);
+    }
+
+    @Override
+    public List<Item> getTopItemByCategoryNameOrderByPriceAsc(Long cateid) {
+        log.info("Get Top 5 Item by category {} Order By Price Asc", cateid);
+        return itemRepo.findTop5ByCategories_CateidOrderByPriceAsc(cateid);
+    }
+
+    @Override
+    public List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid) {
+        log.info("Get Top 5 Item by category {} Order By PurchaseCnt Desc", cateid);
+        return itemRepo.findTop5ByCategories_CateidOrderByPurchasecntDesc(cateid);
+    }
+
 
 }

@@ -29,6 +29,6 @@ public class Item {
     private int price;
     private int purchasecnt; // 판매 수량
     private int count; // 상품 수량
-    private int reviewmean; // 리뷰 평점
+    private double reviewmean; // 리뷰 평점
     private String description; // 상품 설명
 }
