@@ -51,7 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
 		return String.format("%.2f",reviewRepo.getAvgScoreByItemname(itemname));
 	}
 	@Override
-	public int CountScoreByItemname(String itemname) {
+	public int countScoreByItemname(String itemname) {
 		return reviewRepo.CountScoreByItemname(itemname);
 	}
 	

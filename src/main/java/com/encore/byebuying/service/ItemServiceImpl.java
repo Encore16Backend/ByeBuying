@@ -28,6 +28,11 @@ public class ItemServiceImpl implements ItemService {
         log.info("Get All Item");
         return itemRepo.findAll();
     }
+    @Override
+    public Item getItemByItemname(String itemname) {
+        log.info("Get Item");
+        return itemRepo.findByItemname(itemname);
+    }
 
     @Override
     public Item saveItem(Item item) {
