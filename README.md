@@ -39,18 +39,31 @@
     - USER_ROLES TABLE
       - USER_ID: User Table Foreign Key
       - ROLES_ID: Role Table Foreign Key
-  - Item Table
-    - ITEMID: Auto Increase, Primary Key, INT
-    - CATEGORYID: NOT NULL, INT
-    - ITEMNAME: NOT NULL, VARCHAR
-    - MAINIMG: NOT NULL, VARCHAR
-    - DETAILIMG: NULL, VARCHAR
-    - SIZE: NOT NULL, INT
-    - PRICE: NOT NULL, INT
-    - PURCHASECNT: NOT NULL, INT
-    - COUNT: NOT NULL, INT
-    - REVIEWMEAN: NOT NULL, FLOAT
-    - DESCRIPTION: NOT NULL, VARCHAR
+  - Item
+    - Item Table
+      - ITEMID: Auto Increase, Primary Key, INT
+      - CATEGORY: NOT NULL, INT
+      - ITEMNAME: NOT NULL, VARCHAR
+      - CATEGORY
+      - IMAGE:  NOT NULL, INT
+      - SIZE: NOT NULL, INT
+      - PRICE: NOT NULL, INT
+      - PURCHASECNT: NOT NULL, INT
+      - COUNT: NOT NULL, INT
+      - REVIEWMEAN: NOT NULL, FLOAT
+      - DESCRIPTION: NOT NULL, VARCHAR
+    - Category Table
+      - CATEGORYID: Auto Increase, Primary Key, INT
+      - CATEGORYNAME: VARCHAR
+    - ITEM_CATEGORY TABLE
+      - ITEMID: Item Table Foreign Key
+      - CATEGORYID: Category Table Foreign Key
+    - IMAGE TABLE
+      - IMGID: Auto Increase, Primary Key, INT
+      - IMGPATH: VARCHAR
+    - ITEM_IMAGE TABLE
+      - ITEMID: Item Table Foreign Key
+      - IMGID: Image Table Foreign Key
   - Review Table
     - REVIEWID: Auto Increase, Primary Key, INT
     - ITEMID: Item Table Foreign Key

@@ -20,7 +20,6 @@ public interface ItemService {
     void addCategoryToItem(String itemName, String categoryName);
     void addImageToItem(String itemName, String imgPath);
 
-
     List<Item> getTopItemOrderPurchasecntDesc();
     List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
 

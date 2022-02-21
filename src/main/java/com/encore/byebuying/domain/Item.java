@@ -15,7 +15,6 @@ import static javax.persistence.GenerationType.*;
 @Entity @Data
 @NoArgsConstructor @AllArgsConstructor
 public class Item {
-
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long itemid; // PK
     private String itemname;

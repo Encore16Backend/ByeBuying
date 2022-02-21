@@ -28,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Get All Item");
         return itemRepo.findAll();
     }
+
     @Override
     public Item saveItem(Item item) {
         log.info("Saving new item {} to the database", item.getItemname());
@@ -93,4 +94,5 @@ public class ItemServiceImpl implements ItemService {
     public Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid) {
         return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
     }
+
 }
