@@ -16,4 +16,6 @@ public interface ReviewRepo extends JpaRepository<Review, Long>{
 
     @Query(value="select avg(score) from review where itemname like :keyword1", nativeQuery=true )
 	double getAvgScoreByItemname(@Param("keyword1") String itemname);
+    @Query(value="select count(score) from review where itemname like :keyword1", nativeQuery=true )
+   	int CountScoreByItemname(@Param("keyword1") String itemname);
 }

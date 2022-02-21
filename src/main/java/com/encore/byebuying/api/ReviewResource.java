@@ -68,7 +68,7 @@ public class ReviewResource {
 	
 	@GetMapping("/avg")
 	public String getAvgScoreByItemname(@RequestParam(defaultValue = "", value = "itemname") String itemname) {
-		return reviewService.getAvgScoreByItemname(itemname);
+		return reviewService.getAvgScoreByItemname(itemname)+" "+reviewService.CountScoreByItemname(itemname);
 	}
 }
 

@@ -13,4 +13,5 @@ public interface ReviewService {
 	
 	void deleteReview(Long id);
 	String getAvgScoreByItemname(String itemname);
+	int CountScoreByItemname(String itemname);
 }
