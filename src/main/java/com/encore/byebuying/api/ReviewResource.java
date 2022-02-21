@@ -14,50 +14,49 @@ import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.ItemService;
 import com.encore.byebuying.service.ReviewService;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/review")
 @RequiredArgsConstructor
 public class ReviewResource {
 	private final ReviewService reviewService;
 	private final ItemService itemService;
 
-	@GetMapping("/reviews")
+	@GetMapping("/all")
 	public ResponseEntity<List<Review>> getReviews(){
 		List<Review> review = reviewService.getReviews();
 		return ResponseEntity.ok().body(review);
 	}
 
-	@GetMapping("/review/byItemname")
-	public ResponseEntity<List<Review>> getReviewByItemnameOrderByDateDesc(@RequestBody Item item){
-		String itemname = item.getItemname();
-		List<Review> review = reviewService.findByItemnameOrderByDateDesc(itemname);
+	@GetMapping("/byItemname")
+	public ResponseEntity<List<Review>> getReviewByItemname(@RequestBody GetReviewForm getReviewForm){
+		List<Review> review = reviewService.getByItemname(getReviewForm.getItemname(),getReviewForm.getSortname(),getReviewForm.getAsc());
 		return ResponseEntity.ok().body(review);
 	}
 	
-	@GetMapping("/review/byUsername")
-	public ResponseEntity<List<Review>> getReviewByUsernameOrderByDateDesc(@RequestBody User user){
-		String username = user.getUsername();
-		List<Review> review = reviewService.findByUsernameOrderByDateDesc(username);
+	@GetMapping("/byUsername")
+	public ResponseEntity<List<Review>> getReviewByUsername(@RequestBody GetReviewForm getReviewForm){
+		List<Review> review = reviewService.getByUsername(getReviewForm.getUsername(),getReviewForm.getSortname(),getReviewForm.getAsc());
 		return ResponseEntity.ok().body(review);
 	}
 	
-	@PostMapping("/review/save")
+	@PostMapping("/save")
 	public String saveReview(@RequestBody Review review){
 		if(review.getDate()==null)review.setDate(new Date());
 		reviewService.saveReview(review);
 		return "SUCCESS";
 	}
 	
-	@DeleteMapping("/review/delete")
+	@DeleteMapping("/delete")
 	public ResponseEntity<?> deleteReview(@RequestBody Review review){
 		reviewService.deleteReview(review.getId());
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 	
 	@Transactional
-	@PutMapping("/review/update")
+	@PutMapping("/update")
 	public ResponseEntity<?> updateReview(@RequestBody Review changedReview){
 		Review review = reviewService.getReview(changedReview.getId());
 		review.setDate(new Date());
@@ -68,6 +67,10 @@ public class ReviewResource {
 	}
 }
 
-class ReviewForm{
-	
+@Data
+class GetReviewForm{
+	String username;
+	String itemname;
+	String asc;
+	String sortname;
 }
