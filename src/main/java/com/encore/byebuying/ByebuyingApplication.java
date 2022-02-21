@@ -2,6 +2,7 @@ package com.encore.byebuying;
 
 import com.encore.byebuying.domain.*;
 import com.encore.byebuying.service.ItemService;
+import com.encore.byebuying.service.ReviewService;
 import com.encore.byebuying.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @SpringBootApplication
 public class ByebuyingApplication {
@@ -25,7 +27,7 @@ public class ByebuyingApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(UserService userService, ItemService itemService){
+	CommandLineRunner run(UserService userService, ItemService itemService, ReviewService reviewService){
 		return args -> {
 			userService.saveRole(new Role(null, "ROLE_USER"));
 			userService.saveRole(new Role(null, "ROLE_MANAGER"));
@@ -118,6 +120,20 @@ public class ByebuyingApplication {
 			itemService.addImageToItem("상의7", "path/상의7");
 			itemService.addImageToItem("하의1", "path/하의1");
 			itemService.addImageToItem("하의2", "path/하의2");
+			
+			reviewService.saveReview(new Review(null,"test0", "상의1", 2, "content0", new Date(122, 10, 15)));
+			reviewService.saveReview(new Review(null,"test0", "상의2", 3, "content1", new Date(121, 1, 3)));
+			reviewService.saveReview(new Review(null,"test0", "상의3", 4, "content2", new Date(125, 11, 5)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 5, "content0", new Date(120, 12, 25)));
+			reviewService.saveReview(new Review(null,"test0", "하의2", 1.5, "content1", new Date(118, 2, 8)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 2, "content2", new Date(121, 11, 2)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 3.5, "content2", new Date(121, 11, 3)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 2.5, "content2", new Date(121, 11, 4)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 2.5, "content2", new Date(121, 11, 5)));
+			reviewService.saveReview(new Review(null,"test0", "하의1", 2.5, "content2", new Date(121, 11, 16)));
+			reviewService.saveReview(new Review(null,"test1", "하의1", 5, "content2", new Date(121, 11, 22)));
+			reviewService.saveReview(new Review(null,"test2", "하의1", 4.5, "content2", new Date(121, 11, 12)));
+			reviewService.saveReview(new Review(null,"test3", "하의1", 3.5, "content2", new Date(121, 11, 7)));
 		};
 	}
 

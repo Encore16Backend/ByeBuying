@@ -49,7 +49,7 @@ public class UserResource {
         if (passwordEncoder.matches(userinfo.getPassword(), user.getPassword())){
             return ResponseEntity.ok().body(user);
         }
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.badRequest().body(user);
     }
 
     @GetMapping("/checkUser") // 아이디 중복 검사 확인

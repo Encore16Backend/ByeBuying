@@ -8,8 +8,10 @@ import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.repo.ItemRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,6 +94,5 @@ public class ItemServiceImpl implements ItemService {
     public Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid) {
         return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
     }
-
 
 }
