@@ -12,5 +12,5 @@ public interface ReviewService {
 	List<Review> getByUsername(String username,String sortname,String asc); // username 기준 리뷰 조회, sort 키워드 기준으로 정렬
 	
 	void deleteReview(Long id);
-	//double getAvgScoreByItemidGroupItemid(Long itemid);
+	String getAvgScoreByItemname(String itemname);
 }

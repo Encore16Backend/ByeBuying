@@ -65,6 +65,11 @@ public class ReviewResource {
 		reviewService.saveReview(review);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
+	
+	@GetMapping("/avg")
+	public String getAvgScoreByItemname(@RequestParam(defaultValue = "", value = "itemname") String itemname) {
+		return reviewService.getAvgScoreByItemname(itemname);
+	}
 }
 
 @Data

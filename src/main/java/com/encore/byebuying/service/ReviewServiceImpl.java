@@ -55,5 +55,9 @@ public class ReviewServiceImpl implements ReviewService {
 		Sort sort = Sort.by(Sort.Direction.DESC, sortname);
 		return reviewRepo.findByUsername(username,sort);
 	}
+	@Override
+	public String getAvgScoreByItemname(String itemname) {
+		return String.format("%.2f",reviewRepo.getAvgScoreByItemname(itemname));
+	}
 
 }
