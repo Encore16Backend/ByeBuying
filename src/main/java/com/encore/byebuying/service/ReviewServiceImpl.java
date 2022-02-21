@@ -3,6 +3,8 @@ package com.encore.byebuying.service;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +20,8 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepo reviewRepo;
 
 	@Override
-	public List<Review> getReviews() {
-        log.info("Get All Review");
-		return reviewRepo.findAll(Sort.by(Sort.Direction.DESC, "date"));
+	public Page<Review> getReviews(Pageable pageable) {
+		return reviewRepo.findAll(pageable);
 	}
 	@Override
 	public Review getReview(Long id) {
@@ -38,22 +39,12 @@ public class ReviewServiceImpl implements ReviewService {
 		reviewRepo.deleteById(id);
 	}
 	@Override
-	public List<Review> getByItemname(String itemname, String sortname,String asc) {
-		if(asc.equals("ASC") || asc.equals("asc")) {
-			Sort sort = Sort.by(Sort.Direction.ASC, sortname);
-			return reviewRepo.findByItemname(itemname,sort);
-		}
-		Sort sort = Sort.by(Sort.Direction.DESC, sortname);
-		return reviewRepo.findByItemname(itemname,sort);
+	public Page<Review> getByItemname(Pageable pageable,String itemname) {
+		return reviewRepo.findByItemname(pageable,itemname);
 	}
 	@Override
-	public List<Review> getByUsername(String username, String sortname,String asc) {
-		if(asc.equals("ASC") || asc.equals("asc")) {
-			Sort sort = Sort.by(Sort.Direction.ASC, sortname);
-			return reviewRepo.findByUsername(username,sort);
-		}
-		Sort sort = Sort.by(Sort.Direction.DESC, sortname);
-		return reviewRepo.findByUsername(username,sort);
+	public Page<Review> getByUsername(Pageable pageable,String username) {
+		return reviewRepo.findByUsername(pageable,username);
 	}
 	@Override
 	public String getAvgScoreByItemname(String itemname) {

@@ -3,6 +3,10 @@ package com.encore.byebuying.api;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,22 +27,52 @@ import lombok.RequiredArgsConstructor;
 public class ReviewResource {
 	private final ReviewService reviewService;
 	private final ItemService itemService;
-
+	private final int PAGECOUNT = 5;
 	@GetMapping("/all")
-	public ResponseEntity<List<Review>> getReviews(){
-		List<Review> review = reviewService.getReviews();
+	public ResponseEntity<Page<Review>> getReviews(
+			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(required = false, defaultValue="1",value="page") int page){
+		Sort sort;
+		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		}else {
+			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+		}
+		Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
+        
+		Page<Review> review = reviewService.getReviews(pageable);
 		return ResponseEntity.ok().body(review);
 	}
 
 	@GetMapping("/byItemname")
-	public ResponseEntity<List<Review>> getReviewByItemname(@RequestBody GetReviewForm getReviewForm){
-		List<Review> review = reviewService.getByItemname(getReviewForm.getItemname(),getReviewForm.getSortname(),getReviewForm.getAsc());
+	public ResponseEntity<Page<Review>> getReviewByItemname(
+			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(required = false, defaultValue="1",value="page") int page){
+		Sort sort;
+		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		}else {
+			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+		}
+		
+        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
+        Page<Review> review = reviewService.getByItemname(pageable,getReviewForm.getItemname());
 		return ResponseEntity.ok().body(review);
 	}
 	
 	@GetMapping("/byUsername")
-	public ResponseEntity<List<Review>> getReviewByUsername(@RequestBody GetReviewForm getReviewForm){
-		List<Review> review = reviewService.getByUsername(getReviewForm.getUsername(),getReviewForm.getSortname(),getReviewForm.getAsc());
+	public ResponseEntity<Page<Review>> getReviewByUsername(
+			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(required = false, defaultValue="1",value="page") int page){
+		Sort sort;
+		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		}else {
+			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+		}
+		
+        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
+        Page<Review> review = reviewService.getByUsername(pageable,getReviewForm.getUsername());
 		return ResponseEntity.ok().body(review);
 	}
 	
