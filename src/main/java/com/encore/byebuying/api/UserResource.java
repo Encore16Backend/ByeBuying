@@ -45,6 +45,7 @@ public class UserResource {
     @PostMapping("/user/getUser") // 회원 확인용 - 수정 or 삭제
     public ResponseEntity<User> getUser(@RequestBody User userinfo) {
         User user = userService.getUser(userinfo.getUsername());
+        System.out.println(userinfo.getUsername()+" "+userinfo.getPassword());
         if (passwordEncoder.matches(userinfo.getPassword(), user.getPassword())){
             return ResponseEntity.ok().body(user);
         }
