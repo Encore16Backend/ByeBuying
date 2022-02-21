@@ -8,6 +8,8 @@ import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.repo.ItemRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,51 +62,35 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getTopItemOrderReviewMeanDesc() {
-        log.info("get Top 5 Item All Category order by ReviewMean");
-        return itemRepo.findTop5ByOrderByReviewmeanDesc();
-    }
-
-    @Override
-    public List<Item> getTopItemOrderPriceDesc() {
-        log.info("get Top 5 Item All Category order by Price Desc");
-        return itemRepo.findTop5ByOrderByPriceDesc();
-    }
-
-    @Override
-    public List<Item> getTopItemOrderPriceAsc() {
-        log.info("get Top 5 Item All Category order by Price Asc");
-        return itemRepo.findTop5ByOrderByPriceAsc();
-    }
-
-    @Override
     public List<Item> getTopItemOrderPurchasecntDesc() {
         log.info("get Top 5 Item All Category order by PurchaseCnt");
         return itemRepo.findTop5ByOrderByPurchasecntDesc();
     }
 
     @Override
-    public List<Item> getTopItemByCategoryNameOrderByReviewMeanDesc(Long cateid) {
-        log.info("Get Top 5 Item by category {} Order By ReviewMean", cateid);
-        return itemRepo.findTop5ByCategories_CateidOrderByReviewmeanDesc(cateid);
-    }
-
-    @Override
-    public List<Item> getTopItemByCategoryNameOrderByPriceDesc(Long cateid) {
-        log.info("Get Top 5 Item by category {} Order By Price Desc", cateid);
-        return itemRepo.findTop5ByCategories_CateidOrderByPriceDesc(cateid);
-    }
-
-    @Override
-    public List<Item> getTopItemByCategoryNameOrderByPriceAsc(Long cateid) {
-        log.info("Get Top 5 Item by category {} Order By Price Asc", cateid);
-        return itemRepo.findTop5ByCategories_CateidOrderByPriceAsc(cateid);
-    }
-
-    @Override
     public List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid) {
         log.info("Get Top 5 Item by category {} Order By PurchaseCnt Desc", cateid);
         return itemRepo.findTop5ByCategories_CateidOrderByPurchasecntDesc(cateid);
+    }
+
+    @Override
+    public Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid) {
+        return itemRepo.findAllByCategories_CateidOrderByPurchasecntDesc(pageable, cateid);
+    }
+
+    @Override
+    public Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid) {
+        return itemRepo.findAllByCategories_CateidOrderByReviewmeanDesc(pageable, cateid);
+    }
+
+    @Override
+    public Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid) {
+        return itemRepo.findAllByCategories_CateidOrderByPriceDesc(pageable, cateid);
+    }
+
+    @Override
+    public Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid) {
+        return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
     }
 
 
