@@ -4,6 +4,9 @@ import com.encore.byebuying.domain.Category;
 import com.encore.byebuying.domain.Image;
 import com.encore.byebuying.domain.Item;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -17,13 +20,12 @@ public interface ItemService {
     void addCategoryToItem(String itemName, String categoryName);
     void addImageToItem(String itemName, String imgPath);
 
-    List<Item> getTopItemOrderReviewMeanDesc();
-    List<Item> getTopItemOrderPriceDesc();
-    List<Item> getTopItemOrderPriceAsc();
-    List<Item> getTopItemOrderPurchasecntDesc();
 
-    List<Item> getTopItemByCategoryNameOrderByReviewMeanDesc(Long cateid);
-    List<Item> getTopItemByCategoryNameOrderByPriceDesc(Long cateid);
-    List<Item> getTopItemByCategoryNameOrderByPriceAsc(Long cateid);
+    List<Item> getTopItemOrderPurchasecntDesc();
     List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
+
+    Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid);
+    Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid);
+    Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid);
+    Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid);
 }

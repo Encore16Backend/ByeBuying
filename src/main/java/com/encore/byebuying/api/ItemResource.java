@@ -5,13 +5,17 @@ import com.encore.byebuying.repo.CategoryRepo;
 import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.service.ItemService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/main")
@@ -27,55 +31,45 @@ public class ItemResource {
         return ResponseEntity.ok().body(item);
     }
 
-    @GetMapping("/order/review")
-    public ResponseEntity<List<Item>> getTopItemOrderByReviewDesc() {
-        List<Item> item = itemService.getTopItemOrderReviewMeanDesc();
+    @GetMapping("/bestItem")
+    public ResponseEntity<Map<String, Object>> getBestItems() {
+        Map<String, Object> item = new HashMap<>();
+        List<Item> all = itemService.getTopItemOrderPurchasecntDesc();
+        List<Item> top = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(9L);
+        List<Item> bottom = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(12L);
+        List<Item> outer = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(15L);
+        item.put("all", all);
+        item.put("top", top);
+        item.put("bottom", bottom);
+        item.put("outer", outer);
+
         return ResponseEntity.ok().body(item);
     }
 
-    @GetMapping("/order/price1")
-    public ResponseEntity<List<Item>> getTopItemOrderPrice1() {
-        List<Item> item = itemService.getTopItemOrderPriceDesc();
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/order/price2")
-    public ResponseEntity<List<Item>> getTopItemOrderPrice2() {
-        List<Item> item = itemService.getTopItemOrderPriceAsc();
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/order/purchase")
-    public ResponseEntity<List<Item>> getTopItemOrderPurchase() {
-        List<Item> item = itemService.getTopItemOrderPurchasecntDesc();
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/category/review") // 카테고리별 리뷰평점순 베스트 5
-    public ResponseEntity<List<Item>> getTopItemByCategoryOrderByReview(
-            @RequestParam(defaultValue = "", value = "category") Long cateid) {
-        List<Item> item = itemService.getTopItemByCategoryNameOrderByReviewMeanDesc(cateid);
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/category/price1") // 카테고리별 리뷰평점순 베스트 5
-    public ResponseEntity<List<Item>> getTopItemByCategoryOrderByPrice1(
-            @RequestParam(defaultValue = "", value = "category") Long cateid) {
-        List<Item> item = itemService.getTopItemByCategoryNameOrderByPriceDesc(cateid);
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/category/price2") // 카테고리별 리뷰평점순 베스트 5
-    public ResponseEntity<List<Item>> getTopItemByCategoryOrderByPrice2(
-            @RequestParam(defaultValue = "", value = "category") Long cateid) {
-        List<Item> item = itemService.getTopItemByCategoryNameOrderByPriceAsc(cateid);
-        return ResponseEntity.ok().body(item);
-    }
-
-    @GetMapping("/category/purchase") // 카테고리별 리뷰평점순 베스트 5
-    public ResponseEntity<List<Item>> getTopItemByCategoryOrderByPurchase(
-            @RequestParam(defaultValue = "", value = "category") Long cateid) {
-        List<Item> item = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(cateid);
+    @GetMapping("/category/order") // 카테고리별 리뷰평점순
+    public ResponseEntity<Page<Item>> getCategoryOrderByReview(
+            @RequestParam(defaultValue = "", value = "category") Long cateid,
+            @RequestParam(defaultValue = "1", value = "order") int order,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+        Pageable pageable = PageRequest.of(page-1, 10);
+        Page<Item> item;
+        switch (order) {
+            case 1: // 판매량순
+                item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
+                break;
+            case 2: // 낮은 가격순
+                item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
+                break;
+            case 3: // 높은 가격순
+                item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
+                break;
+            case 4: // 후기순
+                item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
+                break;
+            default:
+                item = null;
+                break;
+        }
         return ResponseEntity.ok().body(item);
     }
 }
