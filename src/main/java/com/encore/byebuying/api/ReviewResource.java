@@ -76,10 +76,15 @@ public class ReviewResource {
 		return ResponseEntity.ok().body(review);
 	}
 	
+	@Transactional
 	@PostMapping("/save")
 	public String saveReview(@RequestBody Review review){
 		if(review.getDate()==null)review.setDate(new Date());
 		reviewService.saveReview(review);
+		Item item = itemService.getItemByItemname(review.getItemname());
+		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
+		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+		itemService.saveItem(item);
 		return "SUCCESS";
 	}
 	
@@ -100,9 +105,10 @@ public class ReviewResource {
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 	
+	// 테스트용 만들어봄
 	@GetMapping("/avg")
 	public String getAvgScoreByItemname(@RequestParam(defaultValue = "", value = "itemname") String itemname) {
-		return reviewService.getAvgScoreByItemname(itemname)+" "+reviewService.CountScoreByItemname(itemname);
+		return reviewService.getAvgScoreByItemname(itemname)+" "+reviewService.countScoreByItemname(itemname);
 	}
 }
 

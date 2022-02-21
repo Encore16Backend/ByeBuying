@@ -31,4 +31,6 @@ public class Item {
     private int count; // 상품 수량
     private double reviewmean; // 리뷰 평점
     private String description; // 상품 설명
+    
+    private int reviewcount; // 리뷰 갯수
 }
