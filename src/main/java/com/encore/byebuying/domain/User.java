@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.*;
 
 @Entity @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
-    @Id @GeneratedValue(strategy = AUTO)
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id; // PK
     private String username; // Spring Security의 User에서 사용하는 필드명
     private String password; // 마찬가지
