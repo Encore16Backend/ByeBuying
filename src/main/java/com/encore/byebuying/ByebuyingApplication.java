@@ -50,76 +50,76 @@ public class ByebuyingApplication {
 			userService.addRoleToUser("test3", "ROLE_MANAGER");
 			userService.addRoleToUser("test3", "ROLE_ADMIN");
 
-			itemService.saveCategory(new Category(null, "상의"));
-			itemService.saveCategory(new Category(null, "반팔"));
-			itemService.saveCategory(new Category(null, "긴팔"));
-			itemService.saveCategory(new Category(null, "하의"));
-			itemService.saveCategory(new Category(null, "반바지"));
-			itemService.saveCategory(new Category(null, "긴바지"));
-			itemService.saveCategory(new Category(null, "아우터"));
-			itemService.saveCategory(new Category(null, "코트"));
-			itemService.saveCategory(new Category(null, "패딩"));
-			itemService.saveCategory(new Category(null, "모자"));
-			itemService.saveCategory(new Category(null, "신발"));
-
-			itemService.saveItem(new Item(null, "상의1", new ArrayList<>(), new ArrayList<>(),
-					20000, 11, 0, 3.3, "상의1로 반팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의2", new ArrayList<>(), new ArrayList<>(),
-					25000, 131, 0, 2.1, "상의2로 긴팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의3", new ArrayList<>(), new ArrayList<>(),
-					15000, 56, 0, 3.6, "상의3로 긴팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의4", new ArrayList<>(), new ArrayList<>(),
-					10000, 72, 0, 4.1, "상의4로 긴팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의5", new ArrayList<>(), new ArrayList<>(),
-					55000, 26, 0, 5.0, "상의5로 긴팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의6", new ArrayList<>(), new ArrayList<>(),
-					35000, 32, 0, 2.5, "상의6로 긴팔 상품입니다.",0));
-			itemService.saveItem(new Item(null, "상의7", new ArrayList<>(), new ArrayList<>(),
-					45000, 9, 0, 3.2, "상의7로 긴팔 상품입니다.",0));
-
-			itemService.saveItem(new Item(null, "하의1", new ArrayList<>(), new ArrayList<>(),
-					30000, 0, 0, 4, "하의1로 반바지 상품입니다.",0));
-			itemService.saveItem(new Item(null, "하의2", new ArrayList<>(), new ArrayList<>(),
-					35000, 0, 0, 3, "하의2로 긴바지 상품입니다.",0));
-			
-			itemService.saveImage(new Image(null, "path/상의1"));
-			itemService.saveImage(new Image(null, "path/상의2"));
-			itemService.saveImage(new Image(null, "path/상의3"));
-			itemService.saveImage(new Image(null, "path/상의4"));
-			itemService.saveImage(new Image(null, "path/상의5"));
-			itemService.saveImage(new Image(null, "path/상의6"));
-			itemService.saveImage(new Image(null, "path/상의7"));
-			itemService.saveImage(new Image(null, "path/하의1"));
-			itemService.saveImage(new Image(null, "path/하의2"));
-			
-			itemService.addCategoryToItem("상의1", "상의");
-			itemService.addCategoryToItem("상의1", "반팔");
-			itemService.addCategoryToItem("상의2", "상의");
-			itemService.addCategoryToItem("상의2", "긴팔");
-			itemService.addCategoryToItem("상의3", "상의");
-			itemService.addCategoryToItem("상의3", "긴팔");
-			itemService.addCategoryToItem("상의4", "상의");
-			itemService.addCategoryToItem("상의4", "반팔");
-			itemService.addCategoryToItem("상의5", "상의");
-			itemService.addCategoryToItem("상의5", "긴팔");
-			itemService.addCategoryToItem("상의6", "상의");
-			itemService.addCategoryToItem("상의6", "반팔");
-			itemService.addCategoryToItem("상의7", "상의");
-			itemService.addCategoryToItem("상의7", "반팔");
-			itemService.addCategoryToItem("하의1", "하의");
-			itemService.addCategoryToItem("하의2", "하의");
-			itemService.addCategoryToItem("하의1", "반바지");
-			itemService.addCategoryToItem("하의2", "긴바지");
-			
-			itemService.addImageToItem("상의1", "path/상의1");
-			itemService.addImageToItem("상의2", "path/상의2");
-			itemService.addImageToItem("상의3", "path/상의3");
-			itemService.addImageToItem("상의4", "path/상의4");
-			itemService.addImageToItem("상의5", "path/상의5");
-			itemService.addImageToItem("상의6", "path/상의6");
-			itemService.addImageToItem("상의7", "path/상의7");
-			itemService.addImageToItem("하의1", "path/하의1");
-			itemService.addImageToItem("하의2", "path/하의2");
+//			itemService.saveCategory(new Category(null, "상의"));
+//			itemService.saveCategory(new Category(null, "반팔"));
+//			itemService.saveCategory(new Category(null, "긴팔"));
+//			itemService.saveCategory(new Category(null, "하의"));
+//			itemService.saveCategory(new Category(null, "반바지"));
+//			itemService.saveCategory(new Category(null, "긴바지"));
+//			itemService.saveCategory(new Category(null, "아우터"));
+//			itemService.saveCategory(new Category(null, "코트"));
+//			itemService.saveCategory(new Category(null, "패딩"));
+//			itemService.saveCategory(new Category(null, "모자"));
+//			itemService.saveCategory(new Category(null, "신발"));
+//
+//			itemService.saveItem(new Item(null, "상의1", new ArrayList<>(), new ArrayList<>(),
+//					20000, 11, 0, 3.3, 0));
+//			itemService.saveItem(new Item(null, "상의2", new ArrayList<>(), new ArrayList<>(),
+//					25000, 131, 0, 2.1, 0));
+//			itemService.saveItem(new Item(null, "상의3", new ArrayList<>(), new ArrayList<>(),
+//					15000, 56, 0, 3.6, 0));
+//			itemService.saveItem(new Item(null, "상의4", new ArrayList<>(), new ArrayList<>(),
+//					10000, 72, 0, 4.1, 0));
+//			itemService.saveItem(new Item(null, "상의5", new ArrayList<>(), new ArrayList<>(),
+//					55000, 26, 0, 5.0, 0));
+//			itemService.saveItem(new Item(null, "상의6", new ArrayList<>(), new ArrayList<>(),
+//					35000, 32, 0, 2.5, 0));
+//			itemService.saveItem(new Item(null, "상의7", new ArrayList<>(), new ArrayList<>(),
+//					45000, 9, 0, 3.2, 0));
+//
+//			itemService.saveItem(new Item(null, "하의1", new ArrayList<>(), new ArrayList<>(),
+//					30000, 0, 0, 4, 0));
+//			itemService.saveItem(new Item(null, "하의2", new ArrayList<>(), new ArrayList<>(),
+//					35000, 0, 0, 3, 0));
+//
+//			itemService.saveImage(new Image(null, "path/상의1"));
+//			itemService.saveImage(new Image(null, "path/상의2"));
+//			itemService.saveImage(new Image(null, "path/상의3"));
+//			itemService.saveImage(new Image(null, "path/상의4"));
+//			itemService.saveImage(new Image(null, "path/상의5"));
+//			itemService.saveImage(new Image(null, "path/상의6"));
+//			itemService.saveImage(new Image(null, "path/상의7"));
+//			itemService.saveImage(new Image(null, "path/하의1"));
+//			itemService.saveImage(new Image(null, "path/하의2"));
+//
+//			itemService.addCategoryToItem("상의1", "상의");
+//			itemService.addCategoryToItem("상의1", "반팔");
+//			itemService.addCategoryToItem("상의2", "상의");
+//			itemService.addCategoryToItem("상의2", "긴팔");
+//			itemService.addCategoryToItem("상의3", "상의");
+//			itemService.addCategoryToItem("상의3", "긴팔");
+//			itemService.addCategoryToItem("상의4", "상의");
+//			itemService.addCategoryToItem("상의4", "반팔");
+//			itemService.addCategoryToItem("상의5", "상의");
+//			itemService.addCategoryToItem("상의5", "긴팔");
+//			itemService.addCategoryToItem("상의6", "상의");
+//			itemService.addCategoryToItem("상의6", "반팔");
+//			itemService.addCategoryToItem("상의7", "상의");
+//			itemService.addCategoryToItem("상의7", "반팔");
+//			itemService.addCategoryToItem("하의1", "하의");
+//			itemService.addCategoryToItem("하의2", "하의");
+//			itemService.addCategoryToItem("하의1", "반바지");
+//			itemService.addCategoryToItem("하의2", "긴바지");
+//
+//			itemService.addImageToItem("상의1", "path/상의1");
+//			itemService.addImageToItem("상의2", "path/상의2");
+//			itemService.addImageToItem("상의3", "path/상의3");
+//			itemService.addImageToItem("상의4", "path/상의4");
+//			itemService.addImageToItem("상의5", "path/상의5");
+//			itemService.addImageToItem("상의6", "path/상의6");
+//			itemService.addImageToItem("상의7", "path/상의7");
+//			itemService.addImageToItem("하의1", "path/하의1");
+//			itemService.addImageToItem("하의2", "path/하의2");
 			
 			reviewService.saveReview(new Review(null,"test0", "상의1", 2, "content0", new Date(122, 10, 15)));
 			reviewService.saveReview(new Review(null,"test0", "상의2", 3, "content1", new Date(121, 1, 3)));

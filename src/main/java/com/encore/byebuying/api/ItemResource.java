@@ -1,20 +1,22 @@
 package com.encore.byebuying.api;
 
+import com.encore.byebuying.domain.Category;
+import com.encore.byebuying.domain.Image;
 import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.repo.CategoryRepo;
 import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.service.ItemService;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.*;
 
 @RestController
@@ -71,5 +73,84 @@ public class ItemResource {
                 break;
         }
         return ResponseEntity.ok().body(item);
+    }
+
+    @PostMapping("/item/save")
+    public ResponseEntity<Item> saveItem(@RequestBody ItemForm itemForm) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/main/item/save").toUriString());
+
+        Item item = itemForm.toEntity();
+        return ResponseEntity.created(uri).body(itemService.saveItem(item));
+    }
+
+    @PostMapping("/category/save")
+    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/main/category/save").toUriString());
+        return ResponseEntity.created(uri).body(itemService.saveCategory(category));
+    }
+
+    @PostMapping("/image/save")
+    public ResponseEntity<Image> saveImage(@RequestBody Image image) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/main/image/save").toUriString());
+        return ResponseEntity.created(uri).body(itemService.saveImage(image));
+    }
+
+    @PostMapping("/category/add-to-item")
+    public ResponseEntity<?> addCategoryToItem(@RequestBody CategoryToItemForm form) {
+        itemService.addCategoryToItem(form.getItemName(), form.getCategoryName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/image/add-to-item")
+    public ResponseEntity<?> addImageToItem(@RequestBody ImageToItemForm form) {
+        itemService.addImageToItem(form.getItemName(), form.getImgPath());
+        return ResponseEntity.ok().build();
+    }
+}
+
+@Data
+class CategoryToItemForm {
+    private String itemName;
+    private String categoryName;
+}
+
+@Data
+class ImageToItemForm {
+    private String itemName;
+    private String imgPath;
+}
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+class ItemForm {
+    private String itemname;
+    private int price;
+    private int purchasecnt;
+    private int count;
+    private double reviewmean;
+    private int reviewcount;
+
+    public Item toEntity() {
+        return Item.builder()
+                .itemname(this.itemname)
+                .price(this.price)
+                .purchasecnt(this.purchasecnt)
+                .count(this.count)
+                .reviewmean(this.reviewcount)
+                .reviewcount(this.reviewcount)
+                .categories(new ArrayList<>())
+                .images(new ArrayList<>())
+                .build();
     }
 }
