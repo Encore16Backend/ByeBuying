@@ -35,9 +35,9 @@ public class ItemResource {
     public ResponseEntity<Map<String, Object>> getBestItems() {
         Map<String, Object> item = new HashMap<>();
         List<Item> all = itemService.getTopItemOrderPurchasecntDesc();
-        List<Item> top = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(9L);
-        List<Item> bottom = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(12L);
-        List<Item> outer = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(15L);
+        List<Item> top = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(1L);
+        List<Item> bottom = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(4L);
+        List<Item> outer = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(7L);
         item.put("all", all);
         item.put("top", top);
         item.put("bottom", bottom);
