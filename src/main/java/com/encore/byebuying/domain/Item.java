@@ -1,6 +1,7 @@
 package com.encore.byebuying.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
 @Entity @Data
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor @Builder
 public class Item {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long itemid; // PK
@@ -30,7 +31,7 @@ public class Item {
     private int purchasecnt; // 판매 수량
     private int count; // 상품 수량
     private double reviewmean; // 리뷰 평점
-    private String description; // 상품 설명
+//    private String description; // 상품 설명
     
     private int reviewcount; // 리뷰 갯수
 }
