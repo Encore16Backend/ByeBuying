@@ -34,4 +34,5 @@ build/
 
 src/main/resources/*.properties
 
-DataCrwaling/**
+DataCrwaling/상품이미지/**
+DataCrwaling/상품DataFrame/**
