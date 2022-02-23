@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-*.properties
+src/main/resources/*.properties
 
-DataCrwaling/상품DataFrame/**
 DataCrwaling/상품이미지/**
+DataCrwaling/상품DataFrame/**

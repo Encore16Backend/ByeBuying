@@ -6,7 +6,6 @@ import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.repo.CategoryRepo;
 import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.service.ItemService;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.*;
 
 import org.springframework.data.domain.Page;
