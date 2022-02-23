@@ -30,13 +30,14 @@ public class ReviewResource {
 	private final int PAGECOUNT = 5;
 	@GetMapping("/all")
 	public ResponseEntity<Page<Review>> getReviews(
-			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(defaultValue="date",value="sortname") String sortname,
+			@RequestParam(defaultValue="DESC",value="asc") String asc,
 			@RequestParam(required = false, defaultValue="1",value="page") int page){
 		Sort sort;
-		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
-			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		if(asc.equals("ASC") || asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, sortname);
 		}else {
-			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+			sort = Sort.by(Sort.Direction.DESC, sortname);
 		}
 		Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
         
@@ -46,33 +47,37 @@ public class ReviewResource {
 
 	@GetMapping("/byItemname")
 	public ResponseEntity<Page<Review>> getReviewByItemname(
-			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(defaultValue="",value="itemname") String itemname,
+			@RequestParam(defaultValue="date",value="sortname") String sortname,
+			@RequestParam(defaultValue="DESC",value="asc") String asc,
 			@RequestParam(required = false, defaultValue="1",value="page") int page){
 		Sort sort;
-		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
-			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		if(asc.equals("ASC") || asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, sortname);
 		}else {
-			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+			sort = Sort.by(Sort.Direction.DESC, sortname);
 		}
 		
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
-        Page<Review> review = reviewService.getByItemname(pageable,getReviewForm.getItemname());
+        Page<Review> review = reviewService.getByItemname(pageable,itemname);
 		return ResponseEntity.ok().body(review);
 	}
 	
 	@GetMapping("/byUsername")
 	public ResponseEntity<Page<Review>> getReviewByUsername(
-			@RequestBody GetReviewForm getReviewForm,
+			@RequestParam(defaultValue="",value="username") String username,
+			@RequestParam(defaultValue="date",value="sortname") String sortname,
+			@RequestParam(defaultValue="DESC",value="asc") String asc,
 			@RequestParam(required = false, defaultValue="1",value="page") int page){
 		Sort sort;
-		if(getReviewForm.asc.equals("ASC") || getReviewForm.asc.equals("asc")) {
-			sort = Sort.by(Sort.Direction.ASC, getReviewForm.sortname);
+		if(asc.equals("ASC") || asc.equals("asc")) {
+			sort = Sort.by(Sort.Direction.ASC, sortname);
 		}else {
-			sort = Sort.by(Sort.Direction.DESC, getReviewForm.sortname);
+			sort = Sort.by(Sort.Direction.DESC, sortname);
 		}
 		
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
-        Page<Review> review = reviewService.getByUsername(pageable,getReviewForm.getUsername());
+        Page<Review> review = reviewService.getByUsername(pageable,username);
 		return ResponseEntity.ok().body(review);
 	}
 	
@@ -110,12 +115,4 @@ public class ReviewResource {
 	public String getAvgScoreByItemname(@RequestParam(defaultValue = "", value = "itemname") String itemname) {
 		return reviewService.getAvgScoreByItemname(itemname)+" "+reviewService.countScoreByItemname(itemname);
 	}
-}
-
-@Data
-class GetReviewForm{
-	String username;
-	String itemname;
-	String asc;
-	String sortname;
 }
