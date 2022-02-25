@@ -16,7 +16,9 @@ import static javax.persistence.GenerationType.*;
 @Entity @Data
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class Item {
-    @Id @GeneratedValue(strategy = IDENTITY)
+    @Id
+    //@GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = AUTO)
     private Long itemid; // PK
     private String itemname;
     // EAGER : 연관 관계에 있는 Entity 들 모두 가져온다 → Eager 전략
@@ -31,7 +33,7 @@ public class Item {
     private int purchasecnt; // 판매 수량
     private int count; // 상품 수량
     private double reviewmean; // 리뷰 평점
-//    private String description; // 상품 설명
+    private String description; // 상품 설명
     
     private int reviewcount; // 리뷰 갯수
 }
