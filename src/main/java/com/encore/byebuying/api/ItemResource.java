@@ -7,10 +7,12 @@ import com.encore.byebuying.repo.CategoryRepo;
 import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.service.ItemService;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,7 +22,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/main")
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class ItemResource {
     private final ItemService itemService;
     private final CategoryRepo categoryRepo;
@@ -113,6 +115,26 @@ public class ItemResource {
     public ResponseEntity<?> addImageToItem(@RequestBody ImageToItemForm form) {
         itemService.addImageToItem(form.getItemName(), form.getImgPath());
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Page<Item>> search(
+            @RequestParam(defaultValue = "", value = "searchName") String searchName,
+            @RequestParam(defaultValue = "DESC", value = "asc") String asc,
+			@RequestParam(defaultValue="reviewmean",value="sortname") String sortname,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+
+    	Sort sort;
+    	if(asc.equals("ASC") || asc.equals("asc")) {
+    		sort = Sort.by(Sort.Direction.ASC, sortname);
+    	}else {
+    		sort = Sort.by(Sort.Direction.DESC, sortname);
+    	}
+    	
+    	Pageable pageable = PageRequest.of(page-1, 10,sort);
+    	Page<Item> item = itemService.findBySearch(pageable,searchName);
+
+        return ResponseEntity.ok().body(item);
     }
 }
 

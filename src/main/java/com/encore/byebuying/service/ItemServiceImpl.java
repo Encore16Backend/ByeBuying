@@ -100,4 +100,9 @@ public class ItemServiceImpl implements ItemService {
         return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
     }
 
+    @Override
+    public Page<Item> findBySearch(Pageable pageable, String searchName) {
+    	//return itemRepo.findByCategoriesInAndItemnameIn(pageable,cateList, itemname);
+    	return itemRepo.findBySearch(pageable,searchName);
+    }
 }
