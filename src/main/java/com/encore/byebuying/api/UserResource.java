@@ -63,8 +63,9 @@ public class UserResource {
     }
 
     @DeleteMapping("/user/delete") // 토큰 필요, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
-    public ResponseEntity<?> deleteUser(@RequestBody User user) {
-        userService.deleteUser(user.getUsername());
+    public ResponseEntity<?> deleteUser(
+    		@RequestParam(defaultValue = "", value="username") String username) {
+        userService.deleteUser(username);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
