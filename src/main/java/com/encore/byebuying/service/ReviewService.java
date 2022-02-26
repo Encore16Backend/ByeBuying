@@ -1,7 +1,5 @@
 package com.encore.byebuying.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,7 +12,7 @@ public interface ReviewService {
 	Page<Review> getByItemname(Pageable pageable,String itemname); // itemname 기준 리뷰 조회
 	Page<Review> getByUsername(Pageable pageable,String username); // username 기준 리뷰 조회
 	
-	void deleteReview(Long id);
+	void deleteReviewById(Long id);
 	String getAvgScoreByItemname(String itemname);
 	int countScoreByItemname(String itemname);
 }
