@@ -1,11 +1,9 @@
 package com.encore.byebuying.service;
 
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.encore.byebuying.domain.Review;
@@ -34,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
 		return reviewRepo.save(review);
 	}
 	@Override
-	public void deleteReview(Long id) {
+	public void deleteReviewById(Long id) {
         log.info("Delete Review By Review ID");
 		reviewRepo.deleteById(id);
 	}

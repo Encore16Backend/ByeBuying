@@ -20,6 +20,7 @@ import com.encore.byebuying.service.ReviewService;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/review")
@@ -94,8 +95,15 @@ public class ReviewResource {
 	}
 	
 	@DeleteMapping("/delete")
-	public ResponseEntity<?> deleteReview(@RequestBody Review review){
-		reviewService.deleteReview(review.getId());
+	public ResponseEntity<?> deleteReview(
+			@RequestParam(defaultValue = "", value="id") Long id,
+			@RequestParam(defaultValue = "", value="itemname") String itemname
+			){
+		reviewService.deleteReviewById(id);
+		Item item = itemService.getItemByItemname(itemname);
+		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
+		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+		itemService.saveItem(item);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 	
