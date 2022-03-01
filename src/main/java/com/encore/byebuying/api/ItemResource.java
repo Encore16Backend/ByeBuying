@@ -56,25 +56,30 @@ public class ItemResource {
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
         Pageable pageable = PageRequest.of(page-1, 10);
         Page<Item> item;
-        Long cateid = categoryRepo.findByCatename(cateanme).getCateid();
-        switch (order) {
-            case 1: // 판매량순
-                item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
-                break;
-            case 2: // 낮은 가격순
-                item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
-                break;
-            case 3: // 높은 가격순
-                item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
-                break;
-            case 4: // 후기순
-                item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
-                break;
-            default:
-                item = null;
-                break;
+        Long cateid;
+        try {
+            cateid = categoryRepo.findByCatename(cateanme).getCateid();
+            switch (order) {
+                case 1: // 판매량순
+                    item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
+                    break;
+                case 2: // 낮은 가격순
+                    item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
+                    break;
+                case 3: // 높은 가격순
+                    item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
+                    break;
+                case 4: // 후기순
+                    item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
+                    break;
+                default:
+                    item = null;
+                    break;
+            }
+            return ResponseEntity.ok().body(item);
+        } catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok().body(item);
     }
 
     @PostMapping("/item/save")
