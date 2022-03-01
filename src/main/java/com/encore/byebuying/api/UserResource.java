@@ -76,7 +76,7 @@ public class UserResource {
         if (user == null){
             return new ResponseEntity<>("FAIL", HttpStatus.OK);
         }
-        if (userForm.getPassword() != null) // 비밀번호도 수정될 때
+        if (userForm.getPassword() != null && !userForm.getPassword().equals("")) // 비밀번호도 수정될 때
             user.setPassword(userForm.getPassword());
         user.setEmail(userForm.getEmail());
         user.setStyle(userForm.getStyle());
