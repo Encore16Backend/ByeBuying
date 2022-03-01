@@ -51,11 +51,12 @@ public class ItemResource {
 
     @GetMapping("/category/order") // 카테고리별 리뷰평점순
     public ResponseEntity<Page<Item>> getCategoryOrderByReview(
-            @RequestParam(defaultValue = "", value = "category") Long cateid,
+            @RequestParam(defaultValue = "", value = "category") String cateanme,
             @RequestParam(defaultValue = "1", value = "order") int order,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
         Pageable pageable = PageRequest.of(page-1, 10);
         Page<Item> item;
+        Long cateid = categoryRepo.findByCatename(cateanme).getCateid();
         switch (order) {
             case 1: // 판매량순
                 item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
