@@ -51,29 +51,35 @@ public class ItemResource {
 
     @GetMapping("/category/order") // 카테고리별 리뷰평점순
     public ResponseEntity<Page<Item>> getCategoryOrderByReview(
-            @RequestParam(defaultValue = "", value = "category") Long cateid,
+            @RequestParam(defaultValue = "", value = "category") String cateanme,
             @RequestParam(defaultValue = "1", value = "order") int order,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
         Pageable pageable = PageRequest.of(page-1, 10);
         Page<Item> item;
-        switch (order) {
-            case 1: // 판매량순
-                item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
-                break;
-            case 2: // 낮은 가격순
-                item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
-                break;
-            case 3: // 높은 가격순
-                item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
-                break;
-            case 4: // 후기순
-                item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
-                break;
-            default:
-                item = null;
-                break;
+        Long cateid;
+        try {
+            cateid = categoryRepo.findByCatename(cateanme).getCateid();
+            switch (order) {
+                case 1: // 판매량순
+                    item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
+                    break;
+                case 2: // 낮은 가격순
+                    item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
+                    break;
+                case 3: // 높은 가격순
+                    item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
+                    break;
+                case 4: // 후기순
+                    item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
+                    break;
+                default:
+                    item = null;
+                    break;
+            }
+            return ResponseEntity.ok().body(item);
+        } catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok().body(item);
     }
 
     @PostMapping("/item/save")
