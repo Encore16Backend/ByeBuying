@@ -13,6 +13,10 @@ import java.util.List;
 public interface ItemService {
     List<Item> getItems(); // 전체 상품 조회
     Item getItemByItemname(String itemname);
+    Item getItemByItemid(Long itemid);
+
+    String getItemImagePath(Long itemid);
+
     Item saveItem(Item item);
     Category saveCategory(Category category);
     Image saveImage(Image image);

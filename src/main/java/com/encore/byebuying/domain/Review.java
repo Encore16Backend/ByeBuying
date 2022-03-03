@@ -12,15 +12,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import static javax.persistence.GenerationType.AUTO;
+import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Review {
 
-    @Id @GeneratedValue(strategy = AUTO)
+    @Id @GeneratedValue(strategy = IDENTITY)
 	private Long id;
 	private String username; // 유저 네임
+	private Long itemid; // 아이템 번호
 	private String itemname; // 아이템 이름
 	
 	private double score; // 리뷰 점수

@@ -82,12 +82,12 @@ public class ReviewResource {
 		return ResponseEntity.ok().body(review);
 	}
 	
-	@Transactional
+//	@Transactional
 	@PostMapping("/save")
 	public String saveReview(@RequestBody Review review){
 		if(review.getDate()==null)review.setDate(new Date());
 		reviewService.saveReview(review);
-		Item item = itemService.getItemByItemname(review.getItemname());
+		Item item = itemService.getItemByItemid(review.getItemid());
 		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
 		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
 		itemService.saveItem(item);

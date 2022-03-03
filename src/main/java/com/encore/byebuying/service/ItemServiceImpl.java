@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
@@ -30,8 +31,20 @@ public class ItemServiceImpl implements ItemService {
     }
     @Override
     public Item getItemByItemname(String itemname) {
-        log.info("Get Item");
+        log.info("Get Item by name: {}", itemname);
         return itemRepo.findByItemname(itemname);
+    }
+    @Override
+    public Item getItemByItemid(Long itemid) {
+        log.info("Get Item By id: {}", itemid);
+        return itemRepo.findByItemid(itemid);
+    }
+
+    @Override
+    public String getItemImagePath(Long itemid) {
+        Collection<Image> image = itemRepo.findByItemid(itemid).getImages();
+        Image img = image.iterator().next();
+        return img.getImgpath();
     }
 
     @Override
