@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ItemRepo extends JpaRepository<Item, Long> ,ItemRepoCustom{
     Item findByItemname(String itemname);
+    Item findByItemid(Long itemid);
     // Best Item
 
     List<Item> findTop5ByOrderByPurchasecntDesc();

@@ -34,6 +34,12 @@ public class ItemResource {
         return ResponseEntity.ok().body(item);
     }
 
+    @GetMapping("/itemImg")
+    public ResponseEntity<String> getItemImagePath(
+            @RequestParam(defaultValue = "", value = "itemid") Long itemid) {
+        return ResponseEntity.ok().body(itemService.getItemImagePath(itemid));
+    }
+
     @GetMapping("/bestItem")
     public ResponseEntity<Map<String, Object>> getBestItems() {
         Map<String, Object> item = new HashMap<>();
