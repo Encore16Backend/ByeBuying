@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         // permitAll(): 토큰 유효성 검사하지 않음
         http.authorizeRequests()
-                .antMatchers("/api/user/delete","/review/delete","/main/**", "/api/login/**", "/api/checkUser", "/api/user/save", "/api/token/refresh/**","/review/byItemname","/api/checkMail","/review/avg")
+                .antMatchers("/api/user/delete","/review/delete","/main/**", "/api/role/save", "/api/login/**", "/api/checkUser", "/api/user/save", "/api/token/refresh/**","/review/byItemname","/api/checkMail","/review/avg")
                 .permitAll();
         //http.authorizeRequests().antMatchers(DELETE, "/api/user/delete","/review/delete").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(PUT, "/api/user/update","review/update").hasAnyAuthority("ROLE_USER");
