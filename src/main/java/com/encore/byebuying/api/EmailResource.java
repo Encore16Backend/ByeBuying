@@ -4,11 +4,7 @@ import java.util.Random;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmailResource {
 	private final JavaMailSender javaMailSender;
 	
-	@PostMapping("/checkMail")
+	@GetMapping("/checkMail")
 	public String SendMail(@RequestParam(value = "email") String email) throws Exception {
 		log.info("email : {}",email);
 		try {
