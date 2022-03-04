@@ -20,4 +20,6 @@ public interface UserService {
 
     @Transactional
     void deleteUser(String username);
+
+    boolean existsEmail(String email);
 }
