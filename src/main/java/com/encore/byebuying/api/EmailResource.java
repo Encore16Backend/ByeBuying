@@ -2,6 +2,7 @@ package com.encore.byebuying.api;
 
 import java.util.Random;
 
+import com.encore.byebuying.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailResource {
 	private final JavaMailSender javaMailSender;
+	private final UserService userService;
 	
 	@GetMapping("/checkMail")
 	public String SendMail(@RequestParam(value = "email") String email) throws Exception {
 		log.info("email : {}",email);
+		boolean flag = userService.existsEmail(email);
+		if (flag) {
+			return "EXIST";
+		}
 		try {
 			Random random = new Random();
 			String key = "";
