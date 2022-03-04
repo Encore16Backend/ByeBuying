@@ -15,7 +15,7 @@ public interface ReviewRepo extends JpaRepository<Review, Long>{
 	Page<Review> findByUsername(Pageable pageable,String findByUsername);
 
     @Query(value="select avg(score) from review where itemname like :keyword1", nativeQuery=true )
-	double getAvgScoreByItemname(@Param("keyword1") String itemname);
+	Double getAvgScoreByItemname(@Param("keyword1") String itemname);
     @Query(value="select count(score) from review where itemname like :keyword1", nativeQuery=true )
    	int CountScoreByItemname(@Param("keyword1") String itemname);
 }
