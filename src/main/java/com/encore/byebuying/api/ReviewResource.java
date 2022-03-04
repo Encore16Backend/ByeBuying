@@ -1,5 +1,6 @@
 package com.encore.byebuying.api;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,8 @@ import com.encore.byebuying.service.ReviewService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 @RestController
 @RequestMapping("/review")
@@ -96,14 +99,23 @@ public class ReviewResource {
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> deleteReview(
-			@RequestParam(defaultValue = "", value="id") Long id,
-			@RequestParam(defaultValue = "", value="itemname") String itemname
-			){
-		reviewService.deleteReviewById(id);
-		Item item = itemService.getItemByItemname(itemname);
-		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
-		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
-		itemService.saveItem(item);
+			@RequestParam(defaultValue = "", value="reviewid[]") Long[] reviewid,
+			@RequestParam(defaultValue = "", value="itemid[]") Long[] itemid){
+
+		if (reviewid.length != itemid.length) {
+			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+		}
+
+ 		int length = reviewid.length;
+		for (int i=0; i<length; i++){
+			Long ri = reviewid[i];
+			Long ii = itemid[i];
+			reviewService.deleteReviewById(ri);
+			Item item = itemService.getItemByItemid(ii);
+			item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
+			item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+			itemService.saveItem(item);
+		}
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 	

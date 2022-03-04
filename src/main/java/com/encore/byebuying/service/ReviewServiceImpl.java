@@ -46,7 +46,11 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 	@Override
 	public String getAvgScoreByItemname(String itemname) {
-		return String.format("%.2f",reviewRepo.getAvgScoreByItemname(itemname));
+		String score = String.format("%.2f",reviewRepo.getAvgScoreByItemname(itemname));
+		if (score.equals("nu")) {
+			score = "0.0";
+		}
+		return score;
 	}
 	@Override
 	public int countScoreByItemname(String itemname) {
