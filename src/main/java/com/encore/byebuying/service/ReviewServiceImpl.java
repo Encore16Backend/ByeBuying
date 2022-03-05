@@ -37,8 +37,8 @@ public class ReviewServiceImpl implements ReviewService {
 		reviewRepo.deleteById(id);
 	}
 	@Override
-	public Page<Review> getByItemname(Pageable pageable,String itemname) {
-		return reviewRepo.findByItemname(pageable,itemname);
+	public Page<Review> getByItemid(Pageable pageable,Long itemid) {
+		return reviewRepo.findByItemid(pageable,itemid);
 	}
 	@Override
 	public Page<Review> getByUsername(Pageable pageable,String username) {

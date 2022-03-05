@@ -11,7 +11,7 @@ import com.encore.byebuying.domain.Review;
 
 public interface ReviewRepo extends JpaRepository<Review, Long>{
 	Review findReviewById(Long id);
-	Page<Review> findByItemname(Pageable pageable,String itemname);
+	Page<Review> findByItemid(Pageable pageable,Long itemid);
 	Page<Review> findByUsername(Pageable pageable,String findByUsername);
 
     @Query(value="select avg(score) from review where itemname like :keyword1", nativeQuery=true )

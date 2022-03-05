@@ -51,10 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/main/**", "/api/role/save", "/api/login/**", "/api/checkUser", "/api/user/save", "/api/token/refresh/**","/review/byItemname","/api/checkMail","/review/avg")
                 .permitAll();
-        http.authorizeRequests().antMatchers(DELETE, "/api/user/delete","/review/delete").permitAll();;
-        http.authorizeRequests().antMatchers(PUT, "/api/user/update","review/update").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername").hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/review/save", "/api/user/getUser").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(DELETE, "**").permitAll();;
+        http.authorizeRequests().antMatchers(PUT, "/api/user/update","review/update", "/basket/update").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername", "/basket/byUsername").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "/review/save", "/api/user/getUser", "/basket/add").hasAnyAuthority("ROLE_USER");
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);

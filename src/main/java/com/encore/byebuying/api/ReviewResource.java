@@ -49,9 +49,9 @@ public class ReviewResource {
 		return ResponseEntity.ok().body(review);
 	}
 
-	@GetMapping("/byItemname")
+	@GetMapping("/byItemid")
 	public ResponseEntity<Page<Review>> getReviewByItemname(
-			@RequestParam(defaultValue="",value="itemname") String itemname,
+			@RequestParam(defaultValue="",value="itemid") Long itemid,
 			@RequestParam(defaultValue="date",value="sortname") String sortname,
 			@RequestParam(defaultValue="DESC",value="asc") String asc,
 			@RequestParam(required = false, defaultValue="1",value="page") int page){
@@ -63,7 +63,7 @@ public class ReviewResource {
 		}
 		
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
-        Page<Review> review = reviewService.getByItemname(pageable,itemname);
+        Page<Review> review = reviewService.getByItemid(pageable,itemid);
 		return ResponseEntity.ok().body(review);
 	}
 	
@@ -88,11 +88,25 @@ public class ReviewResource {
 //	@Transactional
 	@PostMapping("/save")
 	public String saveReview(@RequestBody Review review){
-		if(review.getDate()==null)review.setDate(new Date());
+		review.setDate(new Date());
 		reviewService.saveReview(review);
 		Item item = itemService.getItemByItemid(review.getItemid());
+
+		/*
+		//이전에 만든 아이템 리뷰평균, 개수 저장 방법
 		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
 		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+		*/
+		// 기존 개수 얻기
+		int itemCount = item.getReviewcount();
+		if(itemCount==0) {
+			item.setReviewmean(review.getScore());
+		}else {
+			// ( 리뷰평균x리뷰개수+새 리뷰점수 )/(리뷰개수+1)
+			item.setReviewmean((item.getReviewmean()*itemCount+review.getScore())/(itemCount+1));
+		}
+		item.setReviewcount(itemCount+1);
+		
 		itemService.saveItem(item);
 		return "SUCCESS";
 	}
@@ -106,14 +120,35 @@ public class ReviewResource {
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
 
+		System.out.println(Arrays.toString(reviewid));
+		System.out.println(Arrays.toString(itemid));
+
  		int length = reviewid.length;
 		for (int i=0; i<length; i++){
 			Long ri = reviewid[i];
 			Long ii = itemid[i];
-			reviewService.deleteReviewById(ri);
+			
+			// 리뷰랑 아이템 조회
+			Review review = reviewService.getReview(ri);
 			Item item = itemService.getItemByItemid(ii);
+			
+			/*
+			//이전 아이템 업데이트
 			item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
 			item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+			*/
+			
+			// 업데이트
+			int reviewCount = item.getReviewcount();
+			if(reviewCount==1) {
+				item.setReviewmean(0.0);
+			}else {
+				//(리뷰 평균x리뷰 개수 - 지울 리뷰 점수) / (리뷰 개수 -1)
+				item.setReviewmean(((item.getReviewmean()*reviewCount)-review.getScore())/(reviewCount-1));
+			}
+			item.setReviewcount(reviewCount-1);
+			
+			reviewService.deleteReviewById(ri);
 			itemService.saveItem(item);
 		}
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
@@ -123,6 +158,22 @@ public class ReviewResource {
 	@PutMapping("/update")
 	public ResponseEntity<?> updateReview(@RequestBody Review changedReview){
 		Review review = reviewService.getReview(changedReview.getId());
+		
+		// 리뷰 점수가 다르면 아이템에 평균 리뷰 업데이트
+		if(review.getScore()!=changedReview.getScore()) {
+			Item item = itemService.getItemByItemid(changedReview.getItemid());
+			// (리뷰평균*리뷰개수-기존 리뷰점수+새리뷰점수)/리뷰개수
+			
+			/*
+			//이전 아이템 업데이트
+			item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
+			item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
+			*/
+			item.setReviewmean((item.getReviewmean()*item.getReviewcount()-review.getScore()+changedReview.getScore())/item.getReviewcount());
+			itemService.saveItem(item);
+		}
+		
+		// update
 		review.setDate(new Date());
 		review.setScore(changedReview.getScore());
 		review.setContent(changedReview.getContent());
