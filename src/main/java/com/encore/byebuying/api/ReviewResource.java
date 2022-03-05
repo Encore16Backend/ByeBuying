@@ -105,7 +105,8 @@ public class ReviewResource {
 		if (reviewid.length != itemid.length) {
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
-
+		System.out.println(Arrays.toString(reviewid));
+		System.out.println(Arrays.toString(itemid));
  		int length = reviewid.length;
 		for (int i=0; i<length; i++){
 			Long ri = reviewid[i];
