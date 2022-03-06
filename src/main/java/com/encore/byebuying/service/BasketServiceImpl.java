@@ -19,13 +19,18 @@ public class BasketServiceImpl implements BasketService{
     private final ItemRepo itemRepo;
 
     @Override
-    public Basket saveBasket(Basket basket) {
-        log.info("{}: Add item {} into Basket", basket.getUsername(), basket.getItemid());
-        Basket checkBasket = basketRepo.findBasketByItemid(basket.getItemid());
-        if(checkBasket != null){
-            checkBasket.setBcount(checkBasket.getBcount()+basket.getBcount());
-            return basketRepo.save(checkBasket);
+    public Basket saveBasket(Basket basket, String mode) {
+        if (mode.equals("save")){
+            Basket checkBasket = basketRepo.findBasketByItemid(basket.getItemid());
+            if(checkBasket != null){
+                log.info("Save Mode, Basket Exist");
+                checkBasket.setBcount(checkBasket.getBcount()+basket.getBcount());
+                return basketRepo.save(checkBasket);
+            }
+            log.info("Save Mode, Basket Not Exist");
+            return basketRepo.save(basket);
         }
+        log.info("Update Mode");
         return basketRepo.save(basket);
     }
 
@@ -35,8 +40,8 @@ public class BasketServiceImpl implements BasketService{
     }
 
     @Override
-    public Basket getBasket(Long id) {
-        return basketRepo.findBasketByItemid(id);
+    public Basket getBasketById(Long id) {
+        return basketRepo.findBasketById(id);
     }
 
     @Override

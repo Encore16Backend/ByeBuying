@@ -9,6 +9,6 @@ public interface BasketRepo extends JpaRepository<Basket, Long> {
     Page<Basket> findByUsername(Pageable pageable, String username);
     void deleteById(Long id);
     Basket findBasketByItemid(Long itemid);
-
+    Basket findBasketById(Long id);
 
 }

@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface BasketService {
-    Basket saveBasket(Basket basket); // 장바구니 추가
+    Basket saveBasket(Basket basket, String mode); // 장바구니 추가
 
     Page<Basket> getByUsername(Pageable pageable, String username); // 장바구니 목록
 
-    Basket getBasket(Long id);
+    Basket getBasketById(Long id);
 
     @Transactional
     void deleteBasket(Long id);
