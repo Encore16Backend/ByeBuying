@@ -24,7 +24,7 @@ public class BasketResource {
 
     @PostMapping("/add")
     public String addBasket(@RequestBody Basket basket) {
-        basketService.saveBasket(basket);
+        basketService.saveBasket(basket, "save");
         return "SUCCESS";
     }
 
@@ -41,9 +41,9 @@ public class BasketResource {
     @Transactional
     @PutMapping("/update")
     public String updateBasket(@RequestBody Basket changeBasket) {
-        Basket basket = basketService.getBasket(changeBasket.getId());
+        Basket basket = basketService.getBasketById(changeBasket.getId());
         basket.setBcount(changeBasket.getBcount());
-        basketService.saveBasket(basket);
+        basketService.saveBasket(basket, "update");
         return "SUCCESS";
     }
 
