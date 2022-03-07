@@ -148,6 +148,12 @@ public class ItemResource {
 
         return ResponseEntity.ok().body(item);
     }
+
+    @GetMapping("item")
+    public ResponseEntity<Item> getItem(
+            @RequestParam(defaultValue = "", value = "itemid") Long itemid) {
+        return ResponseEntity.ok().body(itemService.getItemByItemid(itemid));
+    }
 }
 
 @Data
