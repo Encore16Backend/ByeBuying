@@ -45,7 +45,7 @@ public class ItemResource {
         Map<String, Object> item = new HashMap<>();
 
         Long topid = categoryRepo.findByCatename("상의").getCateid();
-        Long bottomid = categoryRepo.findByCatename("하의").getCateid();
+        Long bottomid = categoryRepo.findByCatename("바지").getCateid();
         Long outerid = categoryRepo.findByCatename("아우터").getCateid();
 
         List<Item> all = itemService.getTopItemOrderPurchasecntDesc();
