@@ -50,7 +50,7 @@ public class ReviewResource {
 	}
 
 	@GetMapping("/byItemid")
-	public ResponseEntity<Page<Review>> getReviewByItemname(
+	public ResponseEntity<Page<Review>> getReviewByItemid(
 			@RequestParam(defaultValue="",value="itemid") Long itemid,
 			@RequestParam(defaultValue="date",value="sortname") String sortname,
 			@RequestParam(defaultValue="DESC",value="asc") String asc,
