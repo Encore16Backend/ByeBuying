@@ -4,8 +4,11 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.encore.byebuying.repo.LocationRepo;
 import com.encore.byebuying.repo.RoleRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.encore.byebuying.domain.Category;
+import com.encore.byebuying.domain.Location;
 import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.UserService;
@@ -35,6 +38,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class UserResource {
     private final UserService userService;
     private final RoleRepo roleRepo;
+    private final LocationRepo locationRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/users") // 관리자 유저들 확인
@@ -80,7 +84,21 @@ public class UserResource {
             user.setPassword(userForm.getPassword());
         user.setEmail(userForm.getEmail());
         user.setStyle(userForm.getStyle());
-        user.setLocation(userForm.getLocation());
+        user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
+        
+        // 현재주소 갈아엎고 새주소 넣기
+        List<Location> list = (List<Location>)user.getLocations();
+        Long[] idList = new Long[list.size()];
+        for(int i=0;i<list.size();i++)
+        	idList[i]=list.get(i).getId();
+        
+        user.getLocations().clear();
+        for(Long id : idList) {
+        	locationRepo.deleteById(id);
+        }
+        
+    	user.getLocations().addAll(userForm.getLocations());
+        
         userService.saveUser(user);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
@@ -157,8 +175,6 @@ public class UserResource {
             throw new RuntimeException("Refresh token is missing");
         }
     }
-    
-    
 }
 
 @Data
@@ -175,7 +191,8 @@ class UserForm {
     private String username;
     private String password;
     private String email;
-    private String location;
+    private int defaultLocationIdx;
+    private Collection<Location> locations;
     private int style;
 
     public User toEntity(){
@@ -183,8 +200,9 @@ class UserForm {
                 .username(this.username)
                 .password(this.password)
                 .email(this.email)
-                .location(this.location)
+                .defaultLocationIdx(this.defaultLocationIdx)
                 .style(this.style)
+                .locations(this.locations)
                 .roles(new ArrayList<>())
                 .build();
     }
