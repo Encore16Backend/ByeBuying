@@ -3,6 +3,7 @@ package com.encore.byebuying.api;
 import java.util.List;
 import java.util.Map;
 
+import com.encore.byebuying.service.BasketService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,13 +29,18 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/orderHistory")
 public class OrderHistoryResource {
 	private final OrderHistoryService orderHistoryService;
+	private final BasketService basketService;
 
 	// List<OrderHistory> orderHistory: JSON parse error
 	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
-	@PostMapping("/add") @Transactional
+	@PostMapping("/add")
 	public ResponseEntity<?> addOrderHistory(@RequestBody Map<String, List<OrderHistory>> orderHistory) {
 		try {
-			orderHistoryService.saveOrderHistory(orderHistory.get("OrderHistory"));
+			List<OrderHistory> orderHistories = orderHistory.get("OrderHistory");
+			orderHistoryService.saveOrderHistory(orderHistories);
+			for (OrderHistory o: orderHistories) {
+				basketService.deleteBasketByItemidAndUsername(o.getItemid(), o.getUsername());
+			}
 		} catch (Exception e){
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
