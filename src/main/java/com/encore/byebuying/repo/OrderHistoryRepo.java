@@ -9,4 +9,6 @@ import com.encore.byebuying.domain.OrderHistory;
 
 public interface OrderHistoryRepo extends JpaRepository<OrderHistory, Long>{
 	Page<OrderHistory> findByUsername(Pageable pageable,String username);
+
+	void deleteAllByUsername(String username);
 }

@@ -14,4 +14,6 @@ public interface InquiryRepo extends JpaRepository<Inquiry, Long> {
     Page<Inquiry> findByUsername(Pageable pageable, String username);
 
     Page<Inquiry> findByDateBetweenAndUsername(Pageable pageable, Date start, Date end, String username);
+
+    void deleteAllByUsername(String username);
 }
