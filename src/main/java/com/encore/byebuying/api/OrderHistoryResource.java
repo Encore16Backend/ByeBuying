@@ -1,6 +1,7 @@
 package com.encore.byebuying.api;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,9 +29,15 @@ import lombok.RequiredArgsConstructor;
 public class OrderHistoryResource {
 	private final OrderHistoryService orderHistoryService;
 
-	@PostMapping("/add")
-	public ResponseEntity<?> addOrderHistory(@RequestBody List<OrderHistory> orderHistory) {
-		orderHistoryService.saveOrderHistory(orderHistory);
+	// List<OrderHistory> orderHistory: JSON parse error
+	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
+	@PostMapping("/add") @Transactional
+	public ResponseEntity<?> addOrderHistory(@RequestBody Map<String, List<OrderHistory>> orderHistory) {
+		try {
+			orderHistoryService.saveOrderHistory(orderHistory.get("OrderHistory"));
+		} catch (Exception e){
+			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+		}
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 	
