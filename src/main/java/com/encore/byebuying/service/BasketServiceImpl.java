@@ -50,4 +50,12 @@ public class BasketServiceImpl implements BasketService{
         log.info("Delete Basket By id {}", id);
         basketRepo.deleteById(id);
     }
+
+    @Override
+    public void deleteBasketByItemidAndUsername(Long itemid, String username) {
+        log.info("Delete Basket By Buy Item, itemid: {}, username: {}", itemid, username);
+        basketRepo.deleteByItemidAndUsername(itemid, username);
+    }
+
+
 }

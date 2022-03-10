@@ -157,11 +157,12 @@ public class ReviewResource {
 	@Transactional
 	@PutMapping("/update")
 	public ResponseEntity<?> updateReview(@RequestBody Review changedReview){
+		System.out.println(changedReview);
 		Review review = reviewService.getReview(changedReview.getId());
-		
+		System.out.println(review);
 		// 리뷰 점수가 다르면 아이템에 평균 리뷰 업데이트
 		if(review.getScore()!=changedReview.getScore()) {
-			Item item = itemService.getItemByItemid(changedReview.getItemid());
+			Item item = itemService.getItemByItemid(review.getItemid());
 			// (리뷰평균*리뷰개수-기존 리뷰점수+새리뷰점수)/리뷰개수
 			
 			/*
