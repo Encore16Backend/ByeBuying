@@ -51,7 +51,7 @@ public class OrderHistoryResource {
     public ResponseEntity<Page<OrderHistory>> getOrderHistoryByUsername(
             @RequestParam(defaultValue="",value="username") String username,
             @RequestParam(required = false, defaultValue="1",value="page") int page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "date");
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(page-1, 5, sort);
         Page<OrderHistory> orderHistories = orderHistoryService.findByUsername(pageable, username);
         return ResponseEntity.ok().body(orderHistories);

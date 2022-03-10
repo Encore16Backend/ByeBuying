@@ -2,8 +2,7 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
-import com.encore.byebuying.repo.UserRepo;
-import com.encore.byebuying.repo.RoleRepo;
+import com.encore.byebuying.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +22,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
+    private final BasketRepo basketRepo;
+    private final InquiryRepo inquiryRepo;
+    private final OrderHistoryRepo orderHistoryRepo;
+    private final ReviewRepo reviewRepo;
 
     // 인증 부여 시 Spring Security 에서 해당 유저에 대한 정보를 찾을 수 있도록 해야함
     // 그를 위해 UserDetails를 구현하여 Spring Security의 User로 반환
@@ -85,6 +88,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteUser(String username) {
+        basketRepo.deleteAllByUsername(username);
+        inquiryRepo.deleteAllByUsername(username);
+        orderHistoryRepo.deleteAllByUsername(username);
+        reviewRepo.deleteAllByUsername(username);
         userRepo.deleteByUsername(username);
     }
 
