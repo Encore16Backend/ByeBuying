@@ -2,17 +2,19 @@ package com.encore.byebuying.repo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.encore.byebuying.domain.Review;
 
+import java.util.Date;
+
 public interface ReviewRepo extends JpaRepository<Review, Long>{
 	Review findReviewById(Long id);
 	Page<Review> findByItemid(Pageable pageable,Long itemid);
 	Page<Review> findByUsername(Pageable pageable,String findByUsername);
+	Page<Review> findByDateBetweenAndUsername(Pageable pageable, Date start, Date end, String username);
 
     @Query(value="select avg(score) from review where itemname like :keyword1", nativeQuery=true )
 	Double getAvgScoreByItemname(@Param("keyword1") String itemname);
