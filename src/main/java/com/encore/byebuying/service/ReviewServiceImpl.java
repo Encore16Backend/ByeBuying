@@ -1,7 +1,10 @@
 package com.encore.byebuying.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.encore.byebuying.domain.Inquiry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,6 +47,18 @@ public class ReviewServiceImpl implements ReviewService {
 	public Page<Review> getByUsername(Pageable pageable,String username) {
 		return reviewRepo.findByUsername(pageable,username);
 	}
+
+	@Override
+	public Page<Review> getByUsernameAndBetweenDate(
+			Pageable pageable, String start, String end, String username) throws ParseException {
+		log.info("Get Inquiry Date start: {}, end: {}", start, end);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
+		return reviewRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
+	}
+
+
 	@Override
 	public String getAvgScoreByItemname(String itemname) {
 		String score = String.format("%.2f",reviewRepo.getAvgScoreByItemname(itemname));

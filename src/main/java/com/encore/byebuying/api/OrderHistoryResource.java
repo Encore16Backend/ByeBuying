@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +43,9 @@ public class OrderHistoryResource {
 			for (OrderHistory o: orderHistories) {
 				Long itemid = o.getItemid();
 				basketService.deleteBasketByItemidAndUsername(itemid, o.getUsername());
+
 				Item item = itemService.getItemByItemid(itemid);
-				item.setPurchasecnt(item.getPurchasecnt()+1);
+				item.setPurchasecnt(item.getPurchasecnt()+o.getBcount());
 				itemService.saveItem(item);
 			}
 		} catch (Exception e){
@@ -63,6 +63,18 @@ public class OrderHistoryResource {
         Page<OrderHistory> orderHistories = orderHistoryService.findByUsername(pageable, username);
         return ResponseEntity.ok().body(orderHistories);
     }
+
+	@GetMapping("/byDate")
+	public ResponseEntity<Page<OrderHistory>> getOrderHistoryByDate(
+			@RequestParam(defaultValue = "", value = "username") String username,
+			@RequestParam(defaultValue = "", value = "start") String start,
+			@RequestParam(defaultValue = "", value = "end") String end,
+			@RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+		Pageable pageable = PageRequest.of(page-1, 5,
+				Sort.by(Sort.Direction.ASC, "date"));
+		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, start, end, username);
+		return ResponseEntity.ok().body(orderHistories);
+	}
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> deleteOrderHistory(

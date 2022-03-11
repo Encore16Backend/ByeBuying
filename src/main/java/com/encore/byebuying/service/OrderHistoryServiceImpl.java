@@ -1,5 +1,7 @@
 package com.encore.byebuying.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,10 +27,19 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 		log.info("get OrderHistory by Username : {}",username);
 		return orderHistoryRepo.findByUsername(pageable,username);
 	}
-	
+
+	@Override
+	public Page<OrderHistory> findByUsernameAndBetweenDate
+			(Pageable pageable, String username, String start, String end) {
+		log.info("Get OrderHistory Date start: {}, end: {}", start, end);
+		LocalDate dateStart = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
+		LocalDate dateEnd = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
+		return orderHistoryRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
+	}
+
 	@Override
 	public void saveOrderHistory(List<OrderHistory> orderHistory) {
-		log.info("Save All OrderHistory");
+		log.info("Save OrderHistory");
 		orderHistoryRepo.saveAll(orderHistory);
 	}
 

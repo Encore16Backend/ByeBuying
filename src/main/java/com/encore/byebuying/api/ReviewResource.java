@@ -1,8 +1,8 @@
 package com.encore.byebuying.api;
 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,15 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.domain.Review;
-import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.ItemService;
 import com.encore.byebuying.service.ReviewService;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 @RestController
 @RequestMapping("/review")
@@ -82,6 +77,18 @@ public class ReviewResource {
 		
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
         Page<Review> review = reviewService.getByUsername(pageable,username);
+		return ResponseEntity.ok().body(review);
+	}
+
+	@GetMapping("/byDate")
+	public ResponseEntity<Page<Review>> getInquiryByDate(
+			@RequestParam(defaultValue = "", value = "username") String username,
+			@RequestParam(defaultValue = "", value = "start") String start,
+			@RequestParam(defaultValue = "", value = "end") String end,
+			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
+		Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
+				Sort.by(Sort.Direction.ASC, "date"));
+		Page<Review> review = reviewService.getByUsernameAndBetweenDate(pageable, start, end, username);
 		return ResponseEntity.ok().body(review);
 	}
 	
