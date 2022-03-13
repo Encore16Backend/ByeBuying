@@ -72,7 +72,7 @@ public class OrderHistoryResource {
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) {
 		Pageable pageable = PageRequest.of(page-1, 5,
 				Sort.by(Sort.Direction.ASC, "date"));
-		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, start, end, username);
+		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
 		return ResponseEntity.ok().body(orderHistories);
 	}
 	
