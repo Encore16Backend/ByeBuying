@@ -21,6 +21,8 @@ public class OrderHistory extends BaseTimeEntity{
 	private Long id;
 	private String username;
 	private int bcount; // 개수
+
+	private String location;
 	
 	private Long itemid;
 	private String itemimg;
