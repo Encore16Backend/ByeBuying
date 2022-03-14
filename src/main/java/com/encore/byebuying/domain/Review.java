@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.TIMESTAMP;
+import static javax.persistence.TemporalType.DATE;
 
 @Entity @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Review {
@@ -27,6 +27,6 @@ public class Review {
 	
 	private double score; // 리뷰 점수
 	private String content; // 리뷰 내용
-	@Temporal(TIMESTAMP)
+	@Temporal(DATE)
 	private Date date; // 리뷰 작성 날짜
 }
