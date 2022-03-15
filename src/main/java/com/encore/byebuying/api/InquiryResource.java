@@ -21,6 +21,9 @@ public class InquiryResource {
     private final InquiryService inquiryService;
     private final int PAGECOUNT = 5;
 
+    @GetMapping("/all")
+
+
     @PostMapping("/save")
     public String saveInquiry(@RequestBody Inquiry inquiry){
         inquiry.setChkanswer(0);
@@ -43,32 +46,79 @@ public class InquiryResource {
     @GetMapping("/byItemid")
     public ResponseEntity<Page<Inquiry>> getInquiryByItemid(
             @RequestParam(defaultValue = "", value = "itemid") Long itemid,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+            @RequestParam(required = false, defaultValue = "", value = "start") String start,
+            @RequestParam(required = false, defaultValue = "", value = "end") String end,
+            @RequestParam(required = false, defaultValue = "-1", value = "chkAnswer") int chkAnswer,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
                             Sort.by(Sort.Direction.ASC, "date"));
-        Page<Inquiry> inquiries = inquiryService.getByItemid(pageable, itemid);
+        Page<Inquiry> inquiries;
+        if (start.equals("") && end.equals("")){
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByItemid(pageable, itemid);
+            } else {
+                inquiries = inquiryService.getByItemid(pageable, itemid, chkAnswer);
+            }
+        } else {
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByItemid(pageable, start, end, itemid);
+            } else {
+                inquiries = inquiryService.getByItemid(pageable, start, end, itemid, chkAnswer);
+            }
+        }
         return ResponseEntity.ok().body(inquiries);
     }
 
     @GetMapping("/byUsername")
     public ResponseEntity<Page<Inquiry>> getInquiryByUsername(
             @RequestParam(defaultValue = "", value = "username") String username,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
-        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
-                Sort.by(Sort.Direction.ASC, "date"));
-        Page<Inquiry> inquiries = inquiryService.getByUsername(pageable, username);
-        return ResponseEntity.ok().body(inquiries);
-    }
-
-    @GetMapping("/byDate")
-    public ResponseEntity<Page<Inquiry>> getInquiryByDate(
-            @RequestParam(defaultValue = "", value = "username") String username,
-            @RequestParam(defaultValue = "", value = "start") String start,
-            @RequestParam(defaultValue = "", value = "end") String end,
+            @RequestParam(required = false, defaultValue = "", value = "start") String start,
+            @RequestParam(required = false, defaultValue = "", value = "end") String end,
+            @RequestParam(required = false, defaultValue = "-1", value = "chkAnswer") int chkAnswer,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
                 Sort.by(Sort.Direction.ASC, "date"));
-        Page<Inquiry> inquiries = inquiryService.getByUsernameAndBetweenDate(pageable, start, end, username);
+        Page<Inquiry> inquiries;
+        if (start.equals("") && end.equals("")){
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByUsername(pageable, username);
+            } else {
+                inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
+            }
+        } else {
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByUsername(pageable, start, end, username);
+            } else {
+                inquiries = inquiryService.getByUsername(pageable, start, end, username, chkAnswer);
+            }
+        }
+        return ResponseEntity.ok().body(inquiries);
+    }
+
+    @GetMapping("/byUserNItemid")
+    public ResponseEntity<Page<Inquiry>> getInquiryByUsernameAndItemid(
+            @RequestParam(defaultValue = "", value = "itemid") Long itemid,
+            @RequestParam(defaultValue = "", value = "username") String username,
+            @RequestParam(required = false, defaultValue = "", value = "start") String start,
+            @RequestParam(required = false, defaultValue = "", value = "end") String end,
+            @RequestParam(required = false, defaultValue = "-1", value = "chkAnswer") int chkAnswer,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
+        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
+                Sort.by(Sort.Direction.ASC, "date"));
+        Page<Inquiry> inquiries;
+        if (start.equals("") && end.equals("")){
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByUsernameAndItemid(pageable, username, itemid);
+            } else {
+                inquiries = inquiryService.getByUsernameAndItemid(pageable, username, chkAnswer, itemid);
+            }
+        } else {
+            if (chkAnswer == -1){
+                inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, itemid);
+            } else {
+                inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, chkAnswer, itemid);
+            }
+        }
         return ResponseEntity.ok().body(inquiries);
     }
 }
