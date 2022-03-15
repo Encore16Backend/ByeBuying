@@ -62,6 +62,12 @@ public class UserResource {
         return ResponseEntity.badRequest().body(null);
     }
 
+    @GetMapping("/user/getinfo") // 회원 배송지
+    public ResponseEntity<List<Location>> getUserLocation(@RequestParam String username) {
+        List<Location> locations = new ArrayList<>(userService.getUser(username).getLocations());
+        return ResponseEntity.ok().body(locations);
+    }
+
     @GetMapping("/checkUser") // 아이디 중복 검사 확인
     public ResponseEntity<?> checkUser(
             @RequestParam(defaultValue = "", value = "username") String username) {
