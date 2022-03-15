@@ -13,6 +13,10 @@ import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.UserService;
 import lombok.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,8 +46,10 @@ public class UserResource {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/users") // 관리자 유저들 확인
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.getUsers());
+    public ResponseEntity<Page<User>> getUsers(
+            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+        Pageable pageable = PageRequest.of(page-1, 20, Sort.by(Sort.Direction.DESC, "id"));
+        return ResponseEntity.ok().body(userService.getUsers(pageable));
     }
 
     @PostMapping("/user/getUser") // 회원 확인용 - 수정 or 삭제
