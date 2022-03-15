@@ -5,6 +5,8 @@ import com.encore.byebuying.domain.User;
 import com.encore.byebuying.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -75,9 +77,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> getUsers() {
+    public Page<User> getUsers(Pageable pageable) {
         log.info("Fetching all users");
-        return userRepo.findAll();
+        return userRepo.findAll(pageable);
     }
 
     @Override
