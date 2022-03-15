@@ -2,6 +2,8 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface UserService {
     // 사용자
     User getUser(String username);
     // 사용자들
-    List<User> getUsers();
+    Page<User> getUsers(Pageable pageable); // 전체 사용자
 
     boolean checkUser(String username);
 

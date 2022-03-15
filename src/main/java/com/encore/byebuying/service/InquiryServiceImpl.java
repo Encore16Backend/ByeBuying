@@ -15,11 +15,16 @@ import java.util.Date;
 @Service @RequiredArgsConstructor @Slf4j
 public class InquiryServiceImpl implements InquiryService{
     private final InquiryRepo inquiryRepo;
-
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     @Override
     public Inquiry saveInquiry(Inquiry inquiry){
         log.info("Saving new Inquiry");
         return inquiryRepo.save(inquiry);
+    }
+
+    @Override
+    public Page<Inquiry> getInquiry(Pageable pageable) {
+        return inquiryRepo.findAll(pageable);
     }
 
     @Override
@@ -33,18 +38,76 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    public Page<Inquiry> getByItemid(Pageable pageable, Long itemid, int chkAnswer) {
+        return inquiryRepo.findByItemidAndChkanswer(pageable, itemid, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndItemid(pageable, dateStart, dateEnd, itemid);
+    }
+
+    @Override
+    public Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid, int chkAnswer) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndItemidAndChkanswer(pageable, dateStart, dateEnd, itemid, chkAnswer);
+    }
+
+    @Override
     public Page<Inquiry> getByUsername(Pageable pageable, String username) {
         return inquiryRepo.findByUsername(pageable, username);
     }
 
     @Override
-    public Page<Inquiry> getByUsernameAndBetweenDate(
-            Pageable pageable, String start, String end, String username) throws ParseException {
+    public Page<Inquiry> getByUsername(Pageable pageable, String username, int chkAnswer) {
+        return inquiryRepo.findByUsernameAndChkanswer(pageable, username, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsername(Pageable pageable, String start, String end, String username) throws ParseException {
         log.info("Get Inquiry Date start: {}, end: {}", start, end);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date dateStart = new Date(sdf.parse(start).getTime());
         Date dateEnd = new Date(sdf.parse(end).getTime());
         return inquiryRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsername(Pageable pageable, String start, String end, String username, int chkAnswer) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndUsernameAndChkanswer(pageable, dateStart, dateEnd, username, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, Long itemid) {
+        return inquiryRepo.findByUsernameAndItemid(pageable, username, itemid);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, int chkAnswer, Long itemid) {
+        return inquiryRepo.findByUsernameAndChkanswerAndItemid(pageable, username, chkAnswer, itemid);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, Long itemid) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndUsernameAndItemid(pageable, dateStart, dateEnd, username, itemid);
+    }
+
+    @Override
+    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, int chkAnswer, Long itemid) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndUsernameAndChkanswerAndItemid(pageable, dateStart, dateEnd, username, chkAnswer, itemid);
     }
 
     @Override
