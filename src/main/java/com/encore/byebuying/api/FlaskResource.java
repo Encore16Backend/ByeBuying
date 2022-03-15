@@ -4,10 +4,12 @@ import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.service.WebClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -23,11 +25,9 @@ public class FlaskResource {
     }
 
     @PostMapping("/retrieval")
-    public ResponseEntity<Item> retrieval(
+    public ResponseEntity<Flux<String>> retrieval(
             @RequestBody MultipartFile file) throws IOException {
-        System.out.println(Arrays.toString(file.getBytes()));
-        System.out.println(file.getName()+" "+file.getOriginalFilename()+" "+file.getContentType());
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(webClientService.postImage(file));
     }
 
 }

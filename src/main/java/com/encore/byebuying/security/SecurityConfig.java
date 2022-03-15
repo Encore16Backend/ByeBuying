@@ -56,16 +56,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/inquiry/byItemid", "/flask/**")
                 .permitAll();
         http.authorizeRequests().antMatchers(DELETE, "**")
-                .permitAll();;
+                .permitAll();
         http.authorizeRequests().antMatchers(PUT, "**")
-                .hasAnyAuthority("ROLE_USER");
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername",
                         "/basket/byUsername","/orderHistory/byUsername",
                         "/inquiry/byUsername", "/inquiry/byDate")
-                .hasAnyAuthority("ROLE_USER");
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/review/save", "/api/user/getUser",
                         "/basket/add","/orderHistory/add", "/inquiry/save")
-                .hasAnyAuthority("ROLE_USER");
+                .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/users")
                 .hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/inquiry/answer")
