@@ -1,23 +1,23 @@
 package com.encore.byebuying.api;
 
 import com.encore.byebuying.domain.Item;
+import com.encore.byebuying.service.ItemService;
 import com.encore.byebuying.service.WebClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
-import javax.swing.plaf.synth.SynthEditorPaneUI;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/flask")
 public class FlaskResource {
     private final WebClientService webClientService;
+    private final ItemService itemService;
 
     @GetMapping("/hello")
     public Flux<String> getHello() {
@@ -25,9 +25,16 @@ public class FlaskResource {
     }
 
     @PostMapping("/retrieval")
-    public ResponseEntity<Flux<String>> retrieval(
+    public ResponseEntity<List<Item>> retrieval(
             @RequestBody MultipartFile file) throws IOException {
-        return ResponseEntity.ok().body(webClientService.postImage(file));
+        String[] res = Objects.requireNonNull(webClientService.postImage(file)
+                                                                .share().block()).split(",");
+        Long[] ids = new Long[res.length];
+        for(int i=0; i<res.length; i++){
+            ids[i] = Long.parseLong(res[i]);
+        }
+        System.out.println(Arrays.toString(ids));
+        List<Item> items = itemService.getItemRetrieval(ids);
+        return ResponseEntity.ok().body(items);
     }
-
 }

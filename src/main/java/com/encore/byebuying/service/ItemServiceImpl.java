@@ -118,4 +118,11 @@ public class ItemServiceImpl implements ItemService {
     	//return itemRepo.findByCategoriesInAndItemnameIn(pageable,cateList, itemname);
     	return itemRepo.findBySearch(pageable,searchName);
     }
+
+    @Override
+    public List<Item> getItemRetrieval(Long[] ids) {
+        return itemRepo.findImageRetrieval(ids);
+    }
+
+
 }
