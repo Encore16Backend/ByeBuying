@@ -32,4 +32,6 @@ public interface ItemService {
     Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid);
     Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid);
     Page<Item> findBySearch(Pageable pageable, String searchName);
+
+    List<Item> getItemRetrieval(Long[] ids);
 }
