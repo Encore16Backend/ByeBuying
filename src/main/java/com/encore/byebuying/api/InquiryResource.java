@@ -68,7 +68,7 @@ public class InquiryResource {
 
     @GetMapping("/getInquiries")
     public ResponseEntity<Page<Inquiry>> getInquiryByUsername(
-            @RequestParam(required = false, defaultValue = "-1", value = "itemid") Long itemid,
+            @RequestParam(required = false, defaultValue = "", value = "itemname") String itemname,
             @RequestParam(required = false, defaultValue = "", value = "username") String username,
             @RequestParam(required = false, defaultValue = "", value = "start") String start,
             @RequestParam(required = false, defaultValue = "", value = "end") String end,
@@ -78,7 +78,7 @@ public class InquiryResource {
                 Sort.by(Sort.Direction.ASC, "date"));
         Page<Inquiry> inquiries;
 
-        if (username.equals("") && itemid == -1) { // 유저아이디도 없고, 아이템 아이디도 없을 때
+        if (username.equals("") && itemname.equals("")) { // 유저아이디도 없고, 아이템 아이디도 없을 때
             if (start.equals("") && end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable);
                 else inquiries = inquiryService.getInquiries(pageable, chkAnswer);
@@ -86,15 +86,15 @@ public class InquiryResource {
                 if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable, start, end);
                 else inquiries = inquiryService.getInquiries(pageable, start, end, chkAnswer);
             }
-        } else if (username.equals("") && itemid != -1){ // 유저아이디 없고, 아이템 아이디만 있을 때
+        } else if (username.equals("")){ // 유저아이디 없고, 아이템 아이디만 있을 때
             if (start.equals("") && end.equals("")){
-                if (chkAnswer == -1) inquiries = inquiryService.getByItemid(pageable, itemid);
-                else inquiries = inquiryService.getByItemid(pageable, itemid, chkAnswer);
+                if (chkAnswer == -1) inquiries = inquiryService.getByItemname(pageable, itemname);
+                else inquiries = inquiryService.getByItemname(pageable, itemname, chkAnswer);
             } else {
-                if (chkAnswer == -1) inquiries = inquiryService.getByItemid(pageable, start, end, itemid);
-                else inquiries = inquiryService.getByItemid(pageable, start, end, itemid, chkAnswer);
+                if (chkAnswer == -1) inquiries = inquiryService.getByItemname(pageable, start, end, itemname);
+                else inquiries = inquiryService.getByItemname(pageable, start, end, itemname, chkAnswer);
             }
-        } else if (!username.equals("") && itemid == -1) { // 유저아이디는 있고, 아이템 아이디는 없을 때
+        } else if (itemname.equals("")) { // 유저아이디는 있고, 아이템 아이디는 없을 때
             if (start.equals("") && end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, username);
                 else inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
@@ -104,11 +104,11 @@ public class InquiryResource {
             }
         } else { // 유저아이디 존재, 아이템 아이디도 존재할 때
             if (start.equals("") && end.equals("")){
-                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemid(pageable, username, itemid);
-                else inquiries = inquiryService.getByUsernameAndItemid(pageable, username, chkAnswer, itemid);
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemname(pageable, username, itemname);
+                else inquiries = inquiryService.getByUsernameAndItemname(pageable, username, chkAnswer, itemname);
             } else {
-                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, itemid);
-                else inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, chkAnswer, itemid);
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemname(pageable, start, end, username, itemname);
+                else inquiries = inquiryService.getByUsernameAndItemname(pageable, start, end, username, chkAnswer, itemname);
             }
         }
         

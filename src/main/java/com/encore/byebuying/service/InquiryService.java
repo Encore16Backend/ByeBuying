@@ -16,6 +16,11 @@ public interface InquiryService {
     Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid) throws ParseException;
     Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid, int chkAnswer) throws ParseException;
 
+    Page<Inquiry> getByItemname(Pageable pageable, String itemname);
+    Page<Inquiry> getByItemname(Pageable pageable, String itemname, int chkAnswer);
+    Page<Inquiry> getByItemname(Pageable pageable, String start, String end, String itemname) throws ParseException;
+    Page<Inquiry> getByItemname(Pageable pageable, String start, String end, String itemname, int chkAnswer) throws ParseException;
+
     Page<Inquiry> getInquiries(Pageable pageable);
     Page<Inquiry> getInquiries(Pageable pageable, int chkAnswer);
     Page<Inquiry> getInquiries(Pageable pageable, String start, String end) throws ParseException;
@@ -26,10 +31,10 @@ public interface InquiryService {
     Page<Inquiry> getByUsername(Pageable pageable, String start, String end, String username) throws ParseException;
     Page<Inquiry> getByUsername(Pageable pageable, String start, String end, String username, int chkAnswer) throws ParseException;
 
-    Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, Long itemid);
-    Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, int chkAnswer, Long itemid);
-    Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, Long itemid) throws ParseException;
-    Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, int chkAnswer, Long itemid) throws ParseException;
+    Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String username, String itemname);
+    Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String username, int chkAnswer, String itemname);
+    Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String start, String end, String username, String itemname) throws ParseException;
+    Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String start, String end, String username, int chkAnswer, String itemname) throws ParseException;
 
     void deleteInquiryById(Long id);
 }
