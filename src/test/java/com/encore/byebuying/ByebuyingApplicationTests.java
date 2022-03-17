@@ -8,8 +8,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringBootTest
 class ByebuyingApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//	@Test
+//	void contextLoads() {
+//	}
 
 }
