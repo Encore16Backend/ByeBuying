@@ -66,8 +66,9 @@ public class InquiryResource {
         return ResponseEntity.ok().body(inquiries);
     }
 
-    @GetMapping("/byUsername")
+    @GetMapping("/getInquiries")
     public ResponseEntity<Page<Inquiry>> getInquiryByUsername(
+            @RequestParam(required = false, defaultValue = "-1", value = "itemid") Long itemid,
             @RequestParam(required = false, defaultValue = "", value = "username") String username,
             @RequestParam(required = false, defaultValue = "", value = "start") String start,
             @RequestParam(required = false, defaultValue = "", value = "end") String end,
@@ -76,7 +77,8 @@ public class InquiryResource {
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
                 Sort.by(Sort.Direction.ASC, "date"));
         Page<Inquiry> inquiries;
-        if (username.equals("")){
+
+        if (username.equals("") && itemid == -1) { // 유저아이디도 없고, 아이템 아이디도 없을 때
             if (start.equals("") && end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable);
                 else inquiries = inquiryService.getInquiries(pageable, chkAnswer);
@@ -84,7 +86,15 @@ public class InquiryResource {
                 if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable, start, end);
                 else inquiries = inquiryService.getInquiries(pageable, start, end, chkAnswer);
             }
-        } else {
+        } else if (username.equals("") && itemid != -1){ // 유저아이디 없고, 아이템 아이디만 있을 때
+            if (start.equals("") && end.equals("")){
+                if (chkAnswer == -1) inquiries = inquiryService.getByItemid(pageable, itemid);
+                else inquiries = inquiryService.getByItemid(pageable, itemid, chkAnswer);
+            } else {
+                if (chkAnswer == -1) inquiries = inquiryService.getByItemid(pageable, start, end, itemid);
+                else inquiries = inquiryService.getByItemid(pageable, start, end, itemid, chkAnswer);
+            }
+        } else if (!username.equals("") && itemid == -1) { // 유저아이디는 있고, 아이템 아이디는 없을 때
             if (start.equals("") && end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, username);
                 else inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
@@ -92,34 +102,16 @@ public class InquiryResource {
                 if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, start, end, username);
                 else inquiries = inquiryService.getByUsername(pageable, start, end, username, chkAnswer);
             }
-        }
-        return ResponseEntity.ok().body(inquiries);
-    }
-
-    @GetMapping("/byUserNItemid")
-    public ResponseEntity<Page<Inquiry>> getInquiryByUsernameAndItemid(
-            @RequestParam(defaultValue = "", value = "itemid") Long itemid,
-            @RequestParam(defaultValue = "", value = "username") String username,
-            @RequestParam(required = false, defaultValue = "", value = "start") String start,
-            @RequestParam(required = false, defaultValue = "", value = "end") String end,
-            @RequestParam(required = false, defaultValue = "-1", value = "chkAnswer") int chkAnswer,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
-        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
-                Sort.by(Sort.Direction.ASC, "date"));
-        Page<Inquiry> inquiries;
-        if (start.equals("") && end.equals("")){
-            if (chkAnswer == -1){
-                inquiries = inquiryService.getByUsernameAndItemid(pageable, username, itemid);
+        } else { // 유저아이디 존재, 아이템 아이디도 존재할 때
+            if (start.equals("") && end.equals("")){
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemid(pageable, username, itemid);
+                else inquiries = inquiryService.getByUsernameAndItemid(pageable, username, chkAnswer, itemid);
             } else {
-                inquiries = inquiryService.getByUsernameAndItemid(pageable, username, chkAnswer, itemid);
-            }
-        } else {
-            if (chkAnswer == -1){
-                inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, itemid);
-            } else {
-                inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, chkAnswer, itemid);
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, itemid);
+                else inquiries = inquiryService.getByUsernameAndItemid(pageable, start, end, username, chkAnswer, itemid);
             }
         }
+        
         return ResponseEntity.ok().body(inquiries);
     }
 }
