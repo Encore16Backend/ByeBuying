@@ -27,24 +27,8 @@ public class ReviewResource {
 	private final ReviewService reviewService;
 	private final ItemService itemService;
 	private final int PAGECOUNT = 5;
-	@GetMapping("/all")
-	public ResponseEntity<Page<Review>> getReviews(
-			@RequestParam(defaultValue="date",value="sortname") String sortname,
-			@RequestParam(defaultValue="DESC",value="asc") String asc,
-			@RequestParam(required = false, defaultValue="1",value="page") int page){
-		Sort sort;
-		if(asc.equals("ASC") || asc.equals("asc")) {
-			sort = Sort.by(Sort.Direction.ASC, sortname);
-		}else {
-			sort = Sort.by(Sort.Direction.DESC, sortname);
-		}
-		Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
-        
-		Page<Review> review = reviewService.getReviews(pageable);
-		return ResponseEntity.ok().body(review);
-	}
 
-	@GetMapping("/byItemid")
+	@GetMapping("/byItemid") // 상품 디테일에서 사용
 	public ResponseEntity<Page<Review>> getReviewByItemid(
 			@RequestParam(defaultValue="",value="itemid") Long itemid,
 			@RequestParam(defaultValue="date",value="sortname") String sortname,
@@ -62,37 +46,42 @@ public class ReviewResource {
 		return ResponseEntity.ok().body(review);
 	}
 	
-	@GetMapping("/byUsername")
+	@GetMapping("/getReviews") // 리뷰 관리 페이지 사용(유저, 관리자)
 	public ResponseEntity<Page<Review>> getReviewByUsername(
-			@RequestParam(defaultValue="",value="username") String username,
-			@RequestParam(defaultValue="date",value="sortname") String sortname,
-			@RequestParam(defaultValue="DESC",value="asc") String asc,
-			@RequestParam(required = false, defaultValue="1",value="page") int page){
-		Sort sort;
-		if(asc.equals("ASC") || asc.equals("asc")) {
-			sort = Sort.by(Sort.Direction.ASC, sortname);
-		}else {
-			sort = Sort.by(Sort.Direction.DESC, sortname);
-		}
-		
-        Pageable pageable = PageRequest.of(page-1, PAGECOUNT,sort);
-        Page<Review> review = reviewService.getByUsername(pageable,username);
-		return ResponseEntity.ok().body(review);
-	}
-
-	@GetMapping("/byDate")
-	public ResponseEntity<Page<Review>> getInquiryByDate(
-			@RequestParam(defaultValue = "", value = "username") String username,
-			@RequestParam(defaultValue = "", value = "start") String start,
-			@RequestParam(defaultValue = "", value = "end") String end,
-			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
+			@RequestParam(required = false, defaultValue="", value="username") String username,
+			@RequestParam(required = false, defaultValue="", value="itemname") String itemname,
+			@RequestParam(required = false, defaultValue = "", value = "start") String start,
+			@RequestParam(required = false, defaultValue = "", value = "end") String end,
+			@RequestParam(required = false, defaultValue="1",value="page") int page) throws ParseException {
 		Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
 				Sort.by(Sort.Direction.ASC, "date"));
-		Page<Review> review = reviewService.getByUsernameAndBetweenDate(pageable, start, end, username);
-		return ResponseEntity.ok().body(review);
+        Page<Review> reviews;
+
+		if (username.equals("") && itemname.equals("")) {
+			if (start.equals("") || end.equals(""))
+				reviews = reviewService.getReviews(pageable);
+			else
+				reviews = reviewService.getReviews(pageable, start, end);
+		} else if (username.equals("")){
+			if (start.equals("") || end.equals(""))
+				reviews = reviewService.getItemname(pageable, itemname);
+			else
+				reviews = reviewService.getItemname(pageable, start, end, itemname);
+		} else if (itemname.equals("")) {
+			if (start.equals("") || end.equals(""))
+				reviews = reviewService.getUsername(pageable, username);
+			else
+				reviews = reviewService.getUsername(pageable, start, end, username);
+		} else {
+			if (start.equals("") || end.equals(""))
+				reviews = reviewService.getUserNItem(pageable, username, itemname);
+			else
+				reviews = reviewService.getUserNItem(pageable, start, end, username, itemname);
+		}
+
+		return ResponseEntity.ok().body(reviews);
 	}
-	
-//	@Transactional
+
 	@PostMapping("/save")
 	public String saveReview(@RequestBody Review review){
 		review.setDate(new Date());
