@@ -21,9 +21,6 @@ public class InquiryResource {
     private final InquiryService inquiryService;
     private final int PAGECOUNT = 5;
 
-    @GetMapping("/all")
-
-
     @PostMapping("/save")
     public String saveInquiry(@RequestBody Inquiry inquiry){
         inquiry.setChkanswer(0);
@@ -71,7 +68,7 @@ public class InquiryResource {
 
     @GetMapping("/byUsername")
     public ResponseEntity<Page<Inquiry>> getInquiryByUsername(
-            @RequestParam(defaultValue = "", value = "username") String username,
+            @RequestParam(required = false, defaultValue = "", value = "username") String username,
             @RequestParam(required = false, defaultValue = "", value = "start") String start,
             @RequestParam(required = false, defaultValue = "", value = "end") String end,
             @RequestParam(required = false, defaultValue = "-1", value = "chkAnswer") int chkAnswer,
@@ -79,17 +76,21 @@ public class InquiryResource {
         Pageable pageable = PageRequest.of(page-1, PAGECOUNT,
                 Sort.by(Sort.Direction.ASC, "date"));
         Page<Inquiry> inquiries;
-        if (start.equals("") && end.equals("")){
-            if (chkAnswer == -1){
-                inquiries = inquiryService.getByUsername(pageable, username);
+        if (username.equals("")){
+            if (start.equals("") && end.equals("")){
+                if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable);
+                else inquiries = inquiryService.getInquiries(pageable, chkAnswer);
             } else {
-                inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
+                if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable, start, end);
+                else inquiries = inquiryService.getInquiries(pageable, start, end, chkAnswer);
             }
         } else {
-            if (chkAnswer == -1){
-                inquiries = inquiryService.getByUsername(pageable, start, end, username);
+            if (start.equals("") && end.equals("")){
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, username);
+                else inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
             } else {
-                inquiries = inquiryService.getByUsername(pageable, start, end, username, chkAnswer);
+                if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, start, end, username);
+                else inquiries = inquiryService.getByUsername(pageable, start, end, username, chkAnswer);
             }
         }
         return ResponseEntity.ok().body(inquiries);

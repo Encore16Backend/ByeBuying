@@ -11,11 +11,15 @@ public interface InquiryService {
     Inquiry saveInquiry(Inquiry inquiry);
     Inquiry getById(Long id);
 
-    Page<Inquiry> getInquiry(Pageable pageable); // 전체 조회
     Page<Inquiry> getByItemid(Pageable pageable, Long itemid);
     Page<Inquiry> getByItemid(Pageable pageable, Long itemid, int chkAnswer);
     Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid) throws ParseException;
     Page<Inquiry> getByItemid(Pageable pageable, String start, String end, Long itemid, int chkAnswer) throws ParseException;
+
+    Page<Inquiry> getInquiries(Pageable pageable);
+    Page<Inquiry> getInquiries(Pageable pageable, int chkAnswer);
+    Page<Inquiry> getInquiries(Pageable pageable, String start, String end) throws ParseException;
+    Page<Inquiry> getInquiries(Pageable pageable, String start, String end, int chkAnswer) throws ParseException;
 
     Page<Inquiry> getByUsername(Pageable pageable, String username);
     Page<Inquiry> getByUsername(Pageable pageable, String username, int chkAnswer);

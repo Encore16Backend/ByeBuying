@@ -23,11 +23,6 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
-    public Page<Inquiry> getInquiry(Pageable pageable) {
-        return inquiryRepo.findAll(pageable);
-    }
-
-    @Override
     public Inquiry getById(Long id) {
         return inquiryRepo.findInquiryById(id);
     }
@@ -56,6 +51,32 @@ public class InquiryServiceImpl implements InquiryService{
         Date dateStart = new Date(sdf.parse(start).getTime());
         Date dateEnd = new Date(sdf.parse(end).getTime());
         return inquiryRepo.findByDateBetweenAndItemidAndChkanswer(pageable, dateStart, dateEnd, itemid, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getInquiries(Pageable pageable) {
+        return inquiryRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<Inquiry> getInquiries(Pageable pageable, int chkAnswer) {
+        return inquiryRepo.findByChkanswer(pageable, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getInquiries(Pageable pageable, String start, String end) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetween(pageable, dateStart, dateEnd);
+    }
+
+    @Override
+    public Page<Inquiry> getInquiries(Pageable pageable, String start, String end, int chkAnswer) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndChkanswer(pageable, dateStart, dateEnd, chkAnswer);
     }
 
     @Override
