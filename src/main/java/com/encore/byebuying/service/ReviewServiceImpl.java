@@ -19,47 +19,26 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service @RequiredArgsConstructor @Slf4j
 public class ReviewServiceImpl implements ReviewService {
-
 	private final ReviewRepo reviewRepo;
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	@Override
-	public Page<Review> getReviews(Pageable pageable) {
-		return reviewRepo.findAll(pageable);
-	}
 	@Override
 	public Review getReview(Long id) {
 		return reviewRepo.findReviewById(id);
 	}
+
 	@Override
 	public Review saveReview(Review review) {
 		log.info("Saving new review of {} by {} to the database", review.getItemname(),review.getUsername());
 		if(review.getDate()==null)review.setDate(new Date());
 		return reviewRepo.save(review);
 	}
+
 	@Override
 	public void deleteReviewById(Long id) {
         log.info("Delete Review By Review ID");
 		reviewRepo.deleteById(id);
 	}
-	@Override
-	public Page<Review> getByItemid(Pageable pageable,Long itemid) {
-		return reviewRepo.findByItemid(pageable,itemid);
-	}
-	@Override
-	public Page<Review> getByUsername(Pageable pageable,String username) {
-		return reviewRepo.findByUsername(pageable,username);
-	}
-
-	@Override
-	public Page<Review> getByUsernameAndBetweenDate(
-			Pageable pageable, String start, String end, String username) throws ParseException {
-		log.info("Get Inquiry Date start: {}, end: {}", start, end);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date dateStart = new Date(sdf.parse(start).getTime());
-		Date dateEnd = new Date(sdf.parse(end).getTime());
-		return reviewRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
-	}
-
 
 	@Override
 	public String getAvgScoreByItemname(String itemname) {
@@ -69,10 +48,66 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 		return score;
 	}
+
 	@Override
 	public int countScoreByItemname(String itemname) {
 		return reviewRepo.CountScoreByItemname(itemname);
 	}
-	
 
+	@Override
+	public Page<Review> getByItemid(Pageable pageable,Long itemid) {
+		return reviewRepo.findByItemid(pageable,itemid);
+	}
+
+	@Override
+	public Page<Review> getReviews(Pageable pageable) {
+		return reviewRepo.findAll(pageable);
+	}
+
+	@Override
+	public Page<Review> getReviews(Pageable pageable, String start, String end) throws ParseException {
+		log.info("Get Inquiry Date start: {}, end: {}", start, end);
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
+		return reviewRepo.findByDateBetween(pageable, dateStart, dateEnd);
+	}
+
+	@Override
+	public Page<Review> getUsername(Pageable pageable, String username) {
+		return reviewRepo.findByUsername(pageable, username);
+	}
+
+	@Override
+	public Page<Review> getUsername(Pageable pageable, String start, String end, String username) throws ParseException {
+		log.info("Get Inquiry Date start: {}, end: {}", start, end);
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
+		return reviewRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
+	}
+
+	@Override
+	public Page<Review> getItemname(Pageable pageable, String itemname) {
+		return reviewRepo.findByItemnameContainingIgnoreCase(pageable, itemname);
+	}
+
+	@Override
+	public Page<Review> getItemname(Pageable pageable, String start, String end, String itemname) throws ParseException {
+		log.info("Get Inquiry Date start: {}, end: {}", start, end);
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
+		return reviewRepo.findByDateBetweenAndItemnameContainingIgnoreCase(pageable, dateStart, dateEnd, itemname);
+	}
+
+	@Override
+	public Page<Review> getUserNItem(Pageable pageable, String username, String itemname) {
+		return reviewRepo.findByUsernameAndItemnameContainingIgnoreCase(pageable, username, itemname);
+	}
+
+	@Override
+	public Page<Review> getUserNItem(Pageable pageable, String start, String end, String username, String itemname) throws ParseException {
+		log.info("Get Inquiry Date start: {}, end: {}", start, end);
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
+		return reviewRepo.findByDateBetweenAndUsernameAndItemnameContainingIgnoreCase(pageable, dateStart, dateEnd, username, itemname);
+	}
 }

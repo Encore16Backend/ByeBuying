@@ -79,7 +79,7 @@ public class InquiryResource {
         Page<Inquiry> inquiries;
 
         if (username.equals("") && itemname.equals("")) { // 유저아이디도 없고, 아이템 아이디도 없을 때
-            if (start.equals("") && end.equals("")){
+            if (start.equals("") || end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getInquiries(pageable);
                 else inquiries = inquiryService.getInquiries(pageable, chkAnswer);
             } else {
@@ -87,7 +87,7 @@ public class InquiryResource {
                 else inquiries = inquiryService.getInquiries(pageable, start, end, chkAnswer);
             }
         } else if (username.equals("")){ // 유저아이디 없고, 아이템 아이디만 있을 때
-            if (start.equals("") && end.equals("")){
+            if (start.equals("") || end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getByItemname(pageable, itemname);
                 else inquiries = inquiryService.getByItemname(pageable, itemname, chkAnswer);
             } else {
@@ -95,7 +95,7 @@ public class InquiryResource {
                 else inquiries = inquiryService.getByItemname(pageable, start, end, itemname, chkAnswer);
             }
         } else if (itemname.equals("")) { // 유저아이디는 있고, 아이템 아이디는 없을 때
-            if (start.equals("") && end.equals("")){
+            if (start.equals("") || end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getByUsername(pageable, username);
                 else inquiries = inquiryService.getByUsername(pageable, username, chkAnswer);
             } else {
@@ -103,7 +103,7 @@ public class InquiryResource {
                 else inquiries = inquiryService.getByUsername(pageable, start, end, username, chkAnswer);
             }
         } else { // 유저아이디 존재, 아이템 아이디도 존재할 때
-            if (start.equals("") && end.equals("")){
+            if (start.equals("") || end.equals("")){
                 if (chkAnswer == -1) inquiries = inquiryService.getByUsernameAndItemname(pageable, username, itemname);
                 else inquiries = inquiryService.getByUsernameAndItemname(pageable, username, chkAnswer, itemname);
             } else {
