@@ -21,16 +21,14 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
         cache: maven
-        
+         
     -name: SetUp MySQL
-     uses: samin/mysql-action@v1
-     with:
-        host port : 3306,
-        character set server : 'utf8'
-        mysql database : 'byebuying_db',
-        mysql root password : 1234,
-        mysql user : 'root',
-        mysql password : ${{secrets.MYSQL_PASSWORD}}
+    -uses: samin/mysql-action@v1
+    -with:
+       character set server : 'utf8'
+       mysql database : 'byebuying_db'
+       mysql user : 'root'
+       mysql password : 1234
       
         
         
