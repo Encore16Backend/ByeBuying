@@ -15,6 +15,11 @@ public interface InquiryRepo extends JpaRepository<Inquiry, Long> {
     Page<Inquiry> findByDateBetweenAndItemid(Pageable pageable, Date start, Date end, Long itemid);
     Page<Inquiry> findByDateBetweenAndItemidAndChkanswer(Pageable pageable, Date start, Date end, Long itemid, int chkAnswer);
 
+    Page<Inquiry> findAll(Pageable pageable);
+    Page<Inquiry> findByChkanswer(Pageable pageable, int chkAnswer);
+    Page<Inquiry> findByDateBetween(Pageable pageable, Date start, Date end);
+    Page<Inquiry> findByDateBetweenAndChkanswer(Pageable pageable, Date start, Date end, int chkAnswer);
+
     Page<Inquiry> findByUsername(Pageable pageable, String username);
     Page<Inquiry> findByUsernameAndChkanswer(Pageable pageable, String username, int chkAnswer);
     Page<Inquiry> findByDateBetweenAndUsername(Pageable pageable, Date start, Date end, String username);
