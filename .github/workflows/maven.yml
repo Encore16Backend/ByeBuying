@@ -25,11 +25,9 @@ jobs:
     - name : SetUp MySQL
       uses : samin/mysql-action@v1
       with:
-        character set server: 'utf8'
         mysql database : 'byebuying'
-        mysql user : 'root'
-        mysql root password: 1234
-        mysql password: 1234
+        mysql user : 'sa'
+        mysql password: 'wortms965!'
        
         
         
