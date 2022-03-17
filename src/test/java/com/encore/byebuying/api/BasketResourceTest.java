@@ -14,27 +14,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 
-@WebAppConfiguration
+
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BasketResourceTest {
-    @Autowired
-    BasketService basketService;
-
-    @Test
-    @Order(1)
-    @Transactional
-    @Rollback(false)
-    public void addBasket() {
-        Basket basket = new Basket(null, "zlel175", 2, 1L, "tmptmptmptmptmptmptmptmptmptmptmptmptmptmp",
-                "tmptmptmptmptmptmptmptmptmptmptmptmptmptmp", 20000);
-
-        Basket addBasket = basketService.saveBasket(basket, "save");
-        Basket getBasket = basketService.getBasketById(addBasket.getId());
-        assertThat(getBasket.getId()).isEqualTo(addBasket.getId());
-        assertThat(getBasket).isEqualTo(addBasket);
-
-    }
+//    @Autowired
+//    BasketService basketService;
+//
+//    @Test
+//    @Order(1)
+//    @Transactional
+//    @Rollback(false)
+//    public void addBasket() {
+//        Basket basket = new Basket(null, "zlel175", 2, 1L, "tmptmptmptmptmptmptmptmptmptmptmptmptmptmp",
+//                "tmptmptmptmptmptmptmptmptmptmptmptmptmptmp", 20000);
+//
+//        Basket addBasket = basketService.saveBasket(basket, "save");
+//        Basket getBasket = basketService.getBasketById(addBasket.getId());
+//        assertThat(getBasket.getId()).isEqualTo(addBasket.getId());
+//        assertThat(getBasket).isEqualTo(addBasket);
+//
+//    }
 
 //    @Test
 //    @Order(2)
