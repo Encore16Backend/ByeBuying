@@ -26,7 +26,7 @@ jobs:
       uses : samin/mysql-action@v1
       with:
         character set server: 'utf8'
-        mysql database : 'byebuying_db'
+        mysql database : 'byebuying'
         mysql user : 'root'
         mysql root password: 1234
         mysql password: 1234
