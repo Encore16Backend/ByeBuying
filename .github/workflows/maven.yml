@@ -51,7 +51,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         aws deploy create-deployment \
-        --application-name byebuying \
+        --application-name byebuyingdeploy \
         --deployment-group-name byebuyingdeploy-group \
         --s3-location bucket=byebuying,bundleType=jar,key=byebuying-0.0.1-SNAPSHOT.jar \
         --region ap-northeast-2
