@@ -44,3 +44,14 @@ jobs:
         aws s3 cp \
           --region ap-northeast-2 \
           ./target/*.jar s3://byebuying
+          
+    - name: Deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+        aws deploy create-deployment \
+        --application-name byebuying \
+        --deployment-group-name byebuyingdeploy-group \
+        --s3-location bucket=byebuying,bundleType=jar,key=byebuying-0.0.1-SNAPSHOT.jar \
+        --region ap-northeast-2
