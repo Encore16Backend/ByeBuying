@@ -28,6 +28,9 @@ jobs:
         mysql database : 'byebuying'
         mysql user : 'root'
         mysql password: '1234'
+        
+    - name : clean
+      run: mvn clean
        
         
         
