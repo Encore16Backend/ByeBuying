@@ -26,8 +26,8 @@ jobs:
       uses : samin/mysql-action@v1
       with:
         mysql database : 'byebuying'
-        mysql user : 'sa'
-        mysql password: 'wortms965!'
+        mysql user : 'root'
+        mysql password: '1234'
        
         
         
