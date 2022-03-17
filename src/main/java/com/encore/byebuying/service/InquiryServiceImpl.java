@@ -54,6 +54,32 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    public Page<Inquiry> getByItemname(Pageable pageable, String itemname) {
+        return inquiryRepo.findByItemnameContainingIgnoreCase(pageable, itemname);
+    }
+
+    @Override
+    public Page<Inquiry> getByItemname(Pageable pageable, String itemname, int chkAnswer) {
+        return inquiryRepo.findByItemnameContainingIgnoreCaseAndChkanswer(pageable, itemname, chkAnswer);
+    }
+
+    @Override
+    public Page<Inquiry> getByItemname(Pageable pageable, String start, String end, String itemname) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndItemnameContainingIgnoreCase(pageable, dateStart, dateEnd, itemname);
+    }
+
+    @Override
+    public Page<Inquiry> getByItemname(Pageable pageable, String start, String end, String itemname, int chkAnswer) throws ParseException {
+        log.info("Get Inquiry Date start: {}, end: {}", start, end);
+        Date dateStart = new Date(sdf.parse(start).getTime());
+        Date dateEnd = new Date(sdf.parse(end).getTime());
+        return inquiryRepo.findByDateBetweenAndItemnameContainingIgnoreCaseAndChkanswer(pageable, dateStart, dateEnd, itemname, chkAnswer);
+    }
+
+    @Override
     public Page<Inquiry> getInquiries(Pageable pageable) {
         return inquiryRepo.findAll(pageable);
     }
@@ -105,30 +131,32 @@ public class InquiryServiceImpl implements InquiryService{
         return inquiryRepo.findByDateBetweenAndUsernameAndChkanswer(pageable, dateStart, dateEnd, username, chkAnswer);
     }
 
+
+
     @Override
-    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, Long itemid) {
-        return inquiryRepo.findByUsernameAndItemid(pageable, username, itemid);
+    public Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String username, String itemname) {
+        return inquiryRepo.findByUsernameAndItemnameContainingIgnoreCase(pageable, username, itemname);
     }
 
     @Override
-    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String username, int chkAnswer, Long itemid) {
-        return inquiryRepo.findByUsernameAndChkanswerAndItemid(pageable, username, chkAnswer, itemid);
+    public Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String username, int chkAnswer, String itemname) {
+        return inquiryRepo.findByUsernameAndChkanswerAndItemnameContainingIgnoreCase(pageable, username, chkAnswer, itemname);
     }
 
     @Override
-    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, Long itemid) throws ParseException {
+    public Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String start, String end, String username, String itemname) throws ParseException {
         log.info("Get Inquiry Date start: {}, end: {}", start, end);
         Date dateStart = new Date(sdf.parse(start).getTime());
         Date dateEnd = new Date(sdf.parse(end).getTime());
-        return inquiryRepo.findByDateBetweenAndUsernameAndItemid(pageable, dateStart, dateEnd, username, itemid);
+        return inquiryRepo.findByDateBetweenAndUsernameAndItemnameContainingIgnoreCase(pageable, dateStart, dateEnd, username, itemname);
     }
 
     @Override
-    public Page<Inquiry> getByUsernameAndItemid(Pageable pageable, String start, String end, String username, int chkAnswer, Long itemid) throws ParseException {
+    public Page<Inquiry> getByUsernameAndItemname(Pageable pageable, String start, String end, String username, int chkAnswer, String itemname) throws ParseException {
         log.info("Get Inquiry Date start: {}, end: {}", start, end);
         Date dateStart = new Date(sdf.parse(start).getTime());
         Date dateEnd = new Date(sdf.parse(end).getTime());
-        return inquiryRepo.findByDateBetweenAndUsernameAndChkanswerAndItemid(pageable, dateStart, dateEnd, username, chkAnswer, itemid);
+        return inquiryRepo.findByDateBetweenAndUsernameAndChkanswerAndItemnameContainingIgnoreCase(pageable, dateStart, dateEnd, username, chkAnswer, itemname);
     }
 
     @Override
