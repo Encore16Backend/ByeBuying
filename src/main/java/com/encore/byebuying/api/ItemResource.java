@@ -6,6 +6,8 @@ import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.repo.CategoryRepo;
 import com.encore.byebuying.repo.ImageRepo;
 import com.encore.byebuying.service.ItemService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,7 +113,7 @@ public class ItemResource {
         }
     }
 
-    @PostMapping("/item/save")
+    /*@PostMapping("/item/save")
     public ResponseEntity<Item> saveItem(@RequestBody ItemForm itemForm) {
         URI uri = URI.create(
                 ServletUriComponentsBuilder
@@ -120,6 +122,36 @@ public class ItemResource {
         Item item = itemForm.toEntity();
 
         return ResponseEntity.created(uri).body(itemService.saveItem(item));
+    }*/
+
+    @PostMapping("/item/save")
+    public ResponseEntity<Item> saveItem(@RequestBody Map<String, Map<String, Object>> saveForm) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/main/item/save").toUriString());
+        
+        Map<String, Object> itemSave =  saveForm.get("itemSave");
+        ObjectMapper mapper = new ObjectMapper();
+        
+        // 상품 등록
+        ItemForm itemform = mapper.convertValue(itemSave.get("item"), ItemForm.class);
+        Item item = itemService.saveItem(itemform.toEntity());
+
+        // 생성한 상품에 카테고리 삽입
+        ArrayList<String> categories = mapper.convertValue(itemSave.get("cate"), new TypeReference<ArrayList<String>>() {});
+        for (String catename: categories) {
+            itemService.addCategoryToItem(item.getItemname(), catename);
+        }
+
+        // 생성한 상품에 이미지 삽입
+        ArrayList<String> images = mapper.convertValue(itemSave.get("images"), new TypeReference<ArrayList<String>>() {});
+        for (String image: images) {
+            itemService.saveImage(new Image(null, image));
+            itemService.addImageToItem(item.getItemname(), image);
+        }
+
+        return ResponseEntity.created(uri).body(item);
     }
 
     @PostMapping("/category/save")
