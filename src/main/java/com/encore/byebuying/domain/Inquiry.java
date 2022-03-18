@@ -24,6 +24,7 @@ public class Inquiry {
 
     private Long itemid;
     private String itemname;
+    private String itemimage;
 
     private String title;
     private String content;
