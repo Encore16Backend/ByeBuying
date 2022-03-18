@@ -117,8 +117,8 @@ public class ItemResource {
                 ServletUriComponentsBuilder
                         .fromCurrentContextPath()
                         .path("/main/item/save").toUriString());
-
         Item item = itemForm.toEntity();
+
         return ResponseEntity.created(uri).body(itemService.saveItem(item));
     }
 
