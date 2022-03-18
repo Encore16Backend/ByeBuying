@@ -29,9 +29,26 @@ public class ItemResource {
     private final ImageRepo imageRepo;
 
     @GetMapping("/items")
-    public ResponseEntity<List<Item>> getItems() {
-        List<Item> item = itemService.getItems();
-        return ResponseEntity.ok().body(item);
+    public ResponseEntity<Page<Item>> getItems(
+            @RequestParam(required = false, defaultValue = "", value = "category") String cateanme,
+            @RequestParam(required = false, defaultValue = "", value = "itemname") String itemname,
+            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+        Pageable pageable = PageRequest.of(page-1, 5,
+                Sort.by(Sort.Direction.ASC, "itemid"));
+        Page<Item> items;
+        if (itemname.equals("") && cateanme.equals("")) {
+            items = itemService.getItems(pageable);
+        } else if (cateanme.equals("")) { // 상품명만 있을 때
+            items = itemService.getItems(pageable, itemname);
+        } else { // 카테고리명은 무조건 있음
+            Long cateid = categoryRepo.findByCatename(cateanme).getCateid();
+            if (itemname.equals("")) {// 상품명 없음
+                items = itemService.getItems(pageable, cateid);
+            } else { // 상품명과 카테고리명 둘 다 있음
+                items = itemService.getItems(pageable, cateid, itemname);
+            }
+        }
+        return ResponseEntity.ok().body(items);
     }
 
     @GetMapping("/itemImg")
@@ -192,7 +209,7 @@ class ItemForm {
                 .price(this.price)
                 .purchasecnt(this.purchasecnt)
                 .count(this.count)
-                .reviewmean(this.reviewcount)
+                .reviewmean(this.reviewmean)
                 .reviewcount(this.reviewcount)
                 .categories(new ArrayList<>())
                 .images(new ArrayList<>())

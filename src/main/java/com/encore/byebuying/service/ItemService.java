@@ -11,7 +11,12 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ItemService {
-    List<Item> getItems(); // 전체 상품 조회
+    Page<Item> getItems(Pageable pageable); // 전체 상품 조회
+    Page<Item> getItems(Pageable pageable, String itemname);
+    Page<Item> getItems(Pageable pageable, Long cateid);
+    Page<Item> getItems(Pageable pageable, Long cateid, String itemname);
+
+
     Item getItemByItemname(String itemname);
     Item getItemByItemid(Long itemid);
 

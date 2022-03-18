@@ -9,6 +9,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ItemRepo extends JpaRepository<Item, Long> ,ItemRepoCustom{
+    Page<Item> findAll(Pageable pageable);
+    Page<Item> findByItemnameContainingIgnoreCase(Pageable pageable, String itemname);
+    Page<Item> findByCategories_Cateid(Pageable pageable, Long cateid);
+    Page<Item> findByCategories_CateidAndItemnameContainingIgnoreCase(Pageable pageable, Long cateid, String itemname);
+
     Item findByItemname(String itemname);
     Item findByItemid(Long itemid);
     // Best Item

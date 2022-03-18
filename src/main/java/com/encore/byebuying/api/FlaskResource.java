@@ -27,14 +27,21 @@ public class FlaskResource {
     @PostMapping("/retrieval")
     public ResponseEntity<List<Item>> retrieval(
             @RequestBody MultipartFile file) throws IOException {
-        String[] res = Objects.requireNonNull(webClientService.postImage(file)
-                                                                .share().block()).split(",");
+        String[] res;
+        try {
+             res = Objects.requireNonNull(webClientService.postImage(file)
+                    .share().block()).split(",");
+        } catch (NullPointerException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         Long[] ids = new Long[res.length];
         for(int i=0; i<res.length; i++){
             ids[i] = Long.parseLong(res[i]);
         }
         System.out.println(Arrays.toString(ids));
         List<Item> items = itemService.getItemRetrieval(ids);
+
         return ResponseEntity.ok().body(items);
     }
 }
