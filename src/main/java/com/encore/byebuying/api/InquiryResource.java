@@ -67,7 +67,7 @@ public class InquiryResource {
     }
 
     @GetMapping("/getInquiries")
-    public ResponseEntity<Page<Inquiry>> getInquiryByUsername(
+    public ResponseEntity<Page<Inquiry>> getInquiryByUsername( // 관리 관련 페이지에서 사용할 API
             @RequestParam(required = false, defaultValue = "", value = "itemname") String itemname,
             @RequestParam(required = false, defaultValue = "", value = "username") String username,
             @RequestParam(required = false, defaultValue = "", value = "start") String start,

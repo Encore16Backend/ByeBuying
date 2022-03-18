@@ -25,10 +25,25 @@ public class ItemServiceImpl implements ItemService {
     private final ImageRepo imageRepo;
 
     @Override
-    public List<Item> getItems() {
-        log.info("Get All Item");
-        return itemRepo.findAll();
+    public Page<Item> getItems(Pageable pageable) {
+        return itemRepo.findAll(pageable);
     }
+
+    @Override
+    public Page<Item> getItems(Pageable pageable, String itemname) {
+        return itemRepo.findByItemnameContainingIgnoreCase(pageable, itemname);
+    }
+
+    @Override
+    public Page<Item> getItems(Pageable pageable, Long cateid) {
+        return itemRepo.findByCategories_Cateid(pageable, cateid);
+    }
+
+    @Override
+    public Page<Item> getItems(Pageable pageable, Long cateid, String itemname) {
+        return itemRepo.findByCategories_CateidAndItemnameContainingIgnoreCase(pageable, cateid, itemname);
+    }
+
     @Override
     public Item getItemByItemname(String itemname) {
         log.info("Get Item by name: {}", itemname);
