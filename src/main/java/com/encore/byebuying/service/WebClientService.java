@@ -2,11 +2,10 @@ package com.encore.byebuying.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,6 +13,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Service @Slf4j @RequiredArgsConstructor
 public class WebClientService {
@@ -31,7 +33,6 @@ public class WebClientService {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("file", file.getBytes())
                 .header("Content-Disposition", "form-data; name=file; filename="+file.getName());
-        MultiValueMap<String, HttpEntity<?>> multiValueMap = builder.build();
 
         return webClient.post()
                 .uri("/image")
@@ -39,5 +40,22 @@ public class WebClientService {
                 .body(BodyInserters.fromMultipartData(builder.build()))
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+    @Async // 비동기 사용
+    public void newUser(String username) {
+        Map<String, String> body = new HashMap<>();
+        body.put("username", username);
+        webClient.post()
+                .uri("/user")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe(        res -> {
+                    if (res == null || res.equals("FAIL"))
+                        log.error("Flask Communication Error");
+                    else
+                        log.info("Flask Communication Success");
+                });
     }
 }

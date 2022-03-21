@@ -80,49 +80,49 @@ public class ItemResource {
         return ResponseEntity.ok().body(item);
     }
 
-    @GetMapping("/category/order") // 카테고리별 리뷰평점순
-    public ResponseEntity<Page<Item>> getCategoryOrderByReview(
-            @RequestParam(defaultValue = "", value = "category") String cateanme,
-            @RequestParam(defaultValue = "1", value = "order") int order,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
-        Pageable pageable = PageRequest.of(page-1, 10);
-        Page<Item> item;
-        Long cateid;
-        try {
-            cateid = categoryRepo.findByCatename(cateanme).getCateid();
-            switch (order) {
-                case 1: // 판매량순
-                    item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
-                    break;
-                case 2: // 낮은 가격순
-                    item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
-                    break;
-                case 3: // 높은 가격순
-                    item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
-                    break;
-                case 4: // 후기순
-                    item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
-                    break;
-                default:
-                    item = null;
-                    break;
-            }
-            return ResponseEntity.ok().body(item);
-        } catch (NullPointerException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+//    @GetMapping("/category/order") // 카테고리별 리뷰평점순
+//    public ResponseEntity<Page<Item>> getCategoryOrderByReview(
+//            @RequestParam(defaultValue = "", value = "category") String cateanme,
+//            @RequestParam(defaultValue = "1", value = "order") int order,
+//            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+//        Pageable pageable = PageRequest.of(page-1, 10);
+//        Page<Item> item;
+//        Long cateid;
+//        try {
+//            cateid = categoryRepo.findByCatename(cateanme).getCateid();
+//            switch (order) {
+//                case 1: // 판매량순
+//                    item = itemService.getItemByCategoryOrderByPurchaseDesc(pageable, cateid);
+//                    break;
+//                case 2: // 낮은 가격순
+//                    item = itemService.getItemByCategoryOrderByPriceAsc(pageable, cateid);
+//                    break;
+//                case 3: // 높은 가격순
+//                    item = itemService.getItemByCategoryOrderByPriceDesc(pageable, cateid);
+//                    break;
+//                case 4: // 후기순
+//                    item = itemService.getItemByCategoryOrderByReviewmeanDesc(pageable, cateid);
+//                    break;
+//                default:
+//                    item = null;
+//                    break;
+//            }
+//            return ResponseEntity.ok().body(item);
+//        } catch (NullPointerException e) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//    }
 
-    /*@PostMapping("/item/save")
-    public ResponseEntity<Item> saveItem(@RequestBody ItemForm itemForm) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/main/item/save").toUriString());
-        Item item = itemForm.toEntity();
-
-        return ResponseEntity.created(uri).body(itemService.saveItem(item));
-    }*/
+//    @PostMapping("/item/save")
+//    public ResponseEntity<Item> saveItem(@RequestBody ItemForm itemForm) {
+//        URI uri = URI.create(
+//                ServletUriComponentsBuilder
+//                        .fromCurrentContextPath()
+//                        .path("/main/item/save").toUriString());
+//        Item item = itemForm.toEntity();
+//
+//        return ResponseEntity.created(uri).body(itemService.saveItem(item));
+//    }
 
     @PostMapping("/item/save")
     public ResponseEntity<Item> saveItem(@RequestBody Map<String, Map<String, Object>> saveForm) {
@@ -154,35 +154,35 @@ public class ItemResource {
         return ResponseEntity.created(uri).body(item);
     }
 
-    @PostMapping("/category/save")
-    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/main/category/save").toUriString());
-        return ResponseEntity.created(uri).body(itemService.saveCategory(category));
-    }
-
-    @PostMapping("/image/save")
-    public ResponseEntity<Image> saveImage(@RequestBody Image image) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/main/image/save").toUriString());
-        return ResponseEntity.created(uri).body(itemService.saveImage(image));
-    }
-
-    @PostMapping("/category/add-to-item")
-    public ResponseEntity<?> addCategoryToItem(@RequestBody CategoryToItemForm form) {
-        itemService.addCategoryToItem(form.getItemName(), form.getCategoryName());
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/image/add-to-item")
-    public ResponseEntity<?> addImageToItem(@RequestBody ImageToItemForm form) {
-        itemService.addImageToItem(form.getItemName(), form.getImgPath());
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/category/save")
+//    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
+//        URI uri = URI.create(
+//                ServletUriComponentsBuilder
+//                        .fromCurrentContextPath()
+//                        .path("/main/category/save").toUriString());
+//        return ResponseEntity.created(uri).body(itemService.saveCategory(category));
+//    }
+//
+//    @PostMapping("/image/save")
+//    public ResponseEntity<Image> saveImage(@RequestBody Image image) {
+//        URI uri = URI.create(
+//                ServletUriComponentsBuilder
+//                        .fromCurrentContextPath()
+//                        .path("/main/image/save").toUriString());
+//        return ResponseEntity.created(uri).body(itemService.saveImage(image));
+//    }
+//
+//    @PostMapping("/category/add-to-item")
+//    public ResponseEntity<?> addCategoryToItem(@RequestBody CategoryToItemForm form) {
+//        itemService.addCategoryToItem(form.getItemName(), form.getCategoryName());
+//        return ResponseEntity.ok().build();
+//    }
+//
+//    @PostMapping("/image/add-to-item")
+//    public ResponseEntity<?> addImageToItem(@RequestBody ImageToItemForm form) {
+//        itemService.addImageToItem(form.getItemName(), form.getImgPath());
+//        return ResponseEntity.ok().build();
+//    }
     
     @GetMapping("/search")
     public ResponseEntity<Page<Item>> search(
@@ -190,7 +190,7 @@ public class ItemResource {
             @RequestParam(defaultValue = "DESC", value = "asc") String asc,
 			@RequestParam(defaultValue="reviewmean",value="sortname") String sortname,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
-
+        System.out.println(searchName);
     	Sort sort;
     	if(asc.equals("ASC") || asc.equals("asc")) {
     		sort = Sort.by(Sort.Direction.ASC, sortname);

@@ -108,25 +108,25 @@ public class ItemServiceImpl implements ItemService {
         return itemRepo.findTop5ByCategories_CateidOrderByPurchasecntDesc(cateid);
     }
 
-    @Override
-    public Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid) {
-        return itemRepo.findAllByCategories_CateidOrderByPurchasecntDesc(pageable, cateid);
-    }
-
-    @Override
-    public Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid) {
-        return itemRepo.findAllByCategories_CateidOrderByReviewmeanDesc(pageable, cateid);
-    }
-
-    @Override
-    public Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid) {
-        return itemRepo.findAllByCategories_CateidOrderByPriceDesc(pageable, cateid);
-    }
-
-    @Override
-    public Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid) {
-        return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
-    }
+//    @Override
+//    public Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid) {
+//        return itemRepo.findAllByCategories_CateidOrderByPurchasecntDesc(pageable, cateid);
+//    }
+//
+//    @Override
+//    public Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid) {
+//        return itemRepo.findAllByCategories_CateidOrderByReviewmeanDesc(pageable, cateid);
+//    }
+//
+//    @Override
+//    public Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid) {
+//        return itemRepo.findAllByCategories_CateidOrderByPriceDesc(pageable, cateid);
+//    }
+//
+//    @Override
+//    public Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid) {
+//        return itemRepo.findAllByCategories_CateidOrderByPriceAsc(pageable, cateid);
+//    }
 
     @Override
     public Page<Item> findBySearch(Pageable pageable, String searchName) {
