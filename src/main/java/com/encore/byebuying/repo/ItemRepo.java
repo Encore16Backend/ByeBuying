@@ -29,4 +29,6 @@ public interface ItemRepo extends JpaRepository<Item, Long> ,ItemRepoCustom{
 
     @Query("select a from Item a where a.itemid in :id")
     List<Item> findImageRetrieval(Long[] id);
+
+    void deleteByItemid(Long itemid);
 }

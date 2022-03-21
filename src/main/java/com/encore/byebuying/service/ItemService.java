@@ -6,6 +6,7 @@ import com.encore.byebuying.domain.Item;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,4 +40,7 @@ public interface ItemService {
     Page<Item> findBySearch(Pageable pageable, String searchName);
 
     List<Item> getItemRetrieval(Long[] ids);
+
+    @Transactional
+    void deleteItem(Long itemid);
 }

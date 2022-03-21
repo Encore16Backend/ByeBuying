@@ -26,7 +26,7 @@ public class Item {
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Image> images = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = LAZY)
+    @ManyToMany(fetch = LAZY)
     private Collection<Category> categories = new ArrayList<>();
 
     private int price;
