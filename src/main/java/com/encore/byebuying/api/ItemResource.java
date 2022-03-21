@@ -15,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -154,15 +156,15 @@ public class ItemResource {
         return ResponseEntity.created(uri).body(item);
     }
 
-//    @PostMapping("/category/save")
-//    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
-//        URI uri = URI.create(
-//                ServletUriComponentsBuilder
-//                        .fromCurrentContextPath()
-//                        .path("/main/category/save").toUriString());
-//        return ResponseEntity.created(uri).body(itemService.saveCategory(category));
-//    }
-//
+    @PostMapping("/category/save")
+    public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/main/category/save").toUriString());
+        return ResponseEntity.created(uri).body(itemService.saveCategory(category));
+    }
+
 //    @PostMapping("/image/save")
 //    public ResponseEntity<Image> saveImage(@RequestBody Image image) {
 //        URI uri = URI.create(
@@ -190,7 +192,6 @@ public class ItemResource {
             @RequestParam(defaultValue = "DESC", value = "asc") String asc,
 			@RequestParam(defaultValue="reviewmean",value="sortname") String sortname,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
-        System.out.println(searchName);
     	Sort sort;
     	if(asc.equals("ASC") || asc.equals("asc")) {
     		sort = Sort.by(Sort.Direction.ASC, sortname);
@@ -204,10 +205,17 @@ public class ItemResource {
         return ResponseEntity.ok().body(item);
     }
 
-    @GetMapping("item")
+    @GetMapping("/item")
     public ResponseEntity<Item> getItem(
             @RequestParam(defaultValue = "", value = "itemid") Long itemid) {
         return ResponseEntity.ok().body(itemService.getItemByItemid(itemid));
+    }
+
+    @DeleteMapping("/item/delete")
+    public ResponseEntity<?> deleteItem(
+            @RequestParam(defaultValue = "", value = "itemid") Long itemid) {
+        itemService.deleteItem(itemid);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 }
 

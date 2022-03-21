@@ -49,6 +49,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Get Item by name: {}", itemname);
         return itemRepo.findByItemname(itemname);
     }
+
     @Override
     public Item getItemByItemid(Long itemid) {
         log.info("Get Item By id: {}", itemid);
@@ -139,5 +140,8 @@ public class ItemServiceImpl implements ItemService {
         return itemRepo.findImageRetrieval(ids);
     }
 
-
+    @Override
+    public void deleteItem(Long itemid) {
+        itemRepo.deleteByItemid(itemid);
+    }
 }
