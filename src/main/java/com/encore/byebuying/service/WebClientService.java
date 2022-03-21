@@ -51,7 +51,25 @@ public class WebClientService {
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(String.class)
-                .subscribe(        res -> {
+                .subscribe(res -> {
+                    if (res == null || res.equals("FAIL"))
+                        log.error("Flask Communication Error");
+                    else
+                        log.info("Flask Communication Success");
+                });
+    }
+
+    @Async // 비동기 사용
+    public void checkPurchaseHistory(String username, Long[] itemids) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("username", username);
+        body.put("itemids", itemids);
+        webClient.post()
+                .uri("/order")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe(res -> {
                     if (res == null || res.equals("FAIL"))
                         log.error("Flask Communication Error");
                     else
