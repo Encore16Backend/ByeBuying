@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.repo.LocationRepo;
 import com.encore.byebuying.repo.RoleRepo;
+import com.encore.byebuying.service.WebClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.encore.byebuying.domain.Category;
 import com.encore.byebuying.domain.Location;
@@ -19,17 +20,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -44,6 +48,7 @@ public class UserResource {
     private final RoleRepo roleRepo;
     private final LocationRepo locationRepo;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final WebClientService webClientService;
 
     @GetMapping("/users") // 관리자 유저들 확인
     public ResponseEntity<Page<User>> getUsers(
@@ -126,7 +131,9 @@ public class UserResource {
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepo.findByName("ROLE_USER"));
 
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+        webClientService.newUser(user.getUsername());
+        User newUser = userService.saveUser(user);
+        return ResponseEntity.created(uri).body(newUser);
     }
 
     @PostMapping("/role/save")

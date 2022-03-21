@@ -32,10 +32,10 @@ public interface ItemService {
     List<Item> getTopItemOrderPurchasecntDesc();
     List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
 
-    Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid);
-    Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid);
-    Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid);
-    Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid);
+//    Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid);
+//    Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid);
+//    Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid);
+//    Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid);
     Page<Item> findBySearch(Pageable pageable, String searchName);
 
     List<Item> getItemRetrieval(Long[] ids);

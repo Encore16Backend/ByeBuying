@@ -46,6 +46,10 @@ public class OrderHistoryResource {
 
 				Item item = itemService.getItemByItemid(itemid);
 				item.setPurchasecnt(item.getPurchasecnt()+o.getBcount());
+//				if (item.getPurchaseuser() == null)
+//					item.setPurchaseuser(o.getUsername());
+//				else
+//					item.setPurchaseuser(item.getPurchaseuser()+','+o.getUsername());
 				itemService.saveItem(item);
 			}
 		} catch (Exception e){

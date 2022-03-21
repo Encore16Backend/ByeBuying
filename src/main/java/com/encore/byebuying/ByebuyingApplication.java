@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
@@ -27,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableAsync
 public class ByebuyingApplication {
 
 	public static void main(String[] args) {
@@ -55,7 +57,7 @@ public class ByebuyingApplication {
 							.addHandlerLast(new WriteTimeoutHandler(100000, TimeUnit.MILLISECONDS)));
 
 		return WebClient.builder()
-				.baseUrl("http://172.30.1.34:5000")
+				.baseUrl("http://192.168.45.192:5000")
 				.clientConnector(new ReactorClientHttpConnector(httpClient))
 				.build();
 	}

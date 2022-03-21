@@ -22,10 +22,10 @@ public interface ItemRepo extends JpaRepository<Item, Long> ,ItemRepoCustom{
     List<Item> findTop5ByCategories_CateidOrderByPurchasecntDesc(Long cateid);
 
     // Category Item Sort
-    Page<Item> findAllByCategories_CateidOrderByPurchasecntDesc(Pageable pageable, Long cateid);
-    Page<Item> findAllByCategories_CateidOrderByReviewmeanDesc(Pageable pageable, Long cateid);
-    Page<Item> findAllByCategories_CateidOrderByPriceDesc(Pageable pageable, Long cateid);
-    Page<Item> findAllByCategories_CateidOrderByPriceAsc(Pageable pageable, Long cateid);
+//    Page<Item> findAllByCategories_CateidOrderByPurchasecntDesc(Pageable pageable, Long cateid);
+//    Page<Item> findAllByCategories_CateidOrderByReviewmeanDesc(Pageable pageable, Long cateid);
+//    Page<Item> findAllByCategories_CateidOrderByPriceDesc(Pageable pageable, Long cateid);
+//    Page<Item> findAllByCategories_CateidOrderByPriceAsc(Pageable pageable, Long cateid);
 
     @Query("select a from Item a where a.itemid in :id")
     List<Item> findImageRetrieval(Long[] id);

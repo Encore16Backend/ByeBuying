@@ -26,7 +26,7 @@ public class ItemRepoImpl extends QuerydslRepositorySupport implements ItemRepoC
 	private QCategory category = QCategory.category;
 	private CategoryRepo categoryRepo;
 	private final Set<String> categories=
-    		new HashSet<String>(Arrays.asList(new String[] {"상의","바지","스커트","아우터","반팔","긴팔","셔츠","반바지","슬랙스","데님팬츠","미니스커트","롱스커트","롱패딩","숏패딩","코트","트렌치코트"}));
+    		new HashSet<String>(Arrays.asList(new String[] {"상의","바지","스커트","아우터","반팔","긴팔","셔츠","반바지","슬랙스","데님팬츠","미니스커트","롱스커트","롱패딩","숏패딩","트렌치코트","코트"}));
 	public ItemRepoImpl() {
 		super(Item.class);
 	}
@@ -39,6 +39,7 @@ public class ItemRepoImpl extends QuerydslRepositorySupport implements ItemRepoC
     	StringTokenizer st = new StringTokenizer(searchName);
     	while(st.hasMoreTokens()) {
     		String keyword = st.nextToken();
+//			System.out.println(keyword);
     		if(categories.contains(keyword)) {
     			log.info("search by category : {}",keyword);
     			query.where(item.categories.contains(from(category).where(category.catename.eq(keyword))));
