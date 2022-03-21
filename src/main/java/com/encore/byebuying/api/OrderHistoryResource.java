@@ -6,6 +6,7 @@ import java.util.Map;
 import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.service.BasketService;
 import com.encore.byebuying.service.ItemService;
+import com.encore.byebuying.service.WebClientService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ public class OrderHistoryResource {
 	private final OrderHistoryService orderHistoryService;
 	private final BasketService basketService;
 	private final ItemService itemService;
+	private final WebClientService webClientService;
 
 	// List<OrderHistory> orderHistory: JSON parse error
 	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
@@ -40,18 +42,26 @@ public class OrderHistoryResource {
 		try {
 			List<OrderHistory> orderHistories = orderHistory.get("OrderHistory");
 			orderHistoryService.saveOrderHistory(orderHistories);
+
+			Long[] itemids = new Long[orderHistories.size()];
+			int idx = 0;
+			String username = null;
+
 			for (OrderHistory o: orderHistories) {
 				Long itemid = o.getItemid();
+
+				itemids[idx] = itemid;
+				username = o.getUsername();
+				idx++;
+
 				basketService.deleteBasketByItemidAndUsername(itemid, o.getUsername());
 
 				Item item = itemService.getItemByItemid(itemid);
 				item.setPurchasecnt(item.getPurchasecnt()+o.getBcount());
-//				if (item.getPurchaseuser() == null)
-//					item.setPurchaseuser(o.getUsername());
-//				else
-//					item.setPurchaseuser(item.getPurchaseuser()+','+o.getUsername());
+
 				itemService.saveItem(item);
 			}
+			webClientService.checkPurchaseHistory(username, itemids);
 		} catch (Exception e){
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
