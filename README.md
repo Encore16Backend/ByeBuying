@@ -13,16 +13,6 @@
   - MySql 8.0.22
   - HeidiSQL 11.3
 
-* PLAN
-  - 2/12 ~ 2/18
-    - User Table Create
-    - JWT
-    - Oauth - Google, Kakao, Naver
-  - 2/19 ~ 2/25
-    - Item, Review, Basket Table Create
-  - 2/26 ~ 2/28
-    - Image Search
-
 ![image](https://user-images.githubusercontent.com/78013523/159161547-738490f5-1d37-4855-af1f-f92613c45cd2.png)
 
 
