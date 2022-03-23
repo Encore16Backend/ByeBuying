@@ -29,7 +29,7 @@ public class User {
 //    @ManyToMany(fetch = LAZY)
 //    private Collection<Role> roles = new ArrayList<>(); // 권한
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = EAGER)
     private Role roles; // 권한
 
 }

@@ -16,10 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -47,11 +44,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     DecodedJWT decodedJWT = verifier.verify(token);
 
                     String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+//                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    String roles = decodedJWT.getClaim("roles").as(String.class);
+
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role -> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                    });
+
+//                    stream(roles).forEach(role -> {
+//                        authorities.add(new SimpleGrantedAuthority(role));
+//                    });
+                    authorities.add(new SimpleGrantedAuthority(roles));
+                    System.out.println(authorities);
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     // 유효성 검증 성공 시 SecurityContextHolder에 해당 Authentication을 잡아준다.
