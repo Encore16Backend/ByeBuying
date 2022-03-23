@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Service @Slf4j @RequiredArgsConstructor
 public class WebClientService {
@@ -40,6 +41,17 @@ public class WebClientService {
                 .body(BodyInserters.fromMultipartData(builder.build()))
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+    @Async // 비동기 사용
+    public Future<Mono<String>> recommendItem(String username) {
+        Map<String, String> body = new HashMap<>();
+        body.put("username", username);
+        return CompletableFuture.completedFuture(webClient.post()
+                .uri("/recommend")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(String.class));
     }
 
     @Async // 비동기 사용
