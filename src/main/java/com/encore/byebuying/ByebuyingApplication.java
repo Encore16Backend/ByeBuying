@@ -57,7 +57,7 @@ public class ByebuyingApplication {
 							.addHandlerLast(new WriteTimeoutHandler(100000, TimeUnit.MILLISECONDS)));
 
 		return WebClient.builder()
-				.baseUrl("http://192.168.45.192:5000")
+				.baseUrl("http://172.30.1.38:5000")
 				.clientConnector(new ReactorClientHttpConnector(httpClient))
 				.build();
 	}

@@ -23,10 +23,13 @@ public class User {
     private int defaultLocationIdx; // 기본 배송지 주소 id
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
-    
-    private int style;
+
     private String email;
-    @ManyToMany(fetch = LAZY)
-    private Collection<Role> roles = new ArrayList<>(); // 권한
+
+//    @ManyToMany(fetch = LAZY)
+//    private Collection<Role> roles = new ArrayList<>(); // 권한
+
+    @OneToOne(fetch = LAZY)
+    private Role roles; // 권한
 
 }

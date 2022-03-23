@@ -2,10 +2,7 @@ package com.encore.byebuying.domain;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +21,7 @@ public class Review {
 	private Long itemid; // 아이템 번호
 	private String itemname; // 아이템 이름
 	private String itemimage; // 아이템 이미지
-	
+
 	private double score; // 리뷰 점수
 	private String content; // 리뷰 내용
 	@Temporal(DATE)
