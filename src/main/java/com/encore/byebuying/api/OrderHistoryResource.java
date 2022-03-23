@@ -1,5 +1,7 @@
 package com.encore.byebuying.api;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,13 +43,14 @@ public class OrderHistoryResource {
 	public ResponseEntity<?> addOrderHistory(@RequestBody Map<String, List<OrderHistory>> orderHistory) {
 		try {
 			List<OrderHistory> orderHistories = orderHistory.get("OrderHistory");
-			orderHistoryService.saveOrderHistory(orderHistories);
 
 			Long[] itemids = new Long[orderHistories.size()];
 			int idx = 0;
 			String username = null;
 
 			for (OrderHistory o: orderHistories) {
+				o.setDate(new Date());
+
 				Long itemid = o.getItemid();
 
 				itemids[idx] = itemid;
@@ -61,6 +64,7 @@ public class OrderHistoryResource {
 
 				itemService.saveItem(item);
 			}
+			orderHistoryService.saveOrderHistory(orderHistories);
 			webClientService.checkPurchaseHistory(username, itemids);
 		} catch (Exception e){
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
@@ -83,7 +87,7 @@ public class OrderHistoryResource {
 			@RequestParam(defaultValue = "", value = "username") String username,
 			@RequestParam(defaultValue = "", value = "start") String start,
 			@RequestParam(defaultValue = "", value = "end") String end,
-			@RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
 		Pageable pageable = PageRequest.of(page-1, 5,
 				Sort.by(Sort.Direction.ASC, "date"));
 		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);

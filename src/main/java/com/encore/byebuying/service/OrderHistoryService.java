@@ -1,5 +1,6 @@
 package com.encore.byebuying.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import com.encore.byebuying.domain.OrderHistory;
 public interface OrderHistoryService {
 	OrderHistory findById(Long id);
 	Page<OrderHistory> findByUsername(Pageable pageable,String username);
-	Page<OrderHistory> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end);
+	Page<OrderHistory> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;
 	void saveOrderHistory(List<OrderHistory> orderHistory);
 	void saveOrderHistory(OrderHistory orderHistory);
 	@Transactional
