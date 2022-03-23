@@ -21,7 +21,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderHistoryServiceImpl implements OrderHistoryService {
 	private final OrderHistoryRepo orderHistoryRepo;
-	
+
+
+	@Override
+	public OrderHistory findById(Long id) {
+		return orderHistoryRepo.findOrderHistoryById(id);
+	}
+
 	@Override
 	public Page<OrderHistory> findByUsername(Pageable pageable, String username) {
 		log.info("get OrderHistory by Username : {}",username);
@@ -39,9 +45,16 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 
 	@Override
 	public void saveOrderHistory(List<OrderHistory> orderHistory) {
-		log.info("Save OrderHistory");
+		log.info("Save OrderHistories: List");
 		orderHistoryRepo.saveAll(orderHistory);
 	}
+
+	@Override
+	public void saveOrderHistory(OrderHistory orderHistory) {
+		log.info("Save OrderHistory");
+		orderHistoryRepo.save(orderHistory);
+	}
+
 
 	@Override
 	public void deleteOrderHistory(Long id) {

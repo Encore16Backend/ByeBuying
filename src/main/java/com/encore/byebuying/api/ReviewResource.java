@@ -3,7 +3,11 @@ package com.encore.byebuying.api;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
+import com.encore.byebuying.domain.OrderHistory;
+import com.encore.byebuying.service.OrderHistoryService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewResource {
 	private final ReviewService reviewService;
 	private final ItemService itemService;
+	private final OrderHistoryService orderHistoryService;
 	private final int PAGECOUNT = 5;
 
 	@GetMapping("/byItemid") // 상품 디테일에서 사용
@@ -83,11 +88,20 @@ public class ReviewResource {
 	}
 
 	@PostMapping("/save")
-	public String saveReview(@RequestBody Review review){
+	public String saveReview(@RequestBody Map<String, Map<String, Object>> saveForm) {
+		Map<String, Object> reviewSave = saveForm.get("reviewSave");
+		ObjectMapper mapper = new ObjectMapper();
+
+		Review review = mapper.convertValue(reviewSave.get("review"), Review.class);
 		review.setDate(new Date());
 		reviewService.saveReview(review);
-		Item item = itemService.getItemByItemid(review.getItemid());
 
+		Long orderid = mapper.convertValue(reviewSave.get("orderid"), Long.class);
+		OrderHistory orderHistory = orderHistoryService.findById(orderid);
+		orderHistory.setChkreview(1);
+		orderHistoryService.saveOrderHistory(orderHistory);
+
+		Item item = itemService.getItemByItemid(review.getItemid());
 		/*
 		//이전에 만든 아이템 리뷰평균, 개수 저장 방법
 		item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
