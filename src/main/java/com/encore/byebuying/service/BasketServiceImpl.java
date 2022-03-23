@@ -22,7 +22,6 @@ public class BasketServiceImpl implements BasketService{
     public Basket saveBasket(Basket basket, String mode) {
         if (mode.equals("save")){
             Basket checkBasket = basketRepo.findBasketByUsernameAndItemid(basket.getUsername(), basket.getItemid());
-            System.out.println(checkBasket);
             if(checkBasket != null){
                 log.info("Save Mode, Basket Exist");
                 checkBasket.setBcount(checkBasket.getBcount()+basket.getBcount());

@@ -53,7 +53,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 //                        authorities.add(new SimpleGrantedAuthority(role));
 //                    });
                     authorities.add(new SimpleGrantedAuthority(roles));
-                    System.out.println(authorities);
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     // 유효성 검증 성공 시 SecurityContextHolder에 해당 Authentication을 잡아준다.

@@ -81,7 +81,7 @@ public class OrderHistoryResource {
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
 		Pageable pageable = PageRequest.of(page-1, 5, Sort.by(Sort.Direction.ASC, "date"));
 		Page<OrderHistory> orderHistories;
-		if (start.equals("") && end.equals("")){
+		if (start.equals("") || end.equals("")){
 			orderHistories =
 					orderHistoryService.findByUsername(pageable, username);
 		} else {
