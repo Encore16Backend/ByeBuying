@@ -100,7 +100,6 @@ public class UserResource {
         if (userForm.getPassword() != null && !userForm.getPassword().equals("")) // 비밀번호도 수정될 때
             user.setPassword(userForm.getPassword());
         user.setEmail(userForm.getEmail());
-        user.setStyle(userForm.getStyle());
         user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
         
         // 현재주소 갈아엎고 새주소 넣기
@@ -220,7 +219,6 @@ class UserForm {
                 .password(this.password)
                 .email(this.email)
                 .defaultLocationIdx(this.defaultLocationIdx)
-                .style(this.style)
                 .locations(this.locations)
                 .roles(new ArrayList<>())
                 .build();
