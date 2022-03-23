@@ -8,7 +8,8 @@
     - Spring Security
     - Spring Boot DevTools
     - Lombok
-
+    - QueryDSL
+    - WebClient
 * DataBase
   - MySql 8.0.22
   - HeidiSQL 11.3
