@@ -9,6 +9,7 @@ import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.service.BasketService;
 import com.encore.byebuying.service.ItemService;
 import com.encore.byebuying.service.WebClientService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,28 +72,46 @@ public class OrderHistoryResource {
 		}
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
-	
-	@GetMapping("/byUsername")
-    public ResponseEntity<Page<OrderHistory>> getOrderHistoryByUsername(
-            @RequestParam(defaultValue="",value="username") String username,
-            @RequestParam(required = false, defaultValue="1",value="page") int page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page-1, 5, sort);
-        Page<OrderHistory> orderHistories = orderHistoryService.findByUsername(pageable, username);
-        return ResponseEntity.ok().body(orderHistories);
-    }
 
-	@GetMapping("/byDate")
-	public ResponseEntity<Page<OrderHistory>> getOrderHistoryByDate(
-			@RequestParam(defaultValue = "", value = "username") String username,
-			@RequestParam(defaultValue = "", value = "start") String start,
-			@RequestParam(defaultValue = "", value = "end") String end,
+	@GetMapping("/getOrderHistories")
+	public ResponseEntity<Page<OrderHistory>> getOrderHistories(
+			@RequestParam(defaultValue="", value="username") String username,
+			@RequestParam(required = false, defaultValue = "", value = "start") String start,
+			@RequestParam(required = false, defaultValue = "", value = "end") String end,
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
-		Pageable pageable = PageRequest.of(page-1, 5,
-				Sort.by(Sort.Direction.ASC, "date"));
-		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
+		Pageable pageable = PageRequest.of(page-1, 5, Sort.by(Sort.Direction.ASC, "date"));
+		Page<OrderHistory> orderHistories;
+		if (start.equals("") && end.equals("")){
+			orderHistories =
+					orderHistoryService.findByUsername(pageable, username);
+		} else {
+			orderHistories =
+					orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
+		}
 		return ResponseEntity.ok().body(orderHistories);
 	}
+	
+//	@GetMapping("/byUsername")
+//    public ResponseEntity<Page<OrderHistory>> getOrderHistoryByUsername(
+//            @RequestParam(defaultValue="",value="username") String username,
+//            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+//        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+//        Pageable pageable = PageRequest.of(page-1, 5, sort);
+//        Page<OrderHistory> orderHistories = orderHistoryService.findByUsername(pageable, username);
+//        return ResponseEntity.ok().body(orderHistories);
+//    }
+//
+//	@GetMapping("/byDate")
+//	public ResponseEntity<Page<OrderHistory>> getOrderHistoryByDate(
+//			@RequestParam(defaultValue = "", value = "username") String username,
+//			@RequestParam(defaultValue = "", value = "start") String start,
+//			@RequestParam(defaultValue = "", value = "end") String end,
+//			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
+//		Pageable pageable = PageRequest.of(page-1, 5,
+//				Sort.by(Sort.Direction.ASC, "date"));
+//		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
+//		return ResponseEntity.ok().body(orderHistories);
+//	}
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> deleteOrderHistory(
