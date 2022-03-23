@@ -1,7 +1,8 @@
 package com.encore.byebuying.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrderHistoryServiceImpl implements OrderHistoryService {
 	private final OrderHistoryRepo orderHistoryRepo;
-
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Override
 	public OrderHistory findById(Long id) {
@@ -36,10 +37,10 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 
 	@Override
 	public Page<OrderHistory> findByUsernameAndBetweenDate
-			(Pageable pageable, String username, String start, String end) {
+			(Pageable pageable, String username, String start, String end) throws ParseException {
 		log.info("Get OrderHistory Date start: {}, end: {}", start, end);
-		LocalDate dateStart = LocalDate.parse(start, DateTimeFormatter.ISO_DATE);
-		LocalDate dateEnd = LocalDate.parse(end, DateTimeFormatter.ISO_DATE);
+		Date dateStart = new Date(sdf.parse(start).getTime());
+		Date dateEnd = new Date(sdf.parse(end).getTime());
 		return orderHistoryRepo.findByDateBetweenAndUsername(pageable, dateStart, dateEnd, username);
 	}
 
