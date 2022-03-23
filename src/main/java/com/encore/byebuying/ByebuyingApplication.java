@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableAsync
 public class ByebuyingApplication {
 
 	public static void main(String[] args) {
@@ -57,7 +56,7 @@ public class ByebuyingApplication {
 							.addHandlerLast(new WriteTimeoutHandler(100000, TimeUnit.MILLISECONDS)));
 
 		return WebClient.builder()
-				.baseUrl("http://172.30.1.38:5000")
+				.baseUrl("http://192.168.45.7:5000")
 				.clientConnector(new ReactorClientHttpConnector(httpClient))
 				.build();
 	}
