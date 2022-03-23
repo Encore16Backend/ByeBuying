@@ -90,7 +90,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         User user = (User)authentication.getPrincipal();
-        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+//        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        String roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0);
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
         String access_token = JWT.create()
@@ -110,7 +111,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Map<String, String> info = new HashMap<>();
         info.put("access_token", access_token);
         info.put("refresh_token", refresh_token);
-        info.put("roles", roles.get(0));
+        info.put("roles", roles);
         System.out.println(info);
         response.setContentType(APPLICATION_JSON_VALUE); // APPLICATION_JSON_VALUE = "application/json"
         new ObjectMapper().writeValue(response.getOutputStream(), info);
