@@ -128,7 +128,7 @@ public class UserResource {
 
         User user = userForm.toEntity();
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(roleRepo.findByName("ROLE_USER"));
+        user.setRoles(roleRepo.findByName("ROLE_USER"));
 
         webClientService.newUser(user.getUsername());
         User newUser = userService.saveUser(user);
@@ -166,11 +166,17 @@ public class UserResource {
                 String username = decodedJWT.getSubject();
                 User user = userService.getUser(username);
                 // 확인되었다면 새로운 access token 발급한 후 반환
+//                String access_token = JWT.create()
+//                        .withSubject(user.getUsername())
+//                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+//                        .withIssuer(request.getRequestURL().toString())
+//                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+//                        .sign(algorithm);
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+                        .withClaim("roles", user.getRoles().getName())
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
@@ -220,7 +226,7 @@ class UserForm {
                 .email(this.email)
                 .defaultLocationIdx(this.defaultLocationIdx)
                 .locations(this.locations)
-                .roles(new ArrayList<>())
+                .roles(new Role())
                 .build();
     }
 }

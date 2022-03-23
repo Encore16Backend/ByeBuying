@@ -25,7 +25,11 @@ public class User {
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
     private String email;
-    @ManyToMany(fetch = LAZY)
-    private Collection<Role> roles = new ArrayList<>(); // 권한
+
+//    @ManyToMany(fetch = LAZY)
+//    private Collection<Role> roles = new ArrayList<>(); // 권한
+
+    @OneToOne(fetch = LAZY)
+    private Role roles; // 권한
 
 }
