@@ -40,11 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // login은 CustomAuthenticationFilter를 추가하여 해당 로그인한 유저를 AuthenticationManager에 추가
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
 
-        http
-                .cors()
-                        .and()
-                .csrf()
-                        .disable();
+        http.cors().and().csrf().disable();
 
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         // permitAll(): 토큰 유효성 검사하지 않음
