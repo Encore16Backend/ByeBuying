@@ -69,6 +69,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepo.save(item);
     }
 
+
     @Override
     public Category saveCategory(Category category) {
         log.info("Saving new Category {} to the databases", category.getCatename());
@@ -82,12 +83,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public void deleteImage(Image image) {
+        log.info("delete item {} from the database", image.getImgpath());
+        imageRepo.delete(image);
+    }
+
+    @Override
     public void addCategoryToItem(String itemName, String categoryName) {
         log.info("Adding Category {} to item {}", categoryName, itemName);
         Item item = itemRepo.findByItemname(itemName);
         Category category = categoryRepo.findByCatename(categoryName);
         item.getCategories().add(category);
     }
+
 
     @Override
     public void addImageToItem(String itemName, String imgPath) {

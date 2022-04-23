@@ -31,4 +31,5 @@ public interface ItemRepo extends JpaRepository<Item, Long> ,ItemRepoCustom{
     List<Item> findImageRetrieval(Long[] id);
 
     void deleteByItemid(Long itemid);
+
 }

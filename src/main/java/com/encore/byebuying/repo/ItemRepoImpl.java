@@ -42,6 +42,7 @@ public class ItemRepoImpl extends QuerydslRepositorySupport implements ItemRepoC
 //			System.out.println(keyword);
     		if(categories.contains(keyword)) {
     			log.info("search by category : {}",keyword);
+				if (keyword.equals("트렌치코트")) keyword = "트렌치 코트";
     			query.where(item.categories.contains(from(category).where(category.catename.eq(keyword))));
     		}else {
     			bb.or(item.itemname.like("%"+keyword+"%"));
