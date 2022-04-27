@@ -53,14 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/role/save", "/api/login/**", "/api/checkUser",
                         "/api/user/save", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
                         "/review/byItemid","/review/avg",
-                        "/inquiry/byItemid", "/flask/**")
+                        "/inquiry/byItemid", "/flask/retrieval")
                 .permitAll();
         http.authorizeRequests().antMatchers(DELETE, "**")
                 .permitAll();
         http.authorizeRequests().antMatchers(PUT, "**")
                 .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN");
         http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername",
-                        "/basket/byUsername","/orderHistory/getOrderHistories", "/inquiry/byUserNItemid")
+                        "/basket/byUsername","/orderHistory/getOrderHistories", "/inquiry/byUserNItemid", "/flask/recommend")
                 .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/review/save", "/api/user/getUser",
                         "/basket/add","/orderHistory/add", "/inquiry/save")
@@ -72,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(POST, "/message/send")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/role/add-to-user")
-                .hasAnyAuthority( "ROLE_SUPER_ADMIN");
+
+                .hasAnyAuthority("ROLE_SUPER_ADMIN");
 
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);

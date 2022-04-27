@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +37,23 @@ public class FlaskResource {
             return ResponseEntity.badRequest().body(null);
         }
 
+        return getListResponseEntity(res);
+    }
+
+    @PostMapping("/recommend")
+    public ResponseEntity<List<Item>> recommend(@RequestBody Map<String, String> form) {
+        Mono<String> asyncResult;
+        try {
+            asyncResult = webClientService.recommendItem(form.get("username")).get();
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        String[] res = Objects.requireNonNull(asyncResult.share().block()).split(",");
+        return getListResponseEntity(res);
+    }
+
+    private ResponseEntity<List<Item>> getListResponseEntity(String[] res) {
         Long[] ids = new Long[res.length];
         for(int i=0; i<res.length; i++){
             ids[i] = Long.parseLong(res[i]);
