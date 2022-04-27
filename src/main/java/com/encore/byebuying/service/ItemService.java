@@ -24,11 +24,15 @@ public interface ItemService {
     String getItemImagePath(Long itemid);
 
     Item saveItem(Item item);
+
     Category saveCategory(Category category);
     Image saveImage(Image image);
 
+    void deleteImage(Image image);
+
     void addCategoryToItem(String itemName, String categoryName);
     void addImageToItem(String itemName, String imgPath);
+
 
     List<Item> getTopItemOrderPurchasecntDesc();
     List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
