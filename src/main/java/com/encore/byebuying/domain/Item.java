@@ -15,7 +15,7 @@ import static javax.persistence.GenerationType.*;
 
 @Entity @Data
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class Item {
+public class Item extends BaseTimeEntity {
     @Id
     //@GeneratedValue(strategy = IDENTITY)
     @GeneratedValue(strategy = AUTO)
