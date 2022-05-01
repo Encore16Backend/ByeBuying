@@ -49,7 +49,7 @@ public class OrderHistoryResource {
 			int idx = 0;
 			String username = null;
 
-			for (OrderHistory o: orderHistories) {
+			for (OrderHistory o : orderHistories) {
 				o.setDate(new Date());
 
 				Long itemid = o.getItemid();
@@ -61,13 +61,13 @@ public class OrderHistoryResource {
 				basketService.deleteBasketByItemidAndUsername(itemid, o.getUsername());
 
 				Item item = itemService.getItemByItemid(itemid);
-				item.setPurchasecnt(item.getPurchasecnt()+o.getBcount());
+				item.setPurchasecnt(item.getPurchasecnt() + o.getBcount());
 
 				itemService.saveItem(item);
 			}
 			orderHistoryService.saveOrderHistory(orderHistories);
 			webClientService.checkPurchaseHistory(username, itemids);
-		} catch (Exception e){
+		} catch (Exception e) {
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
@@ -75,13 +75,13 @@ public class OrderHistoryResource {
 
 	@GetMapping("/getOrderHistories")
 	public ResponseEntity<Page<OrderHistory>> getOrderHistories(
-			@RequestParam(defaultValue="", value="username") String username,
+			@RequestParam(defaultValue = "", value = "username") String username,
 			@RequestParam(required = false, defaultValue = "", value = "start") String start,
 			@RequestParam(required = false, defaultValue = "", value = "end") String end,
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
-		Pageable pageable = PageRequest.of(page-1, 5, Sort.by(Sort.Direction.ASC, "date"));
+		Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(Sort.Direction.ASC, "date"));
 		Page<OrderHistory> orderHistories;
-		if (start.equals("") || end.equals("")){
+		if (start.equals("") || end.equals("")) {
 			orderHistories =
 					orderHistoryService.findByUsername(pageable, username);
 		} else {
@@ -90,7 +90,13 @@ public class OrderHistoryResource {
 		}
 		return ResponseEntity.ok().body(orderHistories);
 	}
-	
+
+//	@GetMapping("/orderHistories")
+//	public ResponseEntity<Page<OrderHistory>> orderHistories(OrderHistorySearch search) {
+//		return ResponseEntity.ok();
+//	}
+
+
 //	@GetMapping("/byUsername")
 //    public ResponseEntity<Page<OrderHistory>> getOrderHistoryByUsername(
 //            @RequestParam(defaultValue="",value="username") String username,
@@ -112,10 +118,12 @@ public class OrderHistoryResource {
 //		Page<OrderHistory> orderHistories = orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
 //		return ResponseEntity.ok().body(orderHistories);
 //	}
-	
+
 	@DeleteMapping("/delete")
+
 	public ResponseEntity<?> deleteOrderHistory(
-			@RequestParam(defaultValue = "", value="basketid") Long id) {
+			@RequestParam(defaultValue = "", value = "basketid") Long id) {
+
 		orderHistoryService.deleteOrderHistory(id);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
