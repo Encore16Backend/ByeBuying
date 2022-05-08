@@ -1,15 +1,16 @@
 package com.encore.byebuying.api;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.encore.byebuying.domain.Item;
+import com.encore.byebuying.api.dto.OrderRequest;
+import com.encore.byebuying.domain.Order;
 import com.encore.byebuying.service.BasketService;
 import com.encore.byebuying.service.ItemService;
 import com.encore.byebuying.service.WebClientService;
-import org.aspectj.weaver.ast.Or;
+import com.encore.byebuying.service.dto.OrderItemInfoServiceDto;
+import com.encore.byebuying.service.dto.OrderItemsServiceOrderDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +25,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.encore.byebuying.domain.OrderHistory;
-import com.encore.byebuying.service.OrderHistoryService;
+import com.encore.byebuying.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orderHistory")
-public class OrderHistoryResource {
-	private final OrderHistoryService orderHistoryService;
+public class OrderResource {
+	private final OrderService orderService;
 	private final BasketService basketService;
 	private final ItemService itemService;
 	private final WebClientService webClientService;
@@ -41,32 +41,19 @@ public class OrderHistoryResource {
 	// List<OrderHistory> orderHistory: JSON parse error
 	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
 	@PostMapping("/add")
-	public ResponseEntity<?> addOrderHistory(@RequestBody Map<String, List<OrderHistory>> orderHistory) {
+	public ResponseEntity<?> addOrderHistory(@RequestBody OrderRequest orderRequest) {
 		try {
-			List<OrderHistory> orderHistories = orderHistory.get("OrderHistory");
+			List<OrderItemInfoServiceDto> infoServiceDtos =
+					orderRequest.getItems().stream()
+						.map(item -> new OrderItemInfoServiceDto(item.getItemId(), item.getCount(), item.getOrderPrice()))
+						.collect(Collectors.toList());
 
-			Long[] itemids = new Long[orderHistories.size()];
-			int idx = 0;
-			String username = null;
+			OrderItemsServiceOrderDto serviceDto =
+					new OrderItemsServiceOrderDto(orderRequest.getUserId(), infoServiceDtos, orderRequest.getAddress());
+			orderService.order(serviceDto);
 
-			for (OrderHistory o : orderHistories) {
-				o.setDate(new Date());
-
-				Long itemid = o.getItemid();
-
-				itemids[idx] = itemid;
-				username = o.getUsername();
-				idx++;
-
-				basketService.deleteBasketByItemidAndUsername(itemid, o.getUsername());
-
-				Item item = itemService.getItemByItemid(itemid);
-				item.setPurchasecnt(item.getPurchasecnt() + o.getBcount());
-
-				itemService.saveItem(item);
-			}
-			orderHistoryService.saveOrderHistory(orderHistories);
-			webClientService.checkPurchaseHistory(username, itemids);
+//			webClientService.checkPurchaseHistory(username, itemids);
+			// 이거 물어보기
 		} catch (Exception e) {
 			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
 		}
@@ -74,19 +61,19 @@ public class OrderHistoryResource {
 	}
 
 	@GetMapping("/getOrderHistories")
-	public ResponseEntity<Page<OrderHistory>> getOrderHistories(
+	public ResponseEntity<Page<Order>> getOrderHistories(
 			@RequestParam(defaultValue = "", value = "username") String username,
 			@RequestParam(required = false, defaultValue = "", value = "start") String start,
 			@RequestParam(required = false, defaultValue = "", value = "end") String end,
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
 		Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(Sort.Direction.ASC, "date"));
-		Page<OrderHistory> orderHistories;
+		Page<Order> orderHistories;
 		if (start.equals("") || end.equals("")) {
 			orderHistories =
-					orderHistoryService.findByUsername(pageable, username);
+					orderService.findByUsername(pageable, username);
 		} else {
 			orderHistories =
-					orderHistoryService.findByUsernameAndBetweenDate(pageable, username, start, end);
+					orderService.findByUsernameAndBetweenDate(pageable, username, start, end);
 		}
 		return ResponseEntity.ok().body(orderHistories);
 	}
@@ -124,7 +111,7 @@ public class OrderHistoryResource {
 	public ResponseEntity<?> deleteOrderHistory(
 			@RequestParam(defaultValue = "", value = "basketid") Long id) {
 
-		orderHistoryService.deleteOrderHistory(id);
+		orderService.deleteOrderHistory(id);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
 	}
 }

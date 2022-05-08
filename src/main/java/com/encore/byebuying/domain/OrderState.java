@@ -3,8 +3,6 @@ package com.encore.byebuying.domain;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Embeddable;
-
 @Getter
 @RequiredArgsConstructor
 public enum OrderState {

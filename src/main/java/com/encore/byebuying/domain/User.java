@@ -30,7 +30,7 @@ public class User extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<OrderHistory> orderHistories = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     private int defaultLocationIdx; // 기본 배송지 주소 id
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
@@ -42,4 +42,6 @@ public class User extends BaseTimeEntity {
 
     @OneToOne(fetch = EAGER)
     private Role roles; // 권한
+
+
 }

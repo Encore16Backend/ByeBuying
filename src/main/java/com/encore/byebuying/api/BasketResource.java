@@ -1,9 +1,7 @@
 package com.encore.byebuying.api;
 
 import com.encore.byebuying.domain.Basket;
-import com.encore.byebuying.domain.Item;
 import com.encore.byebuying.service.BasketService;
-import com.encore.byebuying.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/basket")
