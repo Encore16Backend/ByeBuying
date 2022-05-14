@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +23,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Transactional
 class OrderServiceImplTest {
 
     @Autowired private OrderServiceImpl orderService;
     @Autowired private UserRepo userRepo;
     @Autowired private ItemRepo itemRepo;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Test
-    @Transactional
     public void orderServiceTest() throws Exception {
         // given
         User user = User.builder()
@@ -45,6 +50,9 @@ class OrderServiceImplTest {
         userRepo.save(user);
         itemRepo.save(item);
 
+        entityManager.flush();
+        entityManager.clear();
+
         // when
         // 주문 조건 작성 후 주문
         List<OrderItemInfoServiceDto> infos = new ArrayList<>();
@@ -56,9 +64,7 @@ class OrderServiceImplTest {
         System.out.println("orderId = " + orderId);
         System.out.println(findOrder.getId());
         System.out.println("findOrder.getUser().getUsername() = " + findOrder.getUser().getUsername());
-        for (OrderItem orderItem : findOrder.getItems()) {
-            System.out.println("orderItem.getItem().getName() = " + orderItem.getItem().getName());
-        }
+        System.out.println("findOrder.getItems().size() = " + findOrder.getItems().size());
 
         // then
         assertThat(findOrder.getId()).isEqualTo(orderId);

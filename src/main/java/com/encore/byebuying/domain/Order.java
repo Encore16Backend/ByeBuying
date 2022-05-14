@@ -13,7 +13,7 @@ import static javax.persistence.TemporalType.DATE;
 
 @Entity
 @Table(name = "Orders")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,7 +30,7 @@ public class Order extends BaseTimeEntity {
 
 	// 하나의 주문내역은 여러 주문된 아이템들을 가짐
 	@Builder.Default
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	private List<OrderItem> items = new ArrayList<>();
 
 	@Embedded

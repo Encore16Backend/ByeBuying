@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
 	private final UserRepo userRepo;
 	private final ItemRepo itemRepo;
 
+	private final EntityManager em;
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -54,12 +56,16 @@ public class OrderServiceImpl implements OrderService {
 		Order order = Order.createOrder(findUser, orderItems, findUser.getAddress());
 		orderRepo.save(order);
 
+		em.flush();
+		em.clear();
 		return order.getId();
 	}
 
 	@Override
 	public Order findById(Long id) {
-		return orderRepo.findOrderById(id);
+		Order order = orderRepo.findById(id).orElse(null);
+
+		return order;
 	}
 
 	@Override
