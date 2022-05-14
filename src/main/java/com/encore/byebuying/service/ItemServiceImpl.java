@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<Item> getItems(Pageable pageable, String itemname) {
-        return itemRepo.findByItemnameContainingIgnoreCase(pageable, itemname);
+        return itemRepo.findByNameContainingIgnoreCase(pageable, itemname);
     }
 
     @Override
@@ -41,31 +41,31 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<Item> getItems(Pageable pageable, Long cateid, String itemname) {
-        return itemRepo.findByCategories_CateidAndItemnameContainingIgnoreCase(pageable, cateid, itemname);
+        return itemRepo.findByCategories_CateidAndNameContainingIgnoreCase(pageable, cateid, itemname);
     }
 
     @Override
     public Item getItemByItemname(String itemname) {
         log.info("Get Item by name: {}", itemname);
-        return itemRepo.findByItemname(itemname);
+        return itemRepo.findByName(itemname);
     }
 
     @Override
     public Item getItemByItemid(Long itemid) {
         log.info("Get Item By id: {}", itemid);
-        return itemRepo.findByItemid(itemid);
+        return itemRepo.findById(itemid).get();
     }
 
     @Override
     public String getItemImagePath(Long itemid) {
-        Collection<Image> image = itemRepo.findByItemid(itemid).getImages();
+        Collection<Image> image = itemRepo.findById(itemid).get().getImages();
         Image img = image.iterator().next();
         return img.getImgpath();
     }
 
     @Override
     public Item saveItem(Item item) {
-        log.info("Saving new item {} to the database", item.getItemname());
+        log.info("Saving new item {} to the database", item.getName());
         return itemRepo.save(item);
     }
 
@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void addCategoryToItem(String itemName, String categoryName) {
         log.info("Adding Category {} to item {}", categoryName, itemName);
-        Item item = itemRepo.findByItemname(itemName);
+        Item item = itemRepo.findByName(itemName);
         Category category = categoryRepo.findByCatename(categoryName);
         item.getCategories().add(category);
     }
@@ -100,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void addImageToItem(String itemName, String imgPath) {
         log.info("Adding Image Path {} to item {}", imgPath, itemName);
-        Item item = itemRepo.findByItemname(itemName);
+        Item item = itemRepo.findByName(itemName);
         Image image = imageRepo.findByImgpath(imgPath);
         item.getImages().add(image);
     }
@@ -150,6 +150,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItem(Long itemid) {
-        itemRepo.deleteByItemid(itemid);
+        itemRepo.deleteById(itemid);
     }
 }

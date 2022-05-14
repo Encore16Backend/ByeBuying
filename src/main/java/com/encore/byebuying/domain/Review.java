@@ -12,12 +12,25 @@ import lombok.NoArgsConstructor;
 import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.TemporalType.DATE;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor @Builder
-public class Review {
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Review extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = IDENTITY)
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "review_id")
 	private Long id;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
 	private String username; // 유저 네임
+
+
 	private Long itemid; // 아이템 번호
 	private String itemname; // 아이템 이름
 	private String itemimage; // 아이템 이미지
