@@ -16,7 +16,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Inquiry {
+public class Inquiry extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
