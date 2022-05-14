@@ -78,8 +78,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // permitAll(): 토큰 유효성 검사하지 않음
         http.authorizeRequests()
                 .antMatchers("/main/**",
+<<<<<<< HEAD
+                        "/api/role/save", "/api/login/**", "/api/checkUser",
+                        "/api/user/save", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
+=======
                         "/api/role/save", "/login/**", "/oauth2/**", "/api/checkUser",
                         "/api/user/save", "/api/token/refresh/**", "/api/checkMail",
+>>>>>>> 2bc82c71c68e289735841a953c91a83fd1eb194e
                         "/review/byItemid","/review/avg",
                         "/inquiry/byItemid", "/flask/retrieval")
                 .permitAll();
@@ -100,6 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(POST, "/message/send")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_SUPER_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/role/add-to-user")
+
                 .hasAnyAuthority("ROLE_SUPER_ADMIN");
 
         http.authorizeRequests().anyRequest().authenticated();

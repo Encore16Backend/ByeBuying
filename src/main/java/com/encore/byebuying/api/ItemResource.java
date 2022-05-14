@@ -152,8 +152,75 @@ public class ItemResource {
             itemService.saveImage(new Image(null, image));
             itemService.addImageToItem(item.getName(), image);
         }
-
         return ResponseEntity.created(uri).body(item);
+    }
+
+    /**
+     * 상품정보 업데이트
+     * */
+    @PostMapping("/item/update")
+    @Transactional
+    public ResponseEntity<Item> updateItem(@RequestBody Map<String, Map<String, Object>> updateForm){
+        Map<String, Object> updateItem =  updateForm.get("itemUpdate");
+//        {
+//            "itemUpdate" : {
+//            "item": {
+//                "itemname": "상품명",
+//                        "price": 100000,
+//                        "purchasecnt": 0,
+//                        "count": 10,
+//                        "reviewmean": 0,
+//                        "reviewcount": 0
+//            },
+//            "cate": [
+//            "상의", "긴팔"
+//            ],
+//            "images": ["테스트용","테스트용2"],
+//            "itemId":45
+//            }
+//        }
+        ObjectMapper mapper = new ObjectMapper();
+        // pk 추출 후 해당 아이템을 꺼내옴
+        Long itemId = mapper.convertValue(updateItem.get("itemId"), Long.class);
+        Item item = itemService.getItemByItemid(itemId);
+
+        // 수정 엔티티 값들 추출 (기본) 후 수정
+        ItemForm itemform = mapper.convertValue(updateItem.get("item"), ItemForm.class);
+        item.setItemname(itemform.getItemname());
+        item.setPrice(itemform.getPrice());
+        item.setPurchasecnt(itemform.getPurchasecnt());
+        item.setCount(itemform.getCount());
+        item.setReviewmean(itemform.getReviewmean());
+        item.setReviewcount(itemform.getReviewcount());
+        // 카테고리 추출 후 삽입
+        ArrayList<String> categories = mapper.convertValue(updateItem.get("cate"), new TypeReference<ArrayList<String>>() {});
+        System.out.println("categories = " + categories);
+        item.getCategories().clear();
+        for (String catename: categories) {
+            itemService.addCategoryToItem(item.getItemname(), catename);
+        }
+        // 생성한 상품에 기존 이미지 경로 삭제하고 이미지 삽입
+        ArrayList<String> images = mapper.convertValue(updateItem.get("images"), new TypeReference<ArrayList<String>>() {});
+        System.out.println("images = " + images);
+        // 들어온 이미지가 있으면 재등록
+        if (images != null || images.size() != 0){
+            // 기존 아이템이 가지고 있던 이미지 삭제
+            Collection<Image> images_to_delete = item.getImages();
+            for (Image image_to_delete : images_to_delete) {
+                itemService.deleteImage(image_to_delete);
+            }
+            // item이 가지고 있던 이미지 리스트 삭제
+            images_to_delete.clear();
+            // 이미지 재등록
+            for (String image: images) {
+                itemService.saveImage(new Image(null, image));
+                itemService.addImageToItem(item.getItemname(), image);
+            }
+        }
+
+
+
+        return ResponseEntity.ok().body(item);
     }
 
     @PostMapping("/category/save")

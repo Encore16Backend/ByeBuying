@@ -139,10 +139,51 @@ public class UserResource {
         }
         
     	user.getLocations().addAll(userForm.getLocations());
-        
-        userService.updateUser(user);
+//        userService.saveUser(user);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
+
+
+
+//    @PostMapping("/user/update/admin") // 관리자가 유저 정보 수정
+//    public ResponseEntity<?> adminUpdateUser(@RequestBody UserForm userForm){
+////        {
+////            "username" : "qwer1234",
+////                "password" : "12341234",
+////                "email" : "JHJKINGAKKKKKK@ByeBuying.com",
+////                "locations" : [{"location":"외곽"},{"location":"외곽2"}]
+////        }
+//        System.out.println("userForm = "+userForm);
+//        User user = userService.getUser(userForm.getUsername());
+//        System.out.println("user = " + user);
+//        if (user == null){
+//            return new ResponseEntity<>("FAIL", HttpStatus.OK);
+//        }
+//        if (userForm.getPassword() != null && !userForm.getPassword().equals("")) // 비밀번호도 수정될 때
+//            user.setPassword(userForm.getPassword());
+//        user.setEmail(userForm.getEmail());
+//        user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
+//
+//        // 현재주소 갈아엎고 새주소 넣기
+//        List<Location> list = (List<Location>) user.getLocations();
+//        System.out.println("list = " + list);
+//        Long[] idList = new Long[list.size()];
+//        System.out.println("idListBefore = " + idList);
+//        // 위치 인덱스 번호를 뺴옴
+//        for(int i=0;i<list.size();i++){
+//            idList[i]=list.get(i).getId();
+//        }
+//        user.getLocations().clear();
+//        if (user.getLocations() != null){
+//            for(Long id : idList) {
+//                locationRepo.deleteById(id);
+//            }
+//        }
+//        System.out.println("userForm.getLocations() = " + userForm.getLocations());
+//        user.getLocations().addAll(userForm.getLocations());
+//        userService.saveUser(user);
+//        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+//    }
 
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
