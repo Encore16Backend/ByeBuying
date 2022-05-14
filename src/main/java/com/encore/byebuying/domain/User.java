@@ -37,11 +37,37 @@ public class User extends BaseTimeEntity {
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
 
-//    @ManyToMany(fetch = LAZY)
-//    private Collection<Role> roles = new ArrayList<>(); // 권한
 
-    @OneToOne(fetch = EAGER)
-    private Role roles; // 권한
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
+
+    private String providerId;
+
+    public User(String username, String email, Role role, ProviderType providerType, String providerId) {
+        this.username = username;
+        this.password = "OAUTHLOGIN";
+        this.defaultLocationIdx = 0;
+        this.locations = new ArrayList<>();
+        this.email = email;
+        this.role = role;
+        this.provider = providerType;
+        this.providerId = providerId;
+    }
+
+    @Builder
+    public User(String username, String password, String email, Collection<Location> locations, Role role, ProviderType providerType) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.defaultLocationIdx = 0;
+        this.locations = locations;
+        this.role = role;
+        this.provider = providerType;
+    }
 
 
 }
