@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -29,6 +30,9 @@ public class Basket extends BaseTimeEntity {
 
     private String username;
     private int bcount; // 개수
+
+    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
+    private List<BasketItem> basketItems;
 
     private Long itemid;
     private String itemimg;

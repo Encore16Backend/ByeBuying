@@ -143,14 +143,14 @@ public class ItemResource {
         // 생성한 상품에 카테고리 삽입
         ArrayList<String> categories = mapper.convertValue(itemSave.get("cate"), new TypeReference<ArrayList<String>>() {});
         for (String catename: categories) {
-            itemService.addCategoryToItem(item.getItemname(), catename);
+            itemService.addCategoryToItem(item.getName(), catename);
         }
 
         // 생성한 상품에 이미지 삽입
         ArrayList<String> images = mapper.convertValue(itemSave.get("images"), new TypeReference<ArrayList<String>>() {});
         for (String image: images) {
             itemService.saveImage(new Image(null, image));
-            itemService.addImageToItem(item.getItemname(), image);
+            itemService.addImageToItem(item.getName(), image);
         }
 
         return ResponseEntity.created(uri).body(item);
@@ -245,7 +245,7 @@ class ItemForm {
 
     public Item toEntity() {
         return Item.builder()
-                .itemname(this.itemname)
+                .name(this.itemname)
                 .price(this.price)
                 .purchasecnt(this.purchasecnt)
                 .count(this.count)
