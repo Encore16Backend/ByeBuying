@@ -65,19 +65,19 @@ public class ItemResource {
     public ResponseEntity<Map<String, Object>> getBestItems() {
         Map<String, Object> item = new HashMap<>();
 
-        Long topid = categoryRepo.findByCatename("상의").getCateid();
-        Long bottomid = categoryRepo.findByCatename("바지").getCateid();
-        Long outerid = categoryRepo.findByCatename("아우터").getCateid();
-
-        List<Item> all = itemService.getTopItemOrderPurchasecntDesc();
-        List<Item> top = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(topid);
-        List<Item> bottom = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(bottomid);
-        List<Item> outer = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(outerid);
-
-        item.put("all", all);
-        item.put("top", top);
-        item.put("bottom", bottom);
-        item.put("outer", outer);
+//        Long topid = categoryRepo.findByCatename("상의").getCateid();
+//        Long bottomid = categoryRepo.findByCatename("바지").getCateid();
+//        Long outerid = categoryRepo.findByCatename("아우터").getCateid();
+//
+//        List<Item> all = itemService.getTopItemOrderPurchasecntDesc();
+//        List<Item> top = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(topid);
+//        List<Item> bottom = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(bottomid);
+//        List<Item> outer = itemService.getTopItemByCategoryNameOrderByPurchasecntDesc(outerid);
+//
+//        item.put("all", all);
+//        item.put("top", top);
+//        item.put("bottom", bottom);
+//        item.put("outer", outer);
 
         return ResponseEntity.ok().body(item);
     }
