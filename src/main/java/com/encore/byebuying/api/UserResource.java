@@ -4,13 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.encore.byebuying.config.properties.AppProperties;
+import com.encore.byebuying.domain.UserRefreshToken;
+import com.encore.byebuying.requestDto.UserFormRequest;
 import com.encore.byebuying.repo.LocationRepo;
-import com.encore.byebuying.repo.RoleRepo;
+import com.encore.byebuying.repo.UserRefreshTokenRepo;
 import com.encore.byebuying.service.WebClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.encore.byebuying.domain.Category;
 import com.encore.byebuying.domain.Location;
-import com.encore.byebuying.domain.Role;
 import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.UserService;
 import lombok.*;
@@ -20,21 +21,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -45,10 +43,37 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class UserResource {
     private final UserService userService;
-    private final RoleRepo roleRepo;
     private final LocationRepo locationRepo;
-    private final BCryptPasswordEncoder passwordEncoder;
     private final WebClientService webClientService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRefreshTokenRepo userRefreshTokenRepo;
+    private final AuthenticationManager authenticationManager;
+    private final AppProperties appProperties;
+
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        return ResponseEntity.ok(new AuthResponse(tokenProvider.createToken(authentication)));
+//
+//    }
+
+    @PostMapping("/user/save")
+    public ResponseEntity<User> saveUser(@RequestBody UserFormRequest userFormRequest) {
+        URI uri = URI.create(
+                ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/api/user/save").toUriString());
+
+        User newUser = userService.saveUser(userFormRequest);
+//        webClientService.newUser(newUser.getUsername());
+
+        return ResponseEntity.created(uri).body(newUser);
+    }
+
 
     @GetMapping("/users") // 관리자 유저들 확인
     public ResponseEntity<Page<User>> getUsers(
@@ -92,7 +117,7 @@ public class UserResource {
 
     @Transactional
     @PutMapping("/user/update") // 토큰 필요
-    public ResponseEntity<?> updateUser(@RequestBody UserForm userForm) {
+    public ResponseEntity<?> updateUser(@RequestBody UserFormRequest userForm) {
         User user = userService.getUser(userForm.getUsername());
         if (user == null){
             return new ResponseEntity<>("FAIL", HttpStatus.OK);
@@ -115,39 +140,8 @@ public class UserResource {
         
     	user.getLocations().addAll(userForm.getLocations());
         
-        userService.saveUser(user);
+        userService.updateUser(user);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-    }
-
-    @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@RequestBody UserForm userForm) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/api/user/save").toUriString());
-
-        User user = userForm.toEntity();
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(roleRepo.findByName("ROLE_USER"));
-
-        webClientService.newUser(user.getUsername());
-        User newUser = userService.saveUser(user);
-        return ResponseEntity.created(uri).body(newUser);
-    }
-
-    @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
-    }
-
-    @PostMapping("/role/add-to-user")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-        userService.addRoleToUser(form.getUserid(), form.getRolename());
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/token/refresh")
@@ -158,26 +152,27 @@ public class UserResource {
                 // request의 header에 "Bearer token~~~~" 형식으로 전달되기 때문에 "Bearer " 문자 제거
                 String refresh_token = authorizationHeader.substring("Bearer ".length());
                 // HMAC256 활용
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                Algorithm algorithm = Algorithm.HMAC256(appProperties.getAuth().getTokenSecret().getBytes());
                 // verifier에 alhorithm을 적용하여 refreshToken에 대한 유효성 확인
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
 
                 String username = decodedJWT.getSubject();
                 User user = userService.getUser(username);
+
+                // DB에 저장된 refresh token과 동일한지 확인
+                UserRefreshToken userRefreshToken = userRefreshTokenRepo.findByUsername(username);
+                if (userRefreshToken == null || !userRefreshToken.getRefreshToken().equals(refresh_token)) {
+                    throw new RuntimeException("Refresh token is missing or miss match");
+                }
+
                 // 확인되었다면 새로운 access token 발급한 후 반환
-//                String access_token = JWT.create()
-//                        .withSubject(user.getUsername())
-//                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-//                        .withIssuer(request.getRequestURL().toString())
-//                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
-//                        .sign(algorithm);
                 String access_token = JWT.create()
                         .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + appProperties.getAuth().getAccesstokenExpiration())) // 10분
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().getName())
-                        .sign(algorithm);
+                        .withClaim("role", user.getRole().getCode())
+                        .sign(algorithm); // 토큰 서명
 
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", access_token);
@@ -207,26 +202,24 @@ class RoleToUserForm {
     private String rolename;
 }
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-class UserForm {
-    private String username;
-    private String password;
-    private String email;
-    private int defaultLocationIdx;
-    private Collection<Location> locations;
-    private int style;
-
-    public User toEntity(){
-        return User.builder()
-                .username(this.username)
-                .password(this.password)
-                .email(this.email)
-                .defaultLocationIdx(this.defaultLocationIdx)
-                .locations(this.locations)
-                .roles(new Role())
-                .build();
-    }
-}
+//@Data
+//@Builder
+//@NoArgsConstructor
+//@AllArgsConstructor
+//class UserForm {
+//    private String username;
+//    private String password;
+//    private String email;
+//    private int defaultLocationIdx;
+//    private Collection<Location> locations;
+//
+//    public User toEntity(){
+//        return User.builder()
+//                .username(this.username)
+//                .password(this.password)
+//                .email(this.email)
+//                .defaultLocationIdx(this.defaultLocationIdx)
+//                .locations(this.locations)
+//                .build();
+//    }
+//}

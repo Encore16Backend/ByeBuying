@@ -1,19 +1,15 @@
 package com.encore.byebuying;
 
-import com.encore.byebuying.domain.*;
-import com.encore.byebuying.service.ItemService;
-import com.encore.byebuying.service.ReviewService;
-import com.encore.byebuying.service.UserService;
+import com.encore.byebuying.config.properties.AppProperties;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartResolver;
@@ -22,22 +18,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableConfigurationProperties({
+		AppProperties.class
+})
 public class ByebuyingApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ByebuyingApplication.class, args);
 	}
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+//	@Bean
+//	PasswordEncoder passwordEncoder() {
+//		return new BCryptPasswordEncoder();
+//	}
 
 	@Bean
 	public MultipartResolver multipartResolver() {
