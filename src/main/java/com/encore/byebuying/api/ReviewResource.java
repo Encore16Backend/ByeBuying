@@ -108,14 +108,14 @@ public class ReviewResource {
 		item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
 		*/
 		// 기존 개수 얻기
-		int itemCount = item.getReviewcount();
-		if(itemCount==0) {
-			item.setReviewmean(review.getScore());
-		}else {
-			// ( 리뷰평균x리뷰개수+새 리뷰점수 )/(리뷰개수+1)
-			item.setReviewmean((item.getReviewmean()*itemCount+review.getScore())/(itemCount+1));
-		}
-		item.setReviewcount(itemCount+1);
+//		int itemCount = item.getReviewcount();
+//		if(itemCount==0) {
+//			item.setReviewmean(review.getScore());
+//		}else {
+//			// ( 리뷰평균x리뷰개수+새 리뷰점수 )/(리뷰개수+1)
+//			item.setReviewmean((item.getReviewmean()*itemCount+review.getScore())/(itemCount+1));
+//		}
+//		item.setReviewcount(itemCount+1);
 		
 		itemService.saveItem(item);
 		return "SUCCESS";
@@ -149,14 +149,14 @@ public class ReviewResource {
 			*/
 			
 			// 업데이트
-			int reviewCount = item.getReviewcount();
-			if(reviewCount==1) {
-				item.setReviewmean(0.0);
-			}else {
-				//(리뷰 평균x리뷰 개수 - 지울 리뷰 점수) / (리뷰 개수 -1)
-				item.setReviewmean(((item.getReviewmean()*reviewCount)-review.getScore())/(reviewCount-1));
-			}
-			item.setReviewcount(reviewCount-1);
+//			int reviewCount = item.getReviewcount();
+//			if(reviewCount==1) {
+//				item.setReviewmean(0.0);
+//			}else {
+//				//(리뷰 평균x리뷰 개수 - 지울 리뷰 점수) / (리뷰 개수 -1)
+//				item.setReviewmean(((item.getReviewmean()*reviewCount)-review.getScore())/(reviewCount-1));
+//			}
+//			item.setReviewcount(reviewCount-1);
 			
 			reviewService.deleteReviewById(ri);
 			itemService.saveItem(item);
@@ -180,7 +180,7 @@ public class ReviewResource {
 			item.setReviewmean(Double.parseDouble(reviewService.getAvgScoreByItemname(item.getItemname())));
 			item.setReviewcount(reviewService.countScoreByItemname(item.getItemname()));
 			*/
-			item.setReviewmean((item.getReviewmean()*item.getReviewcount()-review.getScore()+changedReview.getScore())/item.getReviewcount());
+//			item.setReviewmean((item.getReviewmean()*item.getReviewcount()-review.getScore()+changedReview.getScore())/item.getReviewcount());
 			itemService.saveItem(item);
 		}
 		

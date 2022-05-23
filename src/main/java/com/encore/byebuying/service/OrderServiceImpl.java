@@ -1,10 +1,10 @@
 package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.Item;
+import com.encore.byebuying.domain.User;
 import com.encore.byebuying.domain.Order;
 import com.encore.byebuying.domain.OrderItem;
-import com.encore.byebuying.domain.User;
-import com.encore.byebuying.repo.ItemRepo;
+import com.encore.byebuying.repo.ItemRepository;
 import com.encore.byebuying.repo.OrderRepo;
 import com.encore.byebuying.repo.UserRepo;
 import com.encore.byebuying.service.dto.OrderItemInfoServiceDto;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepo orderRepo;
 	private final UserRepo userRepo;
-	private final ItemRepo itemRepo;
+	private final ItemRepository itemRepository;
 
 	private final EntityManager em;
 
@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
 
 		// 필요 엔티티 조회
 		User findUser = userRepo.findById(orderDto.getUserId()).get();
-		List<Item> items = itemRepo.findByIds(itemIdList);
+		List<Item> items = itemRepository.findByIds(itemIdList);
 		Map<Long, Item> search = new HashMap<>();
 		for (Item item : items) {
 			search.put(item.getId(), item);

@@ -1,12 +1,10 @@
 package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.*;
-import com.encore.byebuying.repo.ItemRepo;
+import com.encore.byebuying.repo.ItemRepository;
 import com.encore.byebuying.repo.UserRepo;
 import com.encore.byebuying.service.dto.OrderItemInfoServiceDto;
 import com.encore.byebuying.service.dto.OrderItemsServiceOrderDto;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ class OrderServiceImplTest {
 
     @Autowired private OrderServiceImpl orderService;
     @Autowired private UserRepo userRepo;
-    @Autowired private ItemRepo itemRepo;
+    @Autowired private ItemRepository itemRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -44,11 +42,11 @@ class OrderServiceImplTest {
         Item item = Item.builder()
                 .name("testItem")
                 .price(10000)
-                .count(100)
+                .stockQuantity(100)
                 .build();
 
         userRepo.save(user);
-        itemRepo.save(item);
+        itemRepository.save(item);
 
         entityManager.flush();
         entityManager.clear();

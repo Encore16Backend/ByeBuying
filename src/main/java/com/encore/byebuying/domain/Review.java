@@ -25,7 +25,7 @@ public class Review extends BaseTimeEntity {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "member_id")
 	private User user;
 
 	private String username; // 유저 네임
