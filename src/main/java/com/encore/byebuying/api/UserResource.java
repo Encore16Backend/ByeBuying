@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.config.properties.AppProperties;
+import com.encore.byebuying.domain.User;
 import com.encore.byebuying.domain.UserRefreshToken;
 import com.encore.byebuying.requestDto.UserFormRequest;
 import com.encore.byebuying.repo.LocationRepo;
@@ -12,7 +13,6 @@ import com.encore.byebuying.repo.UserRefreshTokenRepo;
 import com.encore.byebuying.service.WebClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.encore.byebuying.domain.Location;
-import com.encore.byebuying.domain.User;
 import com.encore.byebuying.service.UserService;
 import lombok.*;
 import org.springframework.data.domain.Page;
@@ -128,7 +128,7 @@ public class UserResource {
         user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
         
         // 현재주소 갈아엎고 새주소 넣기
-        List<Location> list = (List<Location>)user.getLocations();
+        List<Location> list = (List<Location>) user.getLocations();
         Long[] idList = new Long[list.size()];
         for(int i=0;i<list.size();i++)
         	idList[i]=list.get(i).getId();

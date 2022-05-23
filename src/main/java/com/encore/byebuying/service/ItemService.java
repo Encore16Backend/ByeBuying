@@ -13,14 +13,7 @@ import java.util.List;
 
 public interface ItemService {
     Page<Item> getItems(Pageable pageable); // 전체 상품 조회
-    Page<Item> getItems(Pageable pageable, String itemname);
-    Page<Item> getItems(Pageable pageable, Long cateid);
-    Page<Item> getItems(Pageable pageable, Long cateid, String itemname);
-
-
-    Item getItemByItemname(String itemname);
     Item getItemByItemid(Long itemid);
-
     String getItemImagePath(Long itemid);
 
     Item saveItem(Item item);
@@ -33,15 +26,7 @@ public interface ItemService {
     void addCategoryToItem(String itemName, String categoryName);
     void addImageToItem(String itemName, String imgPath);
 
-
-    List<Item> getTopItemOrderPurchasecntDesc();
-    List<Item> getTopItemByCategoryNameOrderByPurchasecntDesc(Long cateid);
-
-//    Page<Item> getItemByCategoryOrderByPurchaseDesc(Pageable pageable, Long cateid);
-//    Page<Item> getItemByCategoryOrderByReviewmeanDesc(Pageable pageable, Long cateid);
-//    Page<Item> getItemByCategoryOrderByPriceDesc(Pageable pageable, Long cateid);
-//    Page<Item> getItemByCategoryOrderByPriceAsc(Pageable pageable, Long cateid);
-    Page<Item> findBySearch(Pageable pageable, String searchName);
+//    Page<Item> findBySearch(Pageable pageable, String searchName);
 
     List<Item> getItemRetrieval(Long[] ids);
 

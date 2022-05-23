@@ -40,18 +40,8 @@ public class ItemResource {
         Pageable pageable = PageRequest.of(page-1, 5,
                 Sort.by(Sort.Direction.ASC, "itemid"));
         Page<Item> items;
-        if (itemname.equals("") && cateanme.equals("")) {
-            items = itemService.getItems(pageable);
-        } else if (cateanme.equals("")) { // 상품명만 있을 때
-            items = itemService.getItems(pageable, itemname);
-        } else { // 카테고리명은 무조건 있음
-            Long cateid = categoryRepo.findByCatename(cateanme).getCateid();
-            if (itemname.equals("")) {// 상품명 없음
-                items = itemService.getItems(pageable, cateid);
-            } else { // 상품명과 카테고리명 둘 다 있음
-                items = itemService.getItems(pageable, cateid, itemname);
-            }
-        }
+
+        items = itemService.getItems(pageable);
         return ResponseEntity.ok().body(items);
     }
 
@@ -185,19 +175,19 @@ public class ItemResource {
         Item item = itemService.getItemByItemid(itemId);
 
         // 수정 엔티티 값들 추출 (기본) 후 수정
-        ItemForm itemform = mapper.convertValue(updateItem.get("item"), ItemForm.class);
-        item.setItemname(itemform.getItemname());
-        item.setPrice(itemform.getPrice());
-        item.setPurchasecnt(itemform.getPurchasecnt());
-        item.setCount(itemform.getCount());
-        item.setReviewmean(itemform.getReviewmean());
-        item.setReviewcount(itemform.getReviewcount());
+//        ItemForm itemform = mapper.convertValue(updateItem.get("item"), ItemForm.class);
+//        item.setName(itemform.getItemname());
+//        item.setPrice(itemform.getPrice());
+//        item.setPurchasecnt(itemform.getPurchasecnt());
+//        item.setCount(itemform.getCount());
+//        item.setReviewmean(itemform.getReviewmean());
+//        item.setReviewcount(itemform.getReviewcount());
         // 카테고리 추출 후 삽입
         ArrayList<String> categories = mapper.convertValue(updateItem.get("cate"), new TypeReference<ArrayList<String>>() {});
         System.out.println("categories = " + categories);
-        item.getCategories().clear();
+//        item.getCategories().clear();
         for (String catename: categories) {
-            itemService.addCategoryToItem(item.getItemname(), catename);
+            itemService.addCategoryToItem(item.getName(), catename);
         }
         // 생성한 상품에 기존 이미지 경로 삭제하고 이미지 삽입
         ArrayList<String> images = mapper.convertValue(updateItem.get("images"), new TypeReference<ArrayList<String>>() {});
@@ -214,7 +204,7 @@ public class ItemResource {
             // 이미지 재등록
             for (String image: images) {
                 itemService.saveImage(new Image(null, image));
-                itemService.addImageToItem(item.getItemname(), image);
+                itemService.addImageToItem(item.getName(), image);
             }
         }
 
@@ -253,24 +243,24 @@ public class ItemResource {
 //        return ResponseEntity.ok().build();
 //    }
     
-    @GetMapping("/search")
-    public ResponseEntity<Page<Item>> search(
-            @RequestParam(defaultValue = "", value = "searchName") String searchName,
-            @RequestParam(defaultValue = "DESC", value = "asc") String asc,
-			@RequestParam(defaultValue="reviewmean",value="sortname") String sortname,
-            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
-    	Sort sort;
-    	if(asc.equals("ASC") || asc.equals("asc")) {
-    		sort = Sort.by(Sort.Direction.ASC, sortname);
-    	}else {
-    		sort = Sort.by(Sort.Direction.DESC, sortname);
-    	}
-    	
-    	Pageable pageable = PageRequest.of(page-1, 10,sort);
-    	Page<Item> item = itemService.findBySearch(pageable,searchName);
-
-        return ResponseEntity.ok().body(item);
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<Page<Item>> search(
+//            @RequestParam(defaultValue = "", value = "searchName") String searchName,
+//            @RequestParam(defaultValue = "DESC", value = "asc") String asc,
+//			@RequestParam(defaultValue="reviewmean",value="sortname") String sortname,
+//            @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
+//    	Sort sort;
+//    	if(asc.equals("ASC") || asc.equals("asc")) {
+//    		sort = Sort.by(Sort.Direction.ASC, sortname);
+//    	}else {
+//    		sort = Sort.by(Sort.Direction.DESC, sortname);
+//    	}
+//
+//    	Pageable pageable = PageRequest.of(page-1, 10,sort);
+////    	Page<Item> item = itemService.findBySearch(pageable,searchName);
+//
+//        return ResponseEntity.ok().body(item);
+//    }
 
     @GetMapping("/item")
     public ResponseEntity<Item> getItem(
@@ -314,11 +304,11 @@ class ItemForm {
         return Item.builder()
                 .name(this.itemname)
                 .price(this.price)
-                .purchasecnt(this.purchasecnt)
-                .count(this.count)
-                .reviewmean(this.reviewmean)
-                .reviewcount(this.reviewcount)
-                .categories(new ArrayList<>())
+//                .purchasecnt(this.purchasecnt)
+//                .count(this.count)
+//                .reviewmean(this.reviewmean)
+//                .reviewcount(this.reviewcount)
+//                .categories(new ArrayList<>())
                 .images(new ArrayList<>())
                 .build();
     }

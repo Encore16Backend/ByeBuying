@@ -12,6 +12,7 @@ import static javax.persistence.GenerationType.*;
 
 @Entity
 @Data
+@Table(name = "Users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
