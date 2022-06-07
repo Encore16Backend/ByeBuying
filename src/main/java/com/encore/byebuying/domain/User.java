@@ -37,7 +37,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
-
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "basket_id")
+    private Basket basket;
 
 
     @Enumerated(EnumType.STRING)
