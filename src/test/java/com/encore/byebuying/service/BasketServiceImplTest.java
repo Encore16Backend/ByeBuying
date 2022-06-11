@@ -1,17 +1,21 @@
 package com.encore.byebuying.service;
 
-import com.encore.byebuying.domain.*;
-import com.encore.byebuying.repo.BasketItemRepo;
-import com.encore.byebuying.repo.BasketRepo;
-import com.encore.byebuying.repo.ItemRepository;
-import com.encore.byebuying.repo.UserRepo;
+import com.encore.byebuying.domain.basket.Basket;
+import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.basket.service.BasketServiceImpl;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
+import com.encore.byebuying.domain.basket.repository.BasketRepository;
+import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +35,12 @@ public class BasketServiceImplTest {
 
     @Autowired
     private BasketServiceImpl basketServiceImpl;
-    @Autowired private UserRepo userRepo;
+    @Autowired private UserRepository userRepository;
     @Autowired private ItemRepository itemRepository;
     @Autowired
-    private BasketRepo basketRepo;
+    private BasketRepository basketRepository;
     @Autowired
-    private BasketItemRepo basketItemRepo;
+    private BasketItemRepository basketItemRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -46,15 +50,15 @@ public class BasketServiceImplTest {
         Basket basket = Basket.builder().id(1L)
                 .basketItems(new ArrayList<>()).build();
 
-        basketRepo.save(basket);
+        basketRepository.save(basket);
         User user = User.builder()
                 .username("유저1")
                 .password("1111")
                 .email("test@naver.com")
                 .basket(basket)
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 
     public Item givenItem(){
@@ -70,7 +74,7 @@ public class BasketServiceImplTest {
     @Test
     public void test(){
         Basket basket = Basket.builder().id(1L).build();
-        basketRepo.save(basket);
+        basketRepository.save(basket);
 
         entityManager.flush();
         entityManager.clear();
@@ -80,14 +84,14 @@ public class BasketServiceImplTest {
                 .password("1111")
                 .email("test@naver.com")
                 .basket(basket)
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        userRepo.save(user);
+        userRepository.save(user);
 
         entityManager.flush();
         entityManager.clear();
 
-        User findUser = userRepo.getById(1L);
+        User findUser = userRepository.getById(1L);
 
         System.out.println("user :" + user);
         System.out.println("findUser = " + findUser);
@@ -107,7 +111,7 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepo.save(basketItem);
+        basketItemRepository.save(basketItem);
         entityManager.flush();
         entityManager.clear();
 
@@ -137,7 +141,7 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepo.save(basketItem);
+        basketItemRepository.save(basketItem);
         entityManager.flush();
         entityManager.clear();
         // 유저 장바구니에 add
@@ -163,7 +167,7 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepo.save(basketItem);
+        basketItemRepository.save(basketItem);
         entityManager.flush();
         entityManager.clear();
         // 유저 장바구니에 add
@@ -172,7 +176,7 @@ public class BasketServiceImplTest {
         entityManager.clear();
 
         // 수량을 변경
-        basketItem.setCount(10);
+//        basketItem.setCount(10);
         entityManager.flush();
         entityManager.clear();
 
@@ -204,7 +208,7 @@ public class BasketServiceImplTest {
         BasketItem basketItem4 = BasketItem.createBasketItem(item4, 5);
         BasketItem basketItem5 = BasketItem.createBasketItem(item5, 5);
 
-        basketItemRepo.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
 
         Basket userBasket = user.getBasket();
 

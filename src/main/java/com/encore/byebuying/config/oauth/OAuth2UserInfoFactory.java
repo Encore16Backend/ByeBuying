@@ -2,7 +2,7 @@ package com.encore.byebuying.config.oauth;
 
 import com.encore.byebuying.config.oauth.impl.FacebookOAuth2UserInfo;
 import com.encore.byebuying.config.oauth.impl.GoogleOAuth2UserInfo;
-import com.encore.byebuying.domain.ProviderType;
+import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.config.oauth.impl.KakaoOAuth2UserInfo;
 import com.encore.byebuying.config.oauth.impl.NaverOAuth2UserInfo;
 

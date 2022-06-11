@@ -1,7 +1,17 @@
 package com.encore.byebuying.service;
 
-import com.encore.byebuying.domain.*;
-import com.encore.byebuying.repo.*;
+import com.encore.byebuying.domain.basket.Basket;
+import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
+import com.encore.byebuying.domain.basket.repository.BasketRepository;
+import com.encore.byebuying.domain.basket.service.BasketServiceImpl;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.service.InquiryServiceImpl;
+import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +35,16 @@ public class InquiryServiceImplTest {
 
     @Autowired
     private BasketServiceImpl basketServiceImpl;
-    @Autowired private UserRepo userRepo;
+    @Autowired private UserRepository userRepository;
     @Autowired private ItemRepository itemRepository;
     @Autowired
-    private BasketRepo basketRepo;
+    private BasketRepository basketRepository;
     @Autowired
-    private BasketItemRepo basketItemRepo;
+    private BasketItemRepository basketItemRepository;
     @Autowired
     private InquiryServiceImpl inquiryService;
     @Autowired
-    private InquiryRepo inquiryRepo;
+    private InquiryRepository inquiryRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -45,15 +55,15 @@ public class InquiryServiceImplTest {
         Basket basket = Basket.builder().id(1L)
                 .basketItems(new ArrayList<>()).build();
 
-        basketRepo.save(basket);
+        basketRepository.save(basket);
         User user = User.builder()
                 .username("유저1")
                 .password("1111")
                 .email("test@naver.com")
                 .basket(basket)
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 
     public Item givenItem(){
@@ -75,7 +85,7 @@ public class InquiryServiceImplTest {
 
         Inquiry inquiry = Inquiry.createInquiry(user, item, "상품사이즈가 작아요", "큰 사이즈로 바꿔주세요");
 
-        inquiryRepo.save(inquiry);
+        inquiryRepository.save(inquiry);
         entityManager.flush();
         entityManager.clear();
 

@@ -1,10 +1,10 @@
 //package com.encore.byebuying.service;
 //
 //import com.encore.byebuying.domain.*;
-//import com.encore.byebuying.repo.ItemRepository;
-//import com.encore.byebuying.repo.UserRepo;
-//import com.encore.byebuying.service.dto.OrderItemInfoServiceDto;
-//import com.encore.byebuying.service.dto.OrderItemsServiceOrderDto;
+//import com.encore.byebuying.domain.item.repository.ItemRepository;
+//import com.encore.byebuying.domain.user.repository.UserRepo;
+//import com.encore.byebuying.domain.order.dto.OrderItemInfoServiceDto;
+//import com.encore.byebuying.domain.order.dto.OrderItemsServiceOrderDto;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.springframework.beans.factory.annotation.Autowired;

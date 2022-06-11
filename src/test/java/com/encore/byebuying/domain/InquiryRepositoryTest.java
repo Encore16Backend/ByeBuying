@@ -1,9 +1,14 @@
 package com.encore.byebuying.domain;
 
-import com.encore.byebuying.repo.BasketRepo;
-import com.encore.byebuying.repo.InquiryRepo;
-import com.encore.byebuying.repo.ItemRepository;
-import com.encore.byebuying.repo.UserRepo;
+import com.encore.byebuying.domain.basket.Basket;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.basket.repository.BasketRepository;
+import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,13 +24,13 @@ public class InquiryRepositoryTest {
 
 
     @Autowired
-    InquiryRepo inquiryRepo;
+    InquiryRepository inquiryRepository;
     @Autowired
     ItemRepository itemRepository;
     @Autowired
-    UserRepo userRepo;
+    UserRepository userRepository;
     @Autowired
-    BasketRepo basketRepo;
+    BasketRepository basketRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -34,15 +39,15 @@ public class InquiryRepositoryTest {
         Basket basket = Basket.builder().id(1L)
                 .basketItems(new ArrayList<>()).build();
 
-        basketRepo.save(basket);
+        basketRepository.save(basket);
         User user = User.builder()
                 .username("유저1")
                 .password("1111")
                 .email("test@naver.com")
                 .basket(basket)
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 
     public Item givenItem(){
@@ -60,7 +65,7 @@ public class InquiryRepositoryTest {
         Item item = givenItem();
 
         Inquiry inquiry = Inquiry.createInquiry(user, item, "title", "content");
-        Inquiry inquiry1 = inquiryRepo.save(inquiry);
+        Inquiry inquiry1 = inquiryRepository.save(inquiry);
 
         entityManager.flush();
         entityManager.clear();

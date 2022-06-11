@@ -1,7 +1,7 @@
 package com.encore.byebuying.config.auth;
 
-import com.encore.byebuying.domain.User;
-import com.encore.byebuying.repo.UserRepo;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service @RequiredArgsConstructor @Slf4j
 public class PrincipalUserDetailsService implements UserDetailsService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
     @Override @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username).orElseThrow(() ->
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
             new UsernameNotFoundException("User not found in the database")
         );
         log.info("User found in the database: {}", username);

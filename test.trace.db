@@ -220,7 +220,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Cannot drop "BASKET" because "FKARA19F2
 2022-06-06 15:42:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Cannot drop "IMAGE" because "FKI7H7THME0SBE3068UTT5P534X" depends on it; SQL statement:
 
-    drop table if exists image [90107-200]
+    drop table if exists itemImage [90107-200]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:576)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:429)
 	at org.h2.message.DbException.get(DbException.java:205)
@@ -765,7 +765,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -972,7 +972,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -1018,7 +1018,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 15:42:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -1449,7 +1449,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -1656,7 +1656,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -1702,7 +1702,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 15:42:19 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -1893,7 +1893,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -2100,7 +2100,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -2146,7 +2146,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 15:44:22 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -2337,7 +2337,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -2544,7 +2544,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -2590,7 +2590,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 15:49:19 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -2781,7 +2781,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -2988,7 +2988,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -3034,7 +3034,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 15:55:16 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -3225,7 +3225,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -3432,7 +3432,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -3478,7 +3478,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 16:11:02 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -3669,7 +3669,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -3876,7 +3876,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -3922,7 +3922,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 20:36:52 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -3981,7 +3981,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 20:36:55 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 20:44:43 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -4116,7 +4116,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -4323,7 +4323,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -4369,7 +4369,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 20:44:43 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -4563,7 +4563,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -4770,7 +4770,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -4816,7 +4816,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 20:48:19 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -4875,7 +4875,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 20:48:23 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 20:48:23 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM" not found; SQL statement:
 insert into item (created_at, modified_at, category_id, name, price, stock_quantity) values (?, ?, ?, ?, ?, ?) [42102-200]
@@ -5013,7 +5013,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -5220,7 +5220,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -5266,7 +5266,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 20:49:26 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -5325,7 +5325,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 20:49:29 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 20:54:47 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -5460,7 +5460,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -5667,7 +5667,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -5713,7 +5713,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 20:54:47 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -5772,7 +5772,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 20:54:51 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 21:01:52 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -5907,7 +5907,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -6114,7 +6114,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -6160,7 +6160,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 21:01:53 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -6219,7 +6219,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 21:01:59 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 21:02:11 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -6354,7 +6354,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -6561,7 +6561,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -6607,7 +6607,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 21:02:11 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -6666,7 +6666,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 21:02:15 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 21:03:46 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -6801,7 +6801,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -7008,7 +7008,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -7054,7 +7054,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 21:03:46 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -7113,7 +7113,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 21:03:50 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-06 21:08:01 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BASKET_ITEM" not found; SQL statement:
 
@@ -7248,7 +7248,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         PRIMARY KEY (IMGID)
     ) ENGINE=[*]INNODB"; expected "identifier"; SQL statement:
 
-    create table image (
+    create table itemImage (
        imgid bigint not null auto_increment,
         imgpath varchar(255),
         primary key (imgid)
@@ -7455,7 +7455,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "
         password varchar(255),
         provider varchar(255),
         provider_id varchar(255),
-        role varchar(255),
+        roleType varchar(255),
         username varchar(255),
         basket_id bigint,
         primary key (user_id)
@@ -7501,7 +7501,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL stat
     alter table item_images 
        add constraint FKi7h7thme0sbe3068utt5p534x 
        foreign key (images_imgid) 
-       references image (imgid) [42102-200]
+       references itemImage (imgid) [42102-200]
 2022-06-06 21:08:01 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ITEM_IMAGES" not found; SQL statement:
 
@@ -7560,7 +7560,7 @@ org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS_LOCATIONS" not found; SQL 
        references users (user_id) [42102-200]
 2022-06-06 21:08:06 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "USERS" not found; SQL statement:
-insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, role, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
+insert into users (created_at, modified_at, address, detail_address, zipcode, basket_id, default_location_idx, email, password, provider, provider_id, roleType, username) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) [42102-200]
 2022-06-07 19:31:22 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:622)

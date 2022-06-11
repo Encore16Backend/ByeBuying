@@ -1,15 +1,17 @@
 package com.encore.byebuying.domain;
 
-import com.encore.byebuying.repo.BasketRepo;
-import com.encore.byebuying.repo.ItemRepository;
-import com.encore.byebuying.repo.UserRepo;
-import lombok.ToString;
+import com.encore.byebuying.domain.basket.Basket;
+import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.basket.repository.BasketRepository;
+import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,11 +20,11 @@ public class BasketRepositoryTest {
 
 
     @Autowired
-    BasketRepo basketRepo;
+    BasketRepository basketRepository;
     @Autowired
     ItemRepository itemRepository;
     @Autowired
-    UserRepo userRepo;
+    UserRepository userRepository;
 
     @Test
     public void createItem(){
@@ -49,11 +51,11 @@ public class BasketRepositoryTest {
                 .email("test@naver.com")
                 .password("1111")
                 .basket(new Basket())
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        userRepo.save(user);
+        userRepository.save(user);
 
-        User findUser = userRepo.getById(1L);
+        User findUser = userRepository.getById(1L);
 
         assertThat(user.getId()).isEqualTo(findUser.getId());
 
@@ -67,9 +69,9 @@ public class BasketRepositoryTest {
                 .email("test@naver.com")
                 .password("1111")
                 .basket(new Basket())
-                .role(Role.USER)
+                .roleType(RoleType.USER)
                 .build();
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 
     public Item givenItem(){

@@ -1,8 +1,8 @@
 package com.encore.byebuying.config.auth;
 
-import com.encore.byebuying.domain.User;
-import com.encore.byebuying.domain.ProviderType;
-import com.encore.byebuying.domain.Role;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.code.ProviderType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     private final String username;
     private final String password;
     private final ProviderType providerType;
-    private final Role role;
+    private final RoleType roleType;
     private final Collection<GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
@@ -71,8 +71,8 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
                 user.getUsername(),
                 user.getPassword(),
                 user.getProvider(),
-                Role.USER,
-                Collections.singletonList(new SimpleGrantedAuthority(Role.USER.getCode()))
+                RoleType.USER,
+                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))
         );
     }
 
