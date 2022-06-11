@@ -1,6 +1,10 @@
 package com.encore.byebuying.api;
 
+import com.encore.byebuying.api.dto.basket.BasketAddRequest;
+import com.encore.byebuying.api.dto.basket.BasketDeleteRequest;
+import com.encore.byebuying.api.dto.basket.BasketUpdateRequest;
 import com.encore.byebuying.domain.Basket;
+import com.encore.byebuying.domain.BasketItem;
 import com.encore.byebuying.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,37 +22,47 @@ import org.springframework.web.bind.annotation.*;
 public class BasketResource {
     private final BasketService basketService;
 
-    @PostMapping("/add")
-    public String addBasket(@RequestBody Basket basket) {
-        basketService.saveBasket(basket, "save");
-        return "SUCCESS";
-    }
-
-    @GetMapping("/byUsername")
-    public ResponseEntity<Page<Basket>> getBasketByUsername(
-            @RequestParam(defaultValue="",value="username") String username,
-            @RequestParam(required = false, defaultValue="1",value="page") int page) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page-1, 5, sort);
-        Page<Basket> baskets = basketService.getByUsername(pageable, username);
-        return ResponseEntity.ok().body(baskets);
+    @GetMapping("/items")
+    public ResponseEntity<?> getBasketItems(@RequestParam(defaultValue="",value="userId") Long userId,
+                                            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+        PageRequest pageRequest = PageRequest.of(page-1, 5);
+        Page<BasketItem> basketItems = basketService.findByUserId(pageRequest, userId);
+        return new ResponseEntity<>(basketItems, HttpStatus.OK);
     }
 
     @Transactional
-    @PutMapping("/update")
-    public String updateBasket(@RequestBody Basket changeBasket) {
-        Basket basket = basketService.getBasketById(changeBasket.getId());
-        basket.setBcount(changeBasket.getBcount());
-        basketService.saveBasket(basket, "update");
-        return "SUCCESS";
-    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteReview(
-            @RequestParam(defaultValue = "", value="basketid[]") Long[] basketid){
-        for (Long id: basketid) {
-            basketService.deleteBasket(id);
-        }
+    @PostMapping("/add")
+    public ResponseEntity<?> addBasket(@RequestBody BasketAddRequest basketAddRequest) {
+        basketService.addBasketItem(basketAddRequest);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
+    @Transactional
+    @PutMapping("/update")
+    public ResponseEntity<?> updateBasket(@RequestBody BasketUpdateRequest basketUpdateRequest) {
+        basketService.updateBasketItem(basketUpdateRequest);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteBasket(@RequestBody BasketDeleteRequest basketDeleteRequest) {
+        basketService.deleteBasketItem(basketDeleteRequest);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+
+
+
+//
+//    @GetMapping("/byUsername")
+//    public ResponseEntity<Page<Basket>> getBasketByUsername(
+//            @RequestParam(defaultValue="",value="username") String username,
+//            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+//        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+//        Pageable pageable = PageRequest.of(page-1, 5, sort);
+//        Page<Basket> baskets = basketService.getByUsername(pageable, username);
+//        return ResponseEntity.ok().body(baskets);
+//    }
+//
+//
+//
 }

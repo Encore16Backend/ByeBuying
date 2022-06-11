@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +35,10 @@ public class Item extends BaseTimeEntity {
     private Long categoryId;
 
     private int stockQuantity; // 상품 수량
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Inquiry> inquiries = new ArrayList<>();
 
     // 생성 메소드
     // 파라미터 인자는 꼭 필요한 애들

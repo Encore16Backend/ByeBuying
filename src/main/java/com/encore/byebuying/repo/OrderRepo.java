@@ -12,7 +12,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.Optional;
 
-public interface OrderRepo extends JpaRepository<Order, Long>{
+public interface
+OrderRepo extends JpaRepository<Order, Long>{
 	@EntityGraph(attributePaths = {"items"})
 	Optional<Order> findById(Long id);
 
