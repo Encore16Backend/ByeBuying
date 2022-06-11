@@ -17,14 +17,17 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @Builder
 public class Inquiry extends BaseTimeEntity {
+
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private Long itemid;
-    private String itemname;
-    private String itemimage;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     private String title;
     private String content;
@@ -33,5 +36,19 @@ public class Inquiry extends BaseTimeEntity {
     private Date date; // 년-월-일
 
     private int chkanswer;
+
+    public static Inquiry createInquiry(User user, Item item, String title, String content){
+        Inquiry inquiry = Inquiry.builder()
+                .user(user)
+                .item(item)
+                .title(title)
+                .chkanswer(0)
+                .content(content).build();
+
+        user.getInquiries().add(inquiry);
+        item.getInquiries().add(inquiry);
+
+        return inquiry;
+    }
 
 }

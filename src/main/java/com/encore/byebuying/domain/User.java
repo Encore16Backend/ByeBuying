@@ -16,6 +16,7 @@ import static javax.persistence.GenerationType.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "inquiries")
 public class User extends BaseTimeEntity {
 
     @Id
@@ -37,8 +38,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
-
-
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "basket_id")
+    private Basket basket;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -47,6 +49,10 @@ public class User extends BaseTimeEntity {
     private ProviderType provider;
 
     private String providerId;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Inquiry> inquiries = new ArrayList<>();
 
     public User(String username, String email, Role role, ProviderType providerType, String providerId) {
         this.username = username;

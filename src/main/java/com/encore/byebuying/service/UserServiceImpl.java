@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String username) {
-        basketRepo.deleteAllByUsername(username);
-        inquiryRepo.deleteAllByUsername(username);
+//        basketRepo.deleteAllByUsername(username);
+//        inquiryRepo.deleteAllByUsername(username);
         orderHistoryRepo.deleteAllByUsername(username);
         reviewRepo.deleteAllByUsername(username);
         userRepo.deleteByUsername(username);
