@@ -1,8 +1,8 @@
 package com.encore.byebuying.config.auth;
 
+import com.encore.byebuying.domain.User;
 import com.encore.byebuying.domain.ProviderType;
 import com.encore.byebuying.domain.Role;
-import com.encore.byebuying.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;

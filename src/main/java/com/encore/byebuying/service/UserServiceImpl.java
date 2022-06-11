@@ -1,25 +1,18 @@
 package com.encore.byebuying.service;
 
+import com.encore.byebuying.domain.User;
 import com.encore.byebuying.domain.ProviderType;
 import com.encore.byebuying.domain.Role;
-import com.encore.byebuying.domain.User;
 import com.encore.byebuying.requestDto.UserFormRequest;
 import com.encore.byebuying.repo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class UserServiceImpl implements UserService {

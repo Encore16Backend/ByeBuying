@@ -2,9 +2,9 @@ package com.encore.byebuying.config.oauth;
 
 import com.encore.byebuying.config.Exception.OAuth2AuthenticationProcessingException;
 import com.encore.byebuying.config.auth.PrincipalDetails;
+import com.encore.byebuying.domain.User;
 import com.encore.byebuying.domain.ProviderType;
 import com.encore.byebuying.domain.Role;
-import com.encore.byebuying.domain.User;
 import com.encore.byebuying.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
         User saveUser = userRepo.findByUsername(oAuth2UserInfo.getUsername()).orElse(null);
         if (saveUser != null && !saveUser.getProvider().equals(providerType)) {
-            throw new OAuth2AuthenticationProcessingException("Miss Match Provider Type. User: {}"+saveUser);
+            throw new OAuth2AuthenticationProcessingException("Miss Match Provider Type. User: {}"+ saveUser);
         }
 
         saveUser = createUser(oAuth2UserInfo, providerType);

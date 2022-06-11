@@ -2,7 +2,7 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.Basket;
 import com.encore.byebuying.repo.BasketRepo;
-import com.encore.byebuying.repo.ItemRepo;
+import com.encore.byebuying.repo.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class BasketServiceImpl implements BasketService{
     private final BasketRepo basketRepo;
-    private final ItemRepo itemRepo;
+    private final ItemRepository itemRepository;
 
     @Override
     public Basket saveBasket(Basket basket, String mode) {
