@@ -4,6 +4,7 @@ import com.encore.byebuying.api.dto.basket.BasketAddRequest;
 import com.encore.byebuying.api.dto.basket.BasketDeleteRequest;
 import com.encore.byebuying.api.dto.basket.BasketUpdateRequest;
 import com.encore.byebuying.domain.Basket;
+import com.encore.byebuying.domain.BasketItem;
 import com.encore.byebuying.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class BasketResource {
     private final BasketService basketService;
+
+    @GetMapping("/items")
+    public ResponseEntity<?> getBasketItems(@RequestParam(defaultValue="",value="userId") Long userId,
+                                            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+        PageRequest pageRequest = PageRequest.of(page-1, 5);
+        Page<BasketItem> basketItems = basketService.findByUserId(pageRequest, userId);
+        return new ResponseEntity<>(basketItems, HttpStatus.OK);
+    }
 
     @Transactional
     @PostMapping("/add")

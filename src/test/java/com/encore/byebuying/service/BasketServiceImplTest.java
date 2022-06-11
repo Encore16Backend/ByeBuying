@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,14 +66,7 @@ public class BasketServiceImplTest {
                 .build();
         return itemRepository.save(item);
     }
-
-//     this.username = username;
-//        this.password = password;
-//        this.email = email;
-//        this.defaultLocationIdx = 0;
-//        this.locations = locations;
-//        this.role = role;
-//        this.provider = providerType;
+    
     @Test
     public void test(){
         Basket basket = Basket.builder().id(1L).build();
@@ -175,7 +171,7 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
 
-        // 수량를 변경
+        // 수량을 변경
         basketItem.setCount(10);
         entityManager.flush();
         entityManager.clear();
@@ -194,36 +190,11 @@ public class BasketServiceImplTest {
     public void BasketItemPaging(){
         User user = givenUser();
 
-        Item item1 = Item.builder()
-                .id(1L)
-                .name("상품1")
-                .price(1000)
-                .stockQuantity(10)
-                .build();
-        Item item2 = Item.builder()
-                .id(2L)
-                .name("상품2")
-                .price(1000)
-                .stockQuantity(10)
-                .build();
-        Item item3 = Item.builder()
-                .id(3L)
-                .name("상품3")
-                .price(1000)
-                .stockQuantity(10)
-                .build();
-        Item item4 = Item.builder()
-                .id(4L)
-                .name("상품4")
-                .price(1000)
-                .stockQuantity(10)
-                .build();
-        Item item5 = Item.builder()
-                .id(5L)
-                .name("상품5")
-                .price(1000)
-                .stockQuantity(10)
-                .build();
+        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
+        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
+        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
+        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
+        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
 
         itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
 
@@ -233,13 +204,27 @@ public class BasketServiceImplTest {
         BasketItem basketItem4 = BasketItem.createBasketItem(item4, 5);
         BasketItem basketItem5 = BasketItem.createBasketItem(item5, 5);
 
-       List<BasketItem> userBasket =  user.getBasket().getBasketItems();
+        basketItemRepo.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
 
-        userBasket.add(basketItem1);
-        userBasket.add(basketItem2);
-        userBasket.add(basketItem3);
-        userBasket.add(basketItem4);
-        userBasket.add(basketItem5);
+        Basket userBasket = user.getBasket();
+
+        userBasket.addBasketItem(basketItem1);
+        userBasket.addBasketItem(basketItem2);
+        userBasket.addBasketItem(basketItem3);
+        userBasket.addBasketItem(basketItem4);
+        userBasket.addBasketItem(basketItem5);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+
+        Page<BasketItem> basketItems = basketServiceImpl.findByUserId(pageRequest, user.getId());
+
+
+        System.out.println("basketItems.getContent() = " + basketItems.getContent());
+        System.out.println("basketItems.getTotalElements() = " + basketItems.getTotalElements());
+        System.out.println("basketItems.getTotalPages() = " + basketItems.getTotalPages());
 
     }
 }

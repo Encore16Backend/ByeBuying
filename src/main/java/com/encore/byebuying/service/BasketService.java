@@ -20,7 +20,7 @@ public interface BasketService {
 //    Page<Order> findByUsername(Pageable pageable, String username);
 //    Page<Order> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;
 
-    Page<BasketItem> findById(Pageable pageable, Long user_id);
+    Page<BasketItem> findByUserId(Pageable pageable, Long user_id);
     @Transactional
     void updateBasketItem(BasketUpdateRequest basketUpdateRequest);
     @Transactional

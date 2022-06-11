@@ -26,27 +26,9 @@ public class Basket extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-//    // 널 허용 불가
-//    @OneToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
-//    private String username;
-
-//    private int bcount; // 개수
-
     @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
     private List<BasketItem> basketItems = new ArrayList<>();
 
-//    private Long itemid;
-//    private String itemimg;
-//    private String itemname;
-//    private int itemprice;
-
-
-    public void userAddBasket(User user) {
-        user.setBasket(this);
-    }
 
     public void addBasketItem(BasketItem basketItem) {
         basketItem.setBasket(this);

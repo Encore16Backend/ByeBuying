@@ -34,12 +34,15 @@ public class BasketServiceImpl implements BasketService{
     private final EntityManager em;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-
+    /**
+     * 페이징해서 장바구니 아이템을 리턴
+     * */
     @Override
-    public Page<BasketItem> findById(Pageable pageable, Long user_id) {
+    public Page<BasketItem> findByUserId(Pageable pageable, Long user_id) {
         // user_id로 basket_id를 찾은 다음 조회
         User user = userRepo.getById(user_id);
-        return null;
+        Long basket_id = user.getBasket().getId();
+        return basketItemRepo.findByBasketId(pageable, basket_id);
     }
 
     /**
