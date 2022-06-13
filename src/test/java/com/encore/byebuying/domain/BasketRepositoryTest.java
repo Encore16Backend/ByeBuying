@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -64,11 +66,15 @@ public class BasketRepositoryTest {
 
 
     public User givenUser(){
+        Basket basket = Basket.builder().id(1L)
+                .basketItems(new ArrayList<>()).build();
+
+        basketRepository.save(basket);
         User user = User.builder()
                 .username("유저1")
-                .email("test@naver.com")
                 .password("1111")
-                .basket(new Basket())
+                .email("test@naver.com")
+                .basket(basket)
                 .roleType(RoleType.USER)
                 .build();
         return userRepository.save(user);

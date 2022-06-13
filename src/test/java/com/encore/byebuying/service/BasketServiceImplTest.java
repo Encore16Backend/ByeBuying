@@ -104,33 +104,18 @@ public class BasketServiceImplTest {
      *
      */
     @Test
-    public void createBasketItem() throws Exception{
-        // given
+    public void createBasket() throws Exception {
         User user = givenUser();
         Item item = givenItem();
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-
-        // when
-        // 유저 장바구니에 add
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
-
-        System.out.println("user.basket.getId = " + user.getBasket().getId());
-        System.out.println("basketItem.getBasket().getId() = " + basketItem.getBasket().getId());
-
-        List<BasketItem> lists  = user.getBasket().getBasketItems();
-        for (int i = 0; i < lists.size(); i ++){
-            System.out.println("item : " + lists.get(i).getItem());
-        }
-
-        // then
-        assertThat(user.getBasket().getId()).isEqualTo(basketItem.getBasket().getId());
+        System.out.println(user.getBasket().getBasketItems().get(0).getItem().getName());
+        System.out.println(user.getBasket().getBasketItems().get(0).getCount());
+        assertThat(user.getBasket().getBasketItems().get(0).getItem().getName()).isEqualTo("상품");
     }
 
     @Test
@@ -141,26 +126,30 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-        // 유저 장바구니에 add
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
 
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
 
-        // when
-        user.getBasket().deleteBasketItem(item.getId());
+        List<Long> ids = new ArrayList<>();
+        ids.add(item.getId());
+
+        List<BasketItem> basket = user.getBasket().getBasketItems();
+        for (Long id : ids){
+            basket.removeIf(bItem -> (bItem.getItem().getId() == id) );
+        }
+
         entityManager.flush();
         entityManager.clear();
 
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()2");
         // then
         assertThat(user.getBasket().getBasketItems().size()).isEqualTo(0);
     }
 
     @Test
-    public void updateBasketItem(){
+    public void updateBasketItem(){ // 해야됨
         // given
         User user = givenUser();
         Item item = givenItem();
@@ -180,7 +169,7 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
 
-        user.getBasket().updateBasketItem(basketItem);
+//        user.getBasket().updateBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
 

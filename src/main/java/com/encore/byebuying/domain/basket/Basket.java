@@ -2,10 +2,8 @@ package com.encore.byebuying.domain.basket;
 
 import com.encore.byebuying.domain.common.BaseTimeEntity;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +14,9 @@ import java.util.List;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @Builder
 public class Basket extends BaseTimeEntity {
 
@@ -33,17 +31,7 @@ public class Basket extends BaseTimeEntity {
         basketItem.setBasket(this);
         this.basketItems.add(basketItem);
     }
-    public void updateBasketItem(BasketItem updateBasketItem){
-        for (BasketItem basketItem : this.basketItems){
-            if (basketItem.getItem().getId() == updateBasketItem.getItem().getId()){
-                basketItem = updateBasketItem;
-            }
-        }
-    }
-    // item_id로 삭제
-    public void deleteBasketItem(Long item_id) {
-        this.basketItems.removeIf(item -> item.getItem().getId() == item_id);
-    }
+
 
 
 }

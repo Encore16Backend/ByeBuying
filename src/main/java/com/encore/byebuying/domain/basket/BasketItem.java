@@ -13,7 +13,6 @@ import javax.persistence.*;
 public class BasketItem {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "basket_item_id")
     private Long id;
 
     @ManyToOne

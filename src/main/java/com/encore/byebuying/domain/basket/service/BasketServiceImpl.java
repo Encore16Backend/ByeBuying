@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +62,7 @@ public class BasketServiceImpl implements BasketService{
         Item findItem = itemRepository.findById(item_id).orElse(Item.builder().build());
         BasketItem basketItem = BasketItem.createBasketItem(findItem, count);
 //        basketItem.setCount(count);
-        findUser.getBasket().updateBasketItem(basketItem);
+//        findUser.getBasket().updateBasketItem(basketItem);
     }
 
     /**
@@ -76,20 +77,22 @@ public class BasketServiceImpl implements BasketService{
         Long item_id = basketAddDTO.getItem_id();
         int count = basketAddDTO.getCount();
 
-        User findUser = userRepository.findById(user_id).orElse(User.builder().build());
-        Item findItem = itemRepository.findById(item_id).orElse(Item.builder().build());
+        User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
+        Item findItem = itemRepository.findById(item_id).orElseThrow(()-> {throw new NullPointerException();});
         BasketItem basketItem = BasketItem.createBasketItem(findItem, count);
-        basketItemRepository.save(basketItem);
         findUser.getBasket().addBasketItem(basketItem);
     }
 
     @Override
     public void deleteBasketItem(BasketDeleteDTO basketDeleteDTO) {
         Long user_id = basketDeleteDTO.getUser_id();
-        Long item_id = basketDeleteDTO.getItem_id();
+        List<Long> item_ids = basketDeleteDTO.getItem_ids();
+        User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
 
-        User findUser = userRepository.findById(user_id).orElse(User.builder().build());
-        findUser.getBasket().deleteBasketItem(item_id);
+        List<BasketItem> basket = findUser.getBasket().getBasketItems();
+        for (Long id : item_ids){
+            basket.removeIf(bItem -> (bItem.getItem().getId() == id) );
+        }
     }
 
 
