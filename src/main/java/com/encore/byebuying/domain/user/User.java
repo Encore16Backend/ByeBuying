@@ -8,6 +8,7 @@ import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import java.util.LinkedList;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ import static javax.persistence.GenerationType.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "inquiries")
+@ToString(exclude = {"inquiries", "orders"})
 public class User extends BaseTimeEntity {
 
     @Id
@@ -60,7 +61,7 @@ public class User extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Inquiry> inquiries = new ArrayList<>();
+    private List<Inquiry> inquiries = new ArrayList<>();
 
     // OAuth
     public User(String username, String email, RoleType roleType, ProviderType providerType, String providerId) {
@@ -72,9 +73,11 @@ public class User extends BaseTimeEntity {
         this.roleType = roleType;
         this.provider = providerType;
         this.providerId = providerId;
+        this.inquiries = new ArrayList<>();
     }
 
     // 일반
+    @Builder(builderClassName = "init", builderMethodName = "initUser")
     public User(UserSaveDTO dto) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
@@ -83,6 +86,7 @@ public class User extends BaseTimeEntity {
         this.locations = dto.getLocations();
         this.roleType = RoleType.USER;
         this.provider = ProviderType.LOCAL;
+        this.inquiries = new ArrayList<>();
     }
 
 

@@ -11,8 +11,9 @@ public interface InquiryService {
     Inquiry getById(Long id);
     void answerToInquiry(Long inquiry_id, String answer);
 
-    Page<Inquiry> getByItemid(Pageable pageable, Long item_id);
-    Page<Inquiry> getByItemName(Pageable pageable, String itemName);
+// Item과 무관
+//    Page<Inquiry> getByItemid(Pageable pageable, Long item_id);
+//    Page<Inquiry> getByItemName(Pageable pageable, String itemName);
     Page<Inquiry> getByUserId(Pageable pageable, Long user_id);
     Page<Inquiry> getInquiries(Pageable pageable);
 

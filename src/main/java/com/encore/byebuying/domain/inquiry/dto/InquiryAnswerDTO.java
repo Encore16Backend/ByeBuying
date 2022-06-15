@@ -1,8 +1,12 @@
 package com.encore.byebuying.domain.inquiry.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class InquiryAnswerDTO {
     private Long inquiryId;
     private String answer;

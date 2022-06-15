@@ -2,10 +2,8 @@ package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
-import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,31 +12,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service @RequiredArgsConstructor @Slf4j
 public class InquiryServiceImpl implements InquiryService{
 
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * parmas user_id, item_id, content, title
      * */
     @Override
+    @Transactional // 서비스 메소드에 transactional 걸어야 함
     public Inquiry saveInquiry(InquirySaveDTO inquirySaveDTO) {
         Long user_id = inquirySaveDTO.getUser_id();
-        Long item_id = inquirySaveDTO.getItem_id();
-        String content = inquirySaveDTO.getContent();
-        String title = inquirySaveDTO.getTitle();
-
         User user = userRepository.getById(user_id);
-        Item item = itemRepository.getById(item_id);
 
-        Inquiry inquiry = Inquiry.createInquiry(user, item, title, content);
-
-        return inquiryRepository.save(inquiry);
+        return inquiryRepository.save(Inquiry.createInquiry(inquirySaveDTO, user));
     }
 
     @Override
@@ -56,28 +48,29 @@ public class InquiryServiceImpl implements InquiryService{
         return inquiryRepository.findAll(pageable);
     }
 
-    @Override
-    public Page<Inquiry> getByItemid(Pageable pageable, Long item_id) {
-        return inquiryRepository.findByItemId(pageable, item_id);
-    }
+//    @Override
+//    public Page<Inquiry> getByItemid(Pageable pageable, Long item_id) {
+//        return inquiryRepository.findByItemId(pageable, item_id);
+//    }
 
     @Override
     public Page<Inquiry> getByUserId(Pageable pageable, Long user_id) {
         return inquiryRepository.findByUserId(pageable, user_id);
     }
 
-    @Override
-    public Page<Inquiry> getByItemName(Pageable pageable, String itemName) {
-        return inquiryRepository.findByItemName(pageable, itemName);
-    }
+//    @Override
+//    public Page<Inquiry> getByItemName(Pageable pageable, String itemName) {
+//        return inquiryRepository.findByItemName(pageable, itemName);
+//    }
 
 
 
     @Override
     public void answerToInquiry(Long inquiry_id, String answer) {
         Inquiry inquiry = inquiryRepository.getById(inquiry_id);
-        inquiry.setChkanswer(1);
-        inquiry.setAnswer(answer);
+        inquiry.inquiryAnswer(answer);
+//        inquiry.setChkanswer(1);
+//        inquiry.setAnswer(answer);
     }
 
 

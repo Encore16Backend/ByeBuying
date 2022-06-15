@@ -55,21 +55,22 @@ public class InquiryController {
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
-    @GetMapping("/item")
-    public ResponseEntity<?> getByItemId(@RequestParam(required = false, defaultValue="1",value="page") int page,
-                                         Long item_id) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByItemid(pageRequest, item_id);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
-    }
+    // 지금 필요없어서 주석 처리
+//    @GetMapping("/item")
+//    public ResponseEntity<?> getByItemId(@RequestParam(required = false, defaultValue="1",value="page") int page,
+//                                         Long item_id) {
+//        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+//        Page<Inquiry> inquiries = inquiryService.getByItemid(pageRequest, item_id);
+//        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+//    }
 
-    @GetMapping("/itemname")
-    public ResponseEntity<?> getByItemName(@RequestParam(required = false, defaultValue="1",value="page") int page,
-                                         String itemName) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByItemName(pageRequest, itemName);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
-    }
+//    @GetMapping("/itemname")
+//    public ResponseEntity<?> getByItemName(@RequestParam(required = false, defaultValue="1",value="page") int page,
+//                                         String itemName) {
+//        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+//        Page<Inquiry> inquiries = inquiryService.getByItemName(pageRequest, itemName);
+//        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+//    }
 
 
 
