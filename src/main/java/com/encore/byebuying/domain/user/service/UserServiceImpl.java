@@ -53,9 +53,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User saveUser(UserSaveDTO dto) {
         log.info("Saving new user {} to the database", dto.getUsername());
-//        User user = new User(dto);
         User user = User.initUser().dto(dto).build();
-        log.info(">>> save User : {}", user);
         return userRepository.save(user);
     }
 

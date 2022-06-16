@@ -1,15 +1,16 @@
 package com.encore.byebuying.domain.inquiry.service;
 
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface InquiryService {
-    Inquiry saveInquiry(InquirySaveDTO inquirySaveDTO);
+    Inquiry saveInquiry(InquirySaveDTO dto);
     void deleteInquiryById(Long id);
     Inquiry getById(Long id);
-    void answerToInquiry(Long inquiry_id, String answer);
+    void answerToInquiry(InquiryAnswerDTO dto);
 
 // Item과 무관
 //    Page<Inquiry> getByItemid(Pageable pageable, Long item_id);

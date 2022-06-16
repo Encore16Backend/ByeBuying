@@ -55,6 +55,6 @@ public class Inquiry extends BaseTimeEntity {
 
     public void inquiryAnswer(String answer) {
         this.answer = answer;
-        chkanswer = 1;
+        this.chkanswer = 1;
     }
 }

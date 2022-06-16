@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
@@ -23,9 +24,9 @@ public class InquiryController {
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public void deleteInquiry(Long inquiryId){
-        inquiryService.deleteInquiryById(inquiryId);
+    @PostMapping("/removal:{id}") // todo: delete에 pathvariable 되는지 확인해봐야 함
+    public void deleteInquiry(@PathVariable Long id){
+        inquiryService.deleteInquiryById(id);
     }
 
     @GetMapping("/one")
@@ -35,8 +36,8 @@ public class InquiryController {
     }
 
     @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(Long inquiry_id, String answer){
-        inquiryService.answerToInquiry( inquiry_id,  answer);
+    public ResponseEntity<?> answerToInquiry(InquiryAnswerDTO dto){
+        inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 

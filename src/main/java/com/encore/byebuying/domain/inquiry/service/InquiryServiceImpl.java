@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.inquiry.service;
 
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.user.User;
@@ -34,13 +35,16 @@ public class InquiryServiceImpl implements InquiryService{
     }
 
     @Override
+    @Transactional
     public void deleteInquiryById(Long id) {
         inquiryRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true) // Transactional(readOnly = true)로 엔티티 변경 감지 막음
+    // TODO: readOnly 제대로 되는지 확인 필요
     public Inquiry getById(Long id) {
-        return inquiryRepository.getById(id);
+        return inquiryRepository.findById(id).orElseThrow(NullPointerException::new);
     }
 
     @Override
@@ -66,11 +70,11 @@ public class InquiryServiceImpl implements InquiryService{
 
 
     @Override
-    public void answerToInquiry(Long inquiry_id, String answer) {
-        Inquiry inquiry = inquiryRepository.getById(inquiry_id);
-        inquiry.inquiryAnswer(answer);
-//        inquiry.setChkanswer(1);
-//        inquiry.setAnswer(answer);
+    @Transactional
+    public void answerToInquiry(InquiryAnswerDTO dto) {
+        Inquiry inquiry = inquiryRepository.findById(dto.getInquiryId())
+            .orElseThrow(NullPointerException::new);
+        inquiry.inquiryAnswer(dto.getAnswer());
     }
 
 
