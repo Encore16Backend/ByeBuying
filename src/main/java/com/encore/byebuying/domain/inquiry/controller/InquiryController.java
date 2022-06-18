@@ -1,5 +1,8 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
@@ -9,67 +12,75 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/inquiry")
+@RequestMapping("/api/inquiry")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
     private final int PAGECOUNT = 5;
 
-    @PostMapping("/save")
+    // 문의사항 등록
+    @PostMapping
     public ResponseEntity<?> saveInquiry(@RequestBody InquirySaveDTO inquirySaveDTO){
         inquiryService.saveInquiry(inquirySaveDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @PostMapping("/delete")
-    public void deleteInquiry(Long inquiryId){
-        inquiryService.deleteInquiryById(inquiryId);
-    }
-
-    @GetMapping("/one")
-    public ResponseEntity<?> getInquiryById(Long id){
-        Inquiry inquiry = inquiryService.getById(id);
-        return new ResponseEntity<>(inquiry, HttpStatus.OK);
-    }
-
+    // 문의사항 답변 등록
     @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(Long inquiry_id, String answer){
-        inquiryService.answerToInquiry( inquiry_id,  answer);
+    public ResponseEntity<?> answerToInquiry(InquiryAnswerDTO dto){
+        inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getInquirys(@RequestParam(required = false, defaultValue="1",value="page") int page) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getInquiries(pageRequest);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+    // 문의사항 하나
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInquiryById(@PathVariable Long id){
+        InquiryDTO inquiryDTO = inquiryService.getById(id);
+        return new ResponseEntity<>(inquiryDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/user")
+    // 문의사항 전체(페이징)
+    @GetMapping
+    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1",value="page") int page) {
+        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+        InquiryListDTO inquiryListDTO = inquiryService.getInquiries(pageRequest);
+        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    }
+
+    // 유저별 문의사항 불러오기
+    @GetMapping("/by-user")
     public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1",value="page") int page,
-    Long user_id) {
+        Long user_id) {
         PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByUserId(pageRequest, user_id);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+        InquiryListDTO inquiryListDTO = inquiryService.getByUserId(pageRequest, user_id);
+        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/item")
-    public ResponseEntity<?> getByItemId(@RequestParam(required = false, defaultValue="1",value="page") int page,
-                                         Long item_id) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByItemid(pageRequest, item_id);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+    // 문의사항 삭제
+    @PostMapping("/removal:{id}")
+    public void deleteInquiry(@PathVariable Long id){
+        inquiryService.deleteInquiryById(id);
     }
 
-    @GetMapping("/itemname")
-    public ResponseEntity<?> getByItemName(@RequestParam(required = false, defaultValue="1",value="page") int page,
-                                         String itemName) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByItemName(pageRequest, itemName);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
-    }
+    // 지금 필요없어서 주석 처리
+//    @GetMapping("/item")
+//    public ResponseEntity<?> getByItemId(@RequestParam(required = false, defaultValue="1",value="page") int page,
+//                                         Long item_id) {
+//        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+//        Page<Inquiry> inquiries = inquiryService.getByItemid(pageRequest, item_id);
+//        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+//    }
+
+//    @GetMapping("/itemname")
+//    public ResponseEntity<?> getByItemName(@RequestParam(required = false, defaultValue="1",value="page") int page,
+//                                         String itemName) {
+//        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+//        Page<Inquiry> inquiries = inquiryService.getByItemName(pageRequest, itemName);
+//        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+//    }
 
 
 

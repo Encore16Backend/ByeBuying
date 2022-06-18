@@ -18,12 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j
+@Service
+@RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final BasketRepository basketRepository;
-    private final InquiryRepository inquiryRepository;
+//    private final PasswordEncoder passwordEncoder;
+//    private final BasketRepository basketRepository;
+//    private final InquiryRepository inquiryRepository;
     private final OrderRepository orderHistoryRepo;
     private final ReviewRepository reviewRepository;
 
@@ -48,9 +50,10 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
+    @Transactional
     public User saveUser(UserSaveDTO dto) {
         log.info("Saving new user {} to the database", dto.getUsername());
-        User user = new User(dto);
+        User user = User.initUser().dto(dto).build();
         return userRepository.save(user);
     }
 
