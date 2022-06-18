@@ -1,6 +1,8 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
 import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
@@ -10,50 +12,57 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
-@RequestMapping("/inquiry")
+@RequestMapping("/api/inquiry")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
     private final int PAGECOUNT = 5;
 
-    @PostMapping("/save")
+    // 문의사항 등록
+    @PostMapping
     public ResponseEntity<?> saveInquiry(@RequestBody InquirySaveDTO inquirySaveDTO){
         inquiryService.saveInquiry(inquirySaveDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @PostMapping("/removal:{id}") // todo: delete에 pathvariable 되는지 확인해봐야 함
-    public void deleteInquiry(@PathVariable Long id){
-        inquiryService.deleteInquiryById(id);
-    }
-
-    @GetMapping("/one")
-    public ResponseEntity<?> getInquiryById(Long id){
-        Inquiry inquiry = inquiryService.getById(id);
-        return new ResponseEntity<>(inquiry, HttpStatus.OK);
-    }
-
+    // 문의사항 답변 등록
     @PostMapping("/answer")
     public ResponseEntity<?> answerToInquiry(InquiryAnswerDTO dto){
         inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<?> getInquirys(@RequestParam(required = false, defaultValue="1",value="page") int page) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getInquiries(pageRequest);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+    // 문의사항 하나
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInquiryById(@PathVariable Long id){
+        InquiryDTO inquiryDTO = inquiryService.getById(id);
+        return new ResponseEntity<>(inquiryDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1",value="page") int page,
-    Long user_id) {
+    // 문의사항 전체(페이징)
+    @GetMapping
+    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1",value="page") int page) {
         PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        Page<Inquiry> inquiries = inquiryService.getByUserId(pageRequest, user_id);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+        InquiryListDTO inquiryListDTO = inquiryService.getInquiries(pageRequest);
+        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    }
+
+    // 유저별 문의사항 불러오기
+    @GetMapping("/by-user")
+    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1",value="page") int page,
+        Long user_id) {
+        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
+        InquiryListDTO inquiryListDTO = inquiryService.getByUserId(pageRequest, user_id);
+        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    }
+
+    // 문의사항 삭제
+    @PostMapping("/removal:{id}")
+    public void deleteInquiry(@PathVariable Long id){
+        inquiryService.deleteInquiryById(id);
     }
 
     // 지금 필요없어서 주석 처리

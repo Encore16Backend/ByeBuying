@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.inquiry;
 
+import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.user.User;
@@ -14,7 +15,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-// for Test
 @Getter
 @ToString
 public class Inquiry extends BaseTimeEntity {
@@ -22,23 +22,17 @@ public class Inquiry extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "inquiry_id")
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 //    문의사항은 아이템 기준이 아니기 때문에 Item 필요 x
 //    @ManyToOne
 //    @JoinColumn(name = "item_id")
 //    private Item item;
-
     private String title;
     private String content;
-
     private String answer = "";
-
-    private int chkanswer = 0;
-
+    private InquiryType chkAnswer = InquiryType.WAITING;
 
     @Builder(builderClassName = "init", builderMethodName = "initInquiry")
     private Inquiry(InquirySaveDTO dto, User user) {
@@ -55,6 +49,6 @@ public class Inquiry extends BaseTimeEntity {
 
     public void inquiryAnswer(String answer) {
         this.answer = answer;
-        this.chkanswer = 1;
+        this.chkAnswer = InquiryType.COMPLETE;
     }
 }
