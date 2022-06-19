@@ -49,8 +49,8 @@ class InquiryTest {
     return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
   }
 
-  public InquirySaveDTO createInquiry() {
-    return new InquirySaveDTO("testInquiry", "testestestest", 1L);
+  public InquirySaveDTO createInquiry(String username) {
+    return new InquirySaveDTO("testInquiry", "testestestest", username);
   }
 
   @Test
@@ -62,7 +62,7 @@ class InquiryTest {
     em.clear(); // 영속성 컨텍스트 초기화
 
     // 문의등록 Request
-    InquirySaveDTO inquiryDTO = createInquiry();
+    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
     log.info(">>> Req : {}", inquiryDTO);
 
     // 문의등록
@@ -95,10 +95,10 @@ class InquiryTest {
   @Test
   @Transactional
   public void 문의사항_답변등록() {
-    userRepository.save(new User(createUser()));
+    User user = userRepository.save(new User(createUser()));
     em.clear();
 
-    InquirySaveDTO inquiryDTO = createInquiry();
+    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
     InquiryDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
     log.info(">>> create At: {}, update At: {}", saveResult.getCreatedAt(), saveResult.getModifiedAt());
@@ -123,12 +123,12 @@ class InquiryTest {
   @Test
   @Transactional(readOnly = true)
   public void 문의사항_불러오기() {
-    userRepository.save(new User(createUser()));
+    User user = userRepository.save(new User(createUser()));
     em.clear();
 
     InquirySaveDTO inquiryDTO;
     for (int i=0; i<8; i++) {
-      inquiryDTO = createInquiry();
+      inquiryDTO = createInquiry(user.getUsername());
       inquiryDTO.setTitle((i+1) + ". " + inquiryDTO.getTitle());
       inquiryDTO.setContent((i+1) + ". " +inquiryDTO.getContent());
       inquiryService.saveInquiry(inquiryDTO);
@@ -152,20 +152,20 @@ class InquiryTest {
 
     // 문의사항 유저별 불러오기 TEST
     PageRequest byUserPaging = PageRequest.of(0, 5);
-    User user = userRepository.getById(1L);
-    InquiryListDTO byUserInquiries = inquiryService.getByUser(byUserPaging, user.getUsername());
+    User byUser = userRepository.getById(1L);
+    InquiryListDTO byUserInquiries = inquiryService.getByUser(byUserPaging, byUser.getUsername());
     for (int i=0; i<5; i++) {
-      assertThat(byUserInquiries.getInquiries().get(i).getUsername()).isEqualTo(user.getUsername());
+      assertThat(byUserInquiries.getInquiries().get(i).getUsername()).isEqualTo(byUser.getUsername());
     }
   }
 
   @Test
   @Transactional
   public void 문의사항_삭제() {
-    userRepository.save(new User(createUser()));
+    User user = userRepository.save(new User(createUser()));
     em.clear();
 
-    InquirySaveDTO inquiryDTO = createInquiry();
+    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
     InquiryDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
     em.clear();
@@ -178,7 +178,6 @@ class InquiryTest {
     Inquiry inquiry = inquiryRepository.findById(inquiry_id).orElse(null);
     assertThat(inquiry).isNull();
 
-    User user = userRepository.getById(1L);
     assertThat(user.getInquiries()).isEmpty();
   }
 }

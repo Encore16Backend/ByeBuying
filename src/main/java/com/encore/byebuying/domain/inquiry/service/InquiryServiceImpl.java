@@ -5,7 +5,6 @@ import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.inquiry.vo.InquiryListVO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
@@ -15,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
-
-import java.text.SimpleDateFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service @RequiredArgsConstructor @Slf4j
@@ -28,7 +24,8 @@ public class InquiryServiceImpl implements InquiryService{
     @Override
     @Transactional // 서비스 메소드에 transactional 걸어야 함
     public InquiryDTO saveInquiry(InquirySaveDTO inquirySaveDTO) {
-        User user = userRepository.getById(inquirySaveDTO.getUser_id());
+        User user = userRepository.findByUsername(inquirySaveDTO.getUsername())
+            .orElseThrow(EntityNotFoundException::new);
         Inquiry inquiry = inquiryRepository.save(Inquiry.createInquiry(inquirySaveDTO, user));
         return new InquiryDTO(inquiry);
     }
@@ -55,9 +52,7 @@ public class InquiryServiceImpl implements InquiryService{
         log.info(">>> getTotalPages: {}", inquiries.getTotalPages());
         log.info(">>> getTotalElements: {}", inquiries.getTotalElements());
         log.info(">>> getContent: {}", inquiries.getContent());
-
-        InquiryListVO inquiryListVO = new InquiryListVO(inquiries.getContent());
-        return new InquiryListDTO(inquiryListVO);
+        return new InquiryListDTO(inquiries.getContent());
     }
 
     @Override
@@ -69,9 +64,7 @@ public class InquiryServiceImpl implements InquiryService{
         log.info(">>> getTotalPages: {}", inquiries.getTotalPages());
         log.info(">>> getTotalElements: {}", inquiries.getTotalElements());
         log.info(">>> getContent: {}", inquiries.getContent());
-
-        InquiryListVO inquiryListVO = new InquiryListVO(inquiries.getContent());
-        return new InquiryListDTO(inquiryListVO);
+        return new InquiryListDTO(inquiries.getContent());
     }
 
     @Override
