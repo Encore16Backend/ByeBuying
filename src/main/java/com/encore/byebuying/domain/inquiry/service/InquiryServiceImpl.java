@@ -9,6 +9,7 @@ import com.encore.byebuying.domain.inquiry.vo.InquiryListVO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -61,7 +62,8 @@ public class InquiryServiceImpl implements InquiryService{
 
     @Override
     @Transactional(readOnly = true)
-    public InquiryListDTO getByUserId(Pageable pageable, Long user_id) {
+    public InquiryListDTO getByUser(Pageable pageable, String username) {
+        Long user_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getId();
         Page<Inquiry> inquiries = inquiryRepository.findByUserId(pageable, user_id);
         log.info(">>> user_id: {}", user_id);
         log.info(">>> getTotalPages: {}", inquiries.getTotalPages());

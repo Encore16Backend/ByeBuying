@@ -153,7 +153,7 @@ class InquiryTest {
     // 문의사항 유저별 불러오기 TEST
     PageRequest byUserPaging = PageRequest.of(0, 5);
     User user = userRepository.getById(1L);
-    InquiryListDTO byUserInquiries = inquiryService.getByUserId(byUserPaging, user.getId());
+    InquiryListDTO byUserInquiries = inquiryService.getByUser(byUserPaging, user.getUsername());
     for (int i=0; i<5; i++) {
       assertThat(byUserInquiries.getInquiries().get(i).getUsername()).isEqualTo(user.getUsername());
     }

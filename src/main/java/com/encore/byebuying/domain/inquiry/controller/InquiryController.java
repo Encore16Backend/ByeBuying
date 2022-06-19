@@ -53,9 +53,9 @@ public class InquiryController {
     // 유저별 문의사항 불러오기
     @GetMapping("/by-user")
     public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1",value="page") int page,
-        Long user_id) {
+        String username) {
         PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        InquiryListDTO inquiryListDTO = inquiryService.getByUserId(pageRequest, user_id);
+        InquiryListDTO inquiryListDTO = inquiryService.getByUser(pageRequest, username);
         return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
     }
 

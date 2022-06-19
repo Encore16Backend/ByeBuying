@@ -13,7 +13,7 @@ public interface InquiryService {
     InquiryDTO getById(Long id);
     void answerToInquiry(InquiryAnswerDTO dto);
     InquiryListDTO getInquiries(Pageable pageable);
-    InquiryListDTO getByUserId(Pageable pageable, Long user_id);
+    InquiryListDTO getByUser(Pageable pageable, String username);
     void deleteInquiryById(Long id);
 
 //    Item과 무관
