@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/role/save", "/login/**", "/oauth2/**", "/api/checkUser",
                         "/api/user/save", "/api/token/refresh/**", "/api/checkMail",
                         "/review/byItemid","/review/avg",
-                        "/inquiry/byItemid", "/flask/retrieval")
+                        "/inquiry/byItemid", "/flask/retrieval", "/swagger*/**")
                 .permitAll();
         http.authorizeRequests().antMatchers(DELETE, "**")
                 .permitAll();
