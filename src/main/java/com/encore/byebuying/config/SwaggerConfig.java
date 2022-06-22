@@ -6,7 +6,6 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -17,9 +16,7 @@ public class SwaggerConfig {
 
   @Bean
   public Docket swagger() {
-    return new Docket(DocumentationType.SWAGGER_2)
-        .ignoredParameterTypes(java.sql.Date.class)
-        .forCodeGeneration(true)
+    return new Docket(DocumentationType.OAS_30)
         .select()
         .apis(RequestHandlerSelectors.any())
         .paths(PathSelectors.any())
@@ -30,10 +27,9 @@ public class SwaggerConfig {
 
   private ApiInfo apiInfo(){
     return new ApiInfoBuilder()
-        .title("테스트 API 타이틀")
-        .description("테스트 API 상세소개 및 사용법 등")
-        .contact(new Contact("mile", "milenote.tistory.com", "skn@futurenuri.com"))
-        .version("1.0")
+        .title("API 문서")
+        .description("API 소개 및 사용법 등")
+        .version("1")
         .build();
   }
 }
