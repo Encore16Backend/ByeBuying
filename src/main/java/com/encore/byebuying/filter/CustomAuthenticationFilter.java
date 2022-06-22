@@ -1,40 +1,32 @@
 package com.encore.byebuying.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@Slf4j
+@Slf4j @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
-    private HashMap<String, String> json;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
+    private HashMap<String, String> json;
 
     // UsernamePasswordAuthenticationFilter의 obtainUsername와 obtainPassword는
     // json에 대한 요청을 처리하지 못한다.
@@ -81,6 +73,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String password = obtainPassword(request);
         log.info("{} attempt to login with {}", username, password);
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+
+        // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
+        // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
+        // UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
+        // UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
+        // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
+
+        // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
+        // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
+        // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
+
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -89,30 +92,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     // refresh_token의 유지 시간이 access_token의 유지 시간보다 길어야 한다.
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
-        User user = (User)authentication.getPrincipal();
-        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-
-        String access_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000)) // 10분
-                .withIssuer(request.getRequestURL().toString())
-                .withClaim("roles", roles)
-                .sign(algorithm); // 토큰 서명
-
-        String refresh_token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 300 * 60 * 1000))
-                .withIssuer(request.getRequestURL().toString())
-                .sign(algorithm);
-//        response.setHeader("access_token", access_token);
-//        response.setHeader("refresh_token", refresh_token);
-        Map<String, String> info = new HashMap<>();
-        info.put("access_token", access_token);
-        info.put("refresh_token", refresh_token);
-        info.put("roles", roles.get(0));
-        System.out.println(info);
         response.setContentType(APPLICATION_JSON_VALUE); // APPLICATION_JSON_VALUE = "application/json"
-        new ObjectMapper().writeValue(response.getOutputStream(), info);
+        Map<String, String> token = tokenProvider.createToken(request, authentication);
+        new ObjectMapper().writeValue(response.getOutputStream(), token); // 토큰 전달
     }
 }

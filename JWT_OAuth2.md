@@ -31,7 +31,7 @@
     
         {
          "id:"test",
-         "role":"user"
+         "roleType":"user"
         }
   
   ![img.png](JWT.png)
