@@ -15,7 +15,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        log.error("승인되지 않은 오유로 응답 -> 메시지: {}", authException.getMessage());
+        log.error("승인되지 않은 오류로 응답 -> 메시지: {}", authException.getMessage());
         response.sendError(response.SC_UNAUTHORIZED, authException.getLocalizedMessage());
     }
 }

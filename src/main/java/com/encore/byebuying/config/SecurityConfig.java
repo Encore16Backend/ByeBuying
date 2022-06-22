@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -117,6 +118,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .failureHandler(new OAuth2AuthenticationFailHandler(cookieAuthorizationRequestRepository()));
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenProvider));
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    // Swagger
+    @Override
+    public void configure(WebSecurity web) throws Exception { // http://127.0.0.1:8081/swagger-ui/index.html
+        web.ignoring()
+            .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/swagger-ui.html",
+                "/webjars/**", "/swagger/**");
     }
 
     @Bean
