@@ -1,6 +1,6 @@
 package com.encore.byebuying.domain.inquiry.dto;
 
-import com.encore.byebuying.domain.inquiry.vo.InquiryListVO;
+import com.encore.byebuying.domain.inquiry.Inquiry;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -13,8 +13,8 @@ import lombok.ToString;
 public class InquiryListDTO {
   private List<InquiryDTO> inquiries;
 
-  public InquiryListDTO(InquiryListVO inquiryListVO) {
-    this.inquiries = inquiryListVO.getInquiries().stream()
+  public InquiryListDTO(List<Inquiry> inquiries) {
+    this.inquiries = inquiries.stream()
         .map(InquiryDTO::new).collect(Collectors.toList());
   }
 }

@@ -122,7 +122,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     // Swagger
     @Override
-    public void configure(WebSecurity web) throws Exception { // http://127.0.0.1:8081/swagger-ui/index.html
+    public void configure(WebSecurity web) { // http://127.0.0.1:8081/swagger-ui/index.html
         web.ignoring()
             .antMatchers("/v3/api-docs", "/swagger-ui/**", "/swagger-resources/**", "/swagger-ui.html",
                 "/webjars/**", "/swagger/**");

@@ -44,7 +44,7 @@ public class InquiryController {
 
     // 문의사항 전체(페이징)
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1",value="page") int page) {
+    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1", value="page") int page) {
         PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
         InquiryListDTO inquiryListDTO = inquiryService.getInquiries(pageRequest);
         return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
@@ -52,7 +52,7 @@ public class InquiryController {
 
     // 유저별 문의사항 불러오기
     @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1",value="page") int page,
+    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1", value="page") int page,
         String username) {
         PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
         InquiryListDTO inquiryListDTO = inquiryService.getByUser(pageRequest, username);
@@ -61,7 +61,7 @@ public class InquiryController {
 
     // 문의사항 삭제
     @PostMapping("/removal:{id}")
-    public void deleteInquiry(@PathVariable Long id){
+    public void deleteInquiry(@PathVariable("id") Long id){
         inquiryService.deleteInquiryById(id);
     }
 

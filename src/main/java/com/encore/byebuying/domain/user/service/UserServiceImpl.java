@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 //    private final BasketRepository basketRepository;
 //    private final InquiryRepository inquiryRepository;
     private final OrderRepository orderHistoryRepo;
@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User saveUser(UserSaveDTO dto) {
         log.info("Saving new user {} to the database", dto.getUsername());
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         User user = User.initUser().dto(dto).build();
         return userRepository.save(user);
     }
