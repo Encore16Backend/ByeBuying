@@ -1,7 +1,7 @@
 package com.encore.byebuying.domain.item.service;
 
 import com.encore.byebuying.domain.item.ItemImage;
-import com.encore.byebuying.domain.order.Category;
+import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.item.Item;
 
 import org.springframework.data.domain.Page;
