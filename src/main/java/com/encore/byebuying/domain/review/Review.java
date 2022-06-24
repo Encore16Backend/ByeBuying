@@ -36,17 +36,17 @@ public class Review extends BaseTimeEntity {
 	private String content; // 리뷰 내용
 
 	// inquery는 public static인데 이유가?
-	public Review createReview(Long id, User user, Item item, double score, String content) {
-		Review review = Review.builder()
-				.id(id)
-				.user(user)
-				.item(item)
-				.score(score)
-				.content(content).build();
-
-		user.getReviews().add(review);
-		item.getReviews().add(review);
-
-		return review;
-	}
+//	public Review createReview(Long id, User user, Item item, double score, String content) {
+//		Review review = Review.builder()
+//				.id(id)
+//				.user(user)
+//				.item(item)
+//				.score(score)
+//				.content(content).build();
+//
+//		user.getReviews().add(review);
+//		item.getReviews().add(review);
+//
+//		return review;
+//	}
 }
