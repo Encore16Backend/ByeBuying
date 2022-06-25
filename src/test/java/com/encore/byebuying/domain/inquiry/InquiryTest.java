@@ -1,18 +1,15 @@
 package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
-import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
-import java.util.List;
 import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UserSaveDTO;
-import com.encore.byebuying.domain.user.service.UserService;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -25,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @SpringBootTest
 @Slf4j
@@ -66,7 +62,7 @@ class InquiryTest {
     log.info(">>> Req : {}", inquiryDTO);
 
     // 문의등록
-    InquiryDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     log.info(">>> save Inquiry : {}", saveInquiry);
     em.clear();
 
@@ -99,7 +95,7 @@ class InquiryTest {
     em.clear();
 
     InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
-    InquiryDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
     log.info(">>> create At: {}, update At: {}", saveResult.getCreatedAt(), saveResult.getModifiedAt());
     em.clear();
@@ -137,15 +133,15 @@ class InquiryTest {
 
     // 문의사항 전체 불러오기 TEST
     PageRequest allInquiryPaging = PageRequest.of(0, 5);
-    InquiryListDTO allInquiries = inquiryService.getInquiries(allInquiryPaging);
-    assertThat(allInquiries.getInquiries().size()).isEqualTo(5);
+    var allInquiries = inquiryService.getInquiries(allInquiryPaging);
+    assertThat(allInquiries.getContent().size()).isEqualTo(5);
 
     allInquiryPaging = PageRequest.of(1, 5);
     allInquiries = inquiryService.getInquiries(allInquiryPaging);
-    assertThat(allInquiries.getInquiries().size()).isEqualTo(3);
+    assertThat(allInquiries.getContent().size()).isEqualTo(3);
 
     // 문의사항 한개 불러오기 TEST
-    InquiryDTO inquiry = inquiryService.getById(3L);
+    var inquiry = inquiryService.getById(3L);
     assertThat(inquiry.getInquiry_id()).isEqualTo(3L);
     assertThat(inquiry.getTitle()).isEqualTo("3. testInquiry");
     assertThat(inquiry.getContent()).isEqualTo("3. testestestest");
@@ -153,9 +149,10 @@ class InquiryTest {
     // 문의사항 유저별 불러오기 TEST
     PageRequest byUserPaging = PageRequest.of(0, 5);
     User byUser = userRepository.getById(1L);
-    InquiryListDTO byUserInquiries = inquiryService.getByUser(byUserPaging, byUser.getUsername());
+    var byUserInquiries = inquiryService.getByUser(byUserPaging, byUser.getUsername());
+    var byUserInquiriesContent = byUserInquiries.getContent();
     for (int i=0; i<5; i++) {
-      assertThat(byUserInquiries.getInquiries().get(i).getUsername()).isEqualTo(byUser.getUsername());
+      assertThat(byUserInquiriesContent.get(i).getUsername()).isEqualTo(byUser.getUsername());
     }
   }
 
@@ -166,7 +163,7 @@ class InquiryTest {
     em.clear();
 
     InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
-    InquiryDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
     em.clear();
 
