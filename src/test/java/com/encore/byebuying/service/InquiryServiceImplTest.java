@@ -83,7 +83,7 @@ public class InquiryServiceImplTest {
         entityManager.flush();
         entityManager.clear();
 
-        Inquiry inquiry = Inquiry.createInquiry(user, item, "상품사이즈가 작아요", "큰 사이즈로 바꿔주세요");
+        Inquiry inquiry = Inquiry.createInquiry(user, "상품사이즈가 작아요", "큰 사이즈로 바꿔주세요");
 
         inquiryRepository.save(inquiry);
         entityManager.flush();

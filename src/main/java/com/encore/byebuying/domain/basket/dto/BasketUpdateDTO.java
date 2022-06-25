@@ -2,9 +2,11 @@ package com.encore.byebuying.domain.basket.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class BasketUpdateDTO {
-    private Long item_id;
+    private List<Long> item_ids;
     private Long user_id;
-    private int count;
+    private List<Integer> counts;
 }

@@ -7638,3 +7638,15 @@ org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (
 	at com.intellij.rt.junit.IdeaTestRunner$Repeater.startRunnerWithArgs(IdeaTestRunner.java:35)
 	at com.intellij.rt.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:235)
 	at com.intellij.rt.junit.JUnitStarter.main(JUnitStarter.java:54)
+2022-06-19 10:16:55 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT COUNT(.[*]) AS COL_0_0_ FROM BASKET BASKET0_ CROSS JOIN BASKET_ITEM BASKETITEM1_ WHERE BASKET0_.ID=BASKETITEM1_.BASKET_ID AND BASKET0_.ID=?"; expected "*, DISTINCT, ALL, NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+select count(.) as col_0_0_ from basket basket0_ cross join basket_item basketitem1_ where basket0_.id=basketitem1_.basket_id and basket0_.id=? [42001-200]
+2022-06-19 10:28:21 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT COUNT(.[*]) AS COL_0_0_ FROM BASKET BASKET0_ CROSS JOIN BASKET_ITEM BASKETITEM1_ WHERE BASKET0_.ID=BASKETITEM1_.BASKET_ID AND BASKET0_.ID=?"; expected "*, DISTINCT, ALL, NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+select count(.) as col_0_0_ from basket basket0_ cross join basket_item basketitem1_ where basket0_.id=basketitem1_.basket_id and basket0_.id=? [42001-200]
+2022-06-19 10:32:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT COUNT(.[*]) AS COL_0_0_ FROM BASKET BASKET0_ CROSS JOIN BASKET_ITEM BASKETITEM1_ WHERE BASKET0_.ID=BASKETITEM1_.BASKET_ID AND BASKET0_.ID=?"; expected "*, DISTINCT, ALL, NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+select count(.) as col_0_0_ from basket basket0_ cross join basket_item basketitem1_ where basket0_.id=basketitem1_.basket_id and basket0_.id=? [42001-200]
+2022-06-19 10:34:38 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT COUNT(.[*]) AS COL_0_0_ FROM BASKET BASKET0_ CROSS JOIN BASKET_ITEM BASKETITEM1_ WHERE BASKET0_.ID=BASKETITEM1_.BASKET_ID"; expected "*, DISTINCT, ALL, NOT, EXISTS, INTERSECTS, UNIQUE"; SQL statement:
+select count(.) as col_0_0_ from basket basket0_ cross join basket_item basketitem1_ where basket0_.id=basketitem1_.basket_id [42001-200]

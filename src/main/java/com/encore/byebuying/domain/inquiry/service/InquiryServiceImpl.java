@@ -29,14 +29,12 @@ public class InquiryServiceImpl implements InquiryService{
     @Override
     public Inquiry saveInquiry(InquirySaveDTO inquirySaveDTO) {
         Long user_id = inquirySaveDTO.getUser_id();
-        Long item_id = inquirySaveDTO.getItem_id();
         String content = inquirySaveDTO.getContent();
         String title = inquirySaveDTO.getTitle();
 
         User user = userRepository.getById(user_id);
-        Item item = itemRepository.getById(item_id);
 
-        Inquiry inquiry = Inquiry.createInquiry(user, item, title, content);
+        Inquiry inquiry = Inquiry.createInquiry(user, title, content);
 
         return inquiryRepository.save(inquiry);
     }
@@ -58,7 +56,7 @@ public class InquiryServiceImpl implements InquiryService{
 
     @Override
     public Page<Inquiry> getByItemid(Pageable pageable, Long item_id) {
-        return inquiryRepository.findByItemId(pageable, item_id);
+        return inquiryRepository.findByUserId(pageable, item_id);
     }
 
     @Override
@@ -68,7 +66,7 @@ public class InquiryServiceImpl implements InquiryService{
 
     @Override
     public Page<Inquiry> getByItemName(Pageable pageable, String itemName) {
-        return inquiryRepository.findByItemName(pageable, itemName);
+        return inquiryRepository.findByUserName(pageable, itemName);
     }
 
 

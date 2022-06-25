@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface BasketItemRepository extends JpaRepository<BasketItem, Long> {
 
     @Query("select b from BasketItem b where b.basket.id = :basket_id")
-     Page<BasketItem> findByBasketId( Pageable pageable,@Param("basket_id") Long basket_id);
+    Page<BasketItem> findByBasketId(Pageable pageable,@Param("basket_id") Long basket_id);
 
 }

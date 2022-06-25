@@ -23,7 +23,7 @@ public class Basket extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<BasketItem> basketItems = new ArrayList<>();
 
 

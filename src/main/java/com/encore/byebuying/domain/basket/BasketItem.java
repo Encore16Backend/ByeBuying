@@ -39,4 +39,8 @@ public class BasketItem {
     public void setBasket(Basket basket) {
         this.basket = basket;
     }
+
+    public void setCount(int count){
+        this.count = count;
+    }
 }

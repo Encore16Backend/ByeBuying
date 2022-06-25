@@ -28,10 +28,6 @@ public class Inquiry extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
-
     private String title;
     private String content;
     private String answer;
@@ -40,16 +36,14 @@ public class Inquiry extends BaseTimeEntity {
 
     private int chkanswer;
 
-    public static Inquiry createInquiry(User user, Item item, String title, String content){
+    public static Inquiry createInquiry(User user, String title, String content){
         Inquiry inquiry = Inquiry.builder()
                 .user(user)
-                .item(item)
                 .title(title)
                 .chkanswer(0)
                 .content(content).build();
 
         user.getInquiries().add(inquiry);
-        item.getInquiries().add(inquiry);
 
         return inquiry;
     }

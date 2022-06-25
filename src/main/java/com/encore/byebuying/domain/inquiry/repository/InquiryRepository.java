@@ -12,11 +12,8 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     @Query("select i from Inquiry i where i.user.id = :userId")
     Page<Inquiry> findByUserId(Pageable pageable, @Param("userId") Long userId);
 
-    @Query("select i from Inquiry i where i.item.id = :itemId")
-    Page<Inquiry> findByItemId(Pageable pageable, @Param("itemId") Long itemId);
-
-    @Query("select i from Inquiry i where i.item.name like %:itemName%")
-    Page<Inquiry> findByItemName(Pageable pageable, @Param("itemName") String itemName);
+    @Query("select i from Inquiry i where i.user.username like %:username%")
+    Page<Inquiry> findByUserName(Pageable pageable, @Param("username") String username);
 
 
 

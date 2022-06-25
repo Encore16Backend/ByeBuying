@@ -11,8 +11,12 @@ import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,6 +31,9 @@ public class BasketRepositoryTest {
     ItemRepository itemRepository;
     @Autowired
     UserRepository userRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     public void createItem(){
@@ -107,5 +114,6 @@ public class BasketRepositoryTest {
 
         assertThat(basketItem.getId()).isEqualTo(findBasketItem.getId());
     }
+
 
 }

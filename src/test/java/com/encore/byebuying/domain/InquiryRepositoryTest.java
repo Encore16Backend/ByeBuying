@@ -64,14 +64,12 @@ public class InquiryRepositoryTest {
         User user = givenUser();
         Item item = givenItem();
 
-        Inquiry inquiry = Inquiry.createInquiry(user, item, "title", "content");
+        Inquiry inquiry = Inquiry.createInquiry(user, "title", "content");
         Inquiry inquiry1 = inquiryRepository.save(inquiry);
 
         entityManager.flush();
         entityManager.clear();
 
-        String findInquiryContent = item.getInquiries().get(0).getContent();
-        System.out.println("findInquiryContent = " + findInquiryContent);
         assertThat(inquiry.getId()).isEqualTo(inquiry1.getId());
     }
 
