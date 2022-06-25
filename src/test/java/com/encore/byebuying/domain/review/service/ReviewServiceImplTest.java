@@ -31,30 +31,62 @@ class ReviewServiceImplTest {
     ReviewRepository reviewRepository;
     @Test
     void save() {
+
+        //given
         User user = givenUser("test용 user1");
         Item item = givenItem("test용 item");
 
-        Review review = Review.builder()
-                .user(user)
-                .item(item)
-                .score(5)
-                .content("review save test").build();
+        //when
+        Review review = Review.builder().user(user).item(item).score(5).content("review save test").build();
+        Review saveReview = reviewRepository.save(review);
 
-        reviewRepository.save(review);
-        List<Review> findReview = reviewRepository.findByItem(item);
+        //then
+        Review findReview = reviewRepository.findById(saveReview.getId()).get();
+        assertThat(saveReview).isEqualTo(findReview);
+    }
 
-        assertThat(findReview.size()).isEqualTo(1);
+    @Test
+    void findByItemId() {
+        //given
+        User user1 = givenUser("test용 user1");
+        Item item1 = givenItem("test용 item1");
+        Item item2 = givenItem("test용 item2");
 
+        //when
+        Review review1 = Review.builder().user(user1).item(item1).score(5).content("review save test").build();
+        Review review2 = Review.builder().user(user1).item(item2).score(5).content("review save test").build();
+        Review review3 = Review.builder().user(user1).item(item2).score(5).content("review save test").build();
+        Review saveReview1 = reviewRepository.save(review1);
+        Review saveReview2 = reviewRepository.save(review2);
+        Review saveReview3 = reviewRepository.save(review3);
+
+        //then
+        List<Review> findReviews1 = reviewRepository.findByItemId(item1.getId());
+        List<Review> findReviews2 = reviewRepository.findByItemId(item2.getId());
+        assertThat(findReviews1.size()).isEqualTo(1);
+        assertThat(findReviews2.size()).isEqualTo(2);
+    }
+    @Test
+    void findByUserId() {
+        //given
+        User user1 = givenUser("test용 user1");
         User user2 = givenUser("test용 user2");
-        Review review2 = Review.builder()
-                .user(user2)
-                .item(item)
-                .score(1)
-                .content("review save test2").build();
-        reviewRepository.save(review2);
-        List<Review> findReview2 = reviewRepository.findByItem(item);
+        Item item1 = givenItem("test용 item1");
+        Item item2 = givenItem("test용 item2");
 
-        assertThat(findReview2.size()).isEqualTo(2);
+        //when
+        Review review1 = Review.builder().user(user1).item(item1).score(5).content("review save test").build();
+        Review review2 = Review.builder().user(user2).item(item1).score(5).content("review save test").build();
+        Review review3 = Review.builder().user(user2).item(item2).score(5).content("review save test").build();
+        Review saveReview1 = reviewRepository.save(review1);
+        Review saveReview2 = reviewRepository.save(review2);
+        Review saveReview3 = reviewRepository.save(review3);
+
+        //then
+        List<Review> findReviews1 = reviewRepository.findByUserId(user1.getId());
+        List<Review> findReviews2 = reviewRepository.findByUserId(user2.getId());
+        assertThat(findReviews1.size()).isEqualTo(1);
+        assertThat(findReviews2.size()).isEqualTo(2);
     }
 
 
@@ -73,4 +105,5 @@ class ReviewServiceImplTest {
                 .build();
         return itemRepository.save(item);
     }
+
 }

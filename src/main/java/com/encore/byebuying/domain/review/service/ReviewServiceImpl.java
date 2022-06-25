@@ -3,7 +3,9 @@ package com.encore.byebuying.domain.review.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import com.encore.byebuying.domain.item.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,20 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+
 	@Override
 	public Review save(Review review) {
 		return reviewRepository.save(review);
+	}
+
+	@Override
+	public List<Review> findByItemId(Long itemId) {
+		return reviewRepository.findByItemId(itemId);
+	}
+
+	@Override
+	public List<Review> findByUserId(Long userId) {
+		return reviewRepository.findByUserId(userId);
 	}
 
 	//	@Override
