@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
 //        basketRepo.deleteAllByUsername(username);
 //        inquiryRepo.deleteAllByUsername(username);
         orderHistoryRepo.deleteAllByUsername(username);
-        reviewRepository.deleteAllByUsername(username);
+//        reviewRepository.deleteAllByUsername(username);
         userRepository.deleteByUsername(username);
     }
 

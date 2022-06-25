@@ -2,6 +2,7 @@ package com.encore.byebuying.domain.item;
 
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.review.Review;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,6 +42,11 @@ public class Item extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Inquiry> inquiries = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Review> reviews = new ArrayList<>();
+
 
     // 생성 메소드
     // 파라미터 인자는 꼭 필요한 애들
