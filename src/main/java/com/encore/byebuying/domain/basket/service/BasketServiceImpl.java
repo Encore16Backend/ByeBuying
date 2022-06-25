@@ -25,7 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Slf4j
 public class BasketServiceImpl implements BasketService{
 
@@ -39,6 +39,8 @@ public class BasketServiceImpl implements BasketService{
 
     /**
      * 페이징해서 장바구니 아이템을 리턴
+     * dto로 변환해서 리턴, dto에서 페이징 처리필요
+     * 조회만 할때는 get으로 조회하여 변경의 여지를 줄인다.
      * */
     @Override
     public Page<BasketItem> findById(Pageable pageable, Long user_id) {
@@ -51,6 +53,7 @@ public class BasketServiceImpl implements BasketService{
      * @param basketUpdateDTO
      * 장바구니 상품 갯수 수정
      * */
+    @Transactional
     @Override
     public void updateBasketItem(BasketUpdateDTO basketUpdateDTO) {
 
@@ -75,6 +78,8 @@ public class BasketServiceImpl implements BasketService{
      * Long user_id,Long item_id,int count
      * 장바구니에 상품 추가
      * */
+
+    @Transactional
     @Override
     public void addBasketItem(BasketAddDTO basketAddDTO) {
 
@@ -89,6 +94,7 @@ public class BasketServiceImpl implements BasketService{
         findUser.getBasket().addBasketItem(basketItem);
     }
 
+    @Transactional
     @Override
     public void deleteBasketItem(BasketDeleteDTO basketDeleteDTO) {
         Long user_id = basketDeleteDTO.getUser_id();
