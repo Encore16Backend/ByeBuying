@@ -2,6 +2,7 @@ package com.encore.byebuying.domain.item;
 
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.review.Review;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,12 +37,18 @@ public class Item extends BaseTimeEntity {
     // 상품에서 카테고리를 확인할 일이 없음.
     private Long categoryId;
 
-    private int stockQuantity; // 상품 수량
+    @Builder.Default
+    private int stockQuantity = 0; // 상품 수량
 
 //    Item에 Inquiry 필요 x
 //    @Builder.Default
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    List<Inquiry> inquiries = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Review> reviews = new ArrayList<>();
+
 
     // 생성 메소드
     // 파라미터 인자는 꼭 필요한 애들
@@ -67,6 +74,13 @@ public class Item extends BaseTimeEntity {
      */
     public void settingStock(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    /**
+     * 재고 증가
+     */
+    public void addStock(int count) {
+        stockQuantity += count;
     }
 
     /** 재고 감소 */

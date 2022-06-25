@@ -7,6 +7,7 @@ import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
+import com.encore.byebuying.domain.review.Review;
 import com.encore.byebuying.domain.user.dto.UserSaveDTO;
 import java.util.LinkedList;
 import lombok.*;
@@ -62,6 +63,10 @@ public class User extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Inquiry> inquiries = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Review> reviews = new ArrayList<>();
 
     // OAuth
     public User(String username, String email, RoleType roleType, ProviderType providerType, String providerId) {

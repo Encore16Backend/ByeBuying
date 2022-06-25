@@ -37,4 +37,5 @@ src/main/resources/*.properties
 DataCrwaling/**
 
 ## 환경 설정파일들
-/**/**.yml
+application-db.yml
+application-oauth.yml

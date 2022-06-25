@@ -23,17 +23,16 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final UserRepository userRepository;
 	private final ItemRepository itemRepository;
 
-//	private final EntityManager em;
-
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+	@Transactional
 	public Long order(OrderDTO orderDto) {
 		List<Long> itemIdList = orderDto.getItems().stream().map(OrderItemInfoDTO::getItemId).collect(Collectors.toList());
 
@@ -62,9 +61,17 @@ public class OrderServiceImpl implements OrderService {
 		return order.getId();
 	}
 
+	@Transactional
+	public void cancelOrder(Long orderId) {
+		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		Order order = optionalOrder.orElseThrow(() -> new NullPointerException());
+
+		order.cancel();
+	}
+
 	@Override
-	public Order findById(Long id) {
-		Order order = orderRepository.findById(id).orElse(null);
+	public Order findById(Long orderId) {
+		Order order = orderRepository.findById(orderId).orElse(null);
 
 		return order;
 	}
@@ -85,20 +92,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void saveOrderHistory(List<Order> order) {
-		log.info("Save OrderHistories: List");
-		orderRepository.saveAll(order);
-	}
-
-	@Override
-	public void saveOrderHistory(Order order) {
-		log.info("Save OrderHistory");
-		orderRepository.save(order);
-	}
-
-
-	@Override
-	public void deleteOrderHistory(Long id) {
+	@Transactional
+	public void deleteOrder(Long id) {
 		log.info("delete OrderHistory id : {}",id);
 		orderRepository.deleteById(id);
 	}

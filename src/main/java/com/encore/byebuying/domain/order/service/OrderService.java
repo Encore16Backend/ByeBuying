@@ -14,8 +14,5 @@ public interface OrderService {
 	Order findById(Long id);
 	Page<Order> findByUsername(Pageable pageable, String username);
 	Page<Order> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;
-	void saveOrderHistory(List<Order> order);
-	void saveOrderHistory(Order order);
-	@Transactional
-	void deleteOrderHistory(Long id);
+	void deleteOrder(Long id);
 }
