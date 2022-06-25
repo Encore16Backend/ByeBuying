@@ -1,4 +1,4 @@
-package com.encore.byebuying.domain.order;
+package com.encore.byebuying.domain.category;
 
 import lombok.*;
 

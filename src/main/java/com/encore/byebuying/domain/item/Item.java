@@ -37,7 +37,8 @@ public class Item extends BaseTimeEntity {
     // 상품에서 카테고리를 확인할 일이 없음.
     private Long categoryId;
 
-    private int stockQuantity; // 상품 수량
+    @Builder.Default
+    private int stockQuantity = 0; // 상품 수량
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -72,6 +73,13 @@ public class Item extends BaseTimeEntity {
      */
     public void settingStock(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    /**
+     * 재고 증가
+     */
+    public void addStock(int count) {
+        stockQuantity += count;
     }
 
     /** 재고 감소 */

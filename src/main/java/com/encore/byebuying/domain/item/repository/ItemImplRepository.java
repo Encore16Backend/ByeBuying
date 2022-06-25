@@ -1,23 +1,17 @@
 package com.encore.byebuying.domain.item.repository;
 
+import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.QItem;
 import com.encore.byebuying.domain.order.QCategory;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPQLQuery;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import com.encore.byebuying.domain.item.Item;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.JPQLQuery;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.*;
 
 @Slf4j
 public class ItemImplRepository extends QuerydslRepositorySupport implements ItemCustomRepository {

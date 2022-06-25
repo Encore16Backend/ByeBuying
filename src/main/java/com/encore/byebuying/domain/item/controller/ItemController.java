@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.item.controller;
 
 import com.encore.byebuying.domain.item.ItemImage;
 import com.encore.byebuying.domain.item.dto.ItemAddDTO;
-import com.encore.byebuying.domain.order.Category;
+import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.CategoryRepository;
 import com.encore.byebuying.domain.item.repository.ItemImageRepository;
