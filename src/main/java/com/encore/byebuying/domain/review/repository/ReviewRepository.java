@@ -37,4 +37,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long>{
 //   	int CountScoreByItemname(@Param("keyword1") String itemname);
 //
 //	void deleteAllByUsername(String username);
+
 }

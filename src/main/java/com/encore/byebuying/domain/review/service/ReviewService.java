@@ -30,4 +30,5 @@ public interface ReviewService {
 //	void deleteReviewById(Long id);
 //	String getAvgScoreByItemname(String itemname);
 //	int countScoreByItemname(String itemname);
+
 }

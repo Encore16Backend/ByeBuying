@@ -44,8 +44,9 @@ public class Item extends BaseTimeEntity {
     List<Inquiry> inquiries = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Review> reviews = new ArrayList<>();
+
 
     // 생성 메소드
     // 파라미터 인자는 꼭 필요한 애들
