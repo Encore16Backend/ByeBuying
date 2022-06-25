@@ -1,89 +1,88 @@
 package com.encore.byebuying.domain.inquiry.service;
 
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
-import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service @RequiredArgsConstructor @Slf4j
 public class InquiryServiceImpl implements InquiryService{
-
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * parmas user_id, item_id, content, title
-     * */
     @Override
-    public Inquiry saveInquiry(InquirySaveDTO inquirySaveDTO) {
-        Long user_id = inquirySaveDTO.getUser_id();
-        Long item_id = inquirySaveDTO.getItem_id();
-        String content = inquirySaveDTO.getContent();
-        String title = inquirySaveDTO.getTitle();
-
-        User user = userRepository.getById(user_id);
-        Item item = itemRepository.getById(item_id);
-
-        Inquiry inquiry = Inquiry.createInquiry(user, item, title, content);
-
-        return inquiryRepository.save(inquiry);
+    @Transactional // 서비스 메소드에 transactional 걸어야 함
+    public InquiryDTO saveInquiry(InquirySaveDTO inquirySaveDTO) {
+        User user = userRepository.findByUsername(inquirySaveDTO.getUsername())
+            .orElseThrow(EntityNotFoundException::new);
+        Inquiry inquiry = inquiryRepository.save(Inquiry.createInquiry(inquirySaveDTO, user));
+        return new InquiryDTO(inquiry);
     }
 
     @Override
+    @Transactional
+    public void answerToInquiry(InquiryAnswerDTO dto) {
+        Inquiry inquiry = inquiryRepository.findById(dto.getInquiry_id())
+            .orElseThrow(NullPointerException::new);
+        inquiry.inquiryAnswer(dto.getAnswer());
+    }
+
+    @Override
+    @Transactional(readOnly = true) // Transactional(readOnly = true)로 엔티티 변경 감지 막음
+    // TODO: readOnly 제대로 되는지 확인 필요
+    public InquiryDTO getById(Long id) {
+        return new InquiryDTO(inquiryRepository.getById(id)); // 없으면 EntityNotFoundException 뜸
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public InquiryListDTO getInquiries(Pageable pageable) {
+        Page<Inquiry> inquiries = inquiryRepository.findAll(pageable);
+        log.info(">>> getTotalPages: {}", inquiries.getTotalPages());
+        log.info(">>> getTotalElements: {}", inquiries.getTotalElements());
+        log.info(">>> getContent: {}", inquiries.getContent());
+        return new InquiryListDTO(inquiries.getContent());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public InquiryListDTO getByUser(Pageable pageable, String username) {
+        Long user_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getId();
+        Page<Inquiry> inquiries = inquiryRepository.findByUserId(pageable, user_id);
+        log.info(">>> user_id: {}", user_id);
+        log.info(">>> getTotalPages: {}", inquiries.getTotalPages());
+        log.info(">>> getTotalElements: {}", inquiries.getTotalElements());
+        log.info(">>> getContent: {}", inquiries.getContent());
+        return new InquiryListDTO(inquiries.getContent());
+    }
+
+    @Override
+    @Transactional
     public void deleteInquiryById(Long id) {
         inquiryRepository.deleteById(id);
     }
 
-    @Override
-    public Inquiry getById(Long id) {
-        return inquiryRepository.getById(id);
-    }
-
-    @Override
-    public Page<Inquiry> getInquiries(Pageable pageable) {
-        return inquiryRepository.findAll(pageable);
-    }
-
-    @Override
-    public Page<Inquiry> getByItemid(Pageable pageable, Long item_id) {
-        return inquiryRepository.findByItemId(pageable, item_id);
-    }
-
-    @Override
-    public Page<Inquiry> getByUserId(Pageable pageable, Long user_id) {
-        return inquiryRepository.findByUserId(pageable, user_id);
-    }
-
-    @Override
-    public Page<Inquiry> getByItemName(Pageable pageable, String itemName) {
-        return inquiryRepository.findByItemName(pageable, itemName);
-    }
-
-
-
-    @Override
-    public void answerToInquiry(Long inquiry_id, String answer) {
-        Inquiry inquiry = inquiryRepository.getById(inquiry_id);
-        inquiry.setChkanswer(1);
-        inquiry.setAnswer(answer);
-    }
-
-
-
-
-
+//    @Override
+//    public Page<Inquiry> getByItemid(Pageable pageable, Long item_id) {
+//        return inquiryRepository.findByItemId(pageable, item_id);
+//    }
+//
+//    @Override
+//    public Page<Inquiry> getByItemName(Pageable pageable, String itemName) {
+//        return inquiryRepository.findByItemName(pageable, itemName);
+//    }
+//
 //    @Override
 //    public Inquiry saveInquiry(Inquiry inquiry){
 //        log.info("Saving new Inquiry");

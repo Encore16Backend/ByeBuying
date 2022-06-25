@@ -40,9 +40,10 @@ public class Item extends BaseTimeEntity {
     @Builder.Default
     private int stockQuantity = 0; // 상품 수량
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Inquiry> inquiries = new ArrayList<>();
+//    Item에 Inquiry 필요 x
+//    @Builder.Default
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    List<Inquiry> inquiries = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
