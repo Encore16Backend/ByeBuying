@@ -4,8 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.config.properties.AppProperties;
-import com.encore.byebuying.domain.UserRefreshToken;
-import com.encore.byebuying.repo.UserRefreshTokenRepo;
+import com.encore.byebuying.domain.user.UserRefreshToken;
+import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class TokenProvider {
 
     private final AppProperties appProperties;
-    private final UserRefreshTokenRepo userRefreshTokenRepo;
+    private final UserRefreshTokenRepository userRefreshTokenRepository;
 
     public Map<String, String> createToken(HttpServletRequest request, Authentication authentication) {
         PrincipalDetails user = (PrincipalDetails) authentication.getPrincipal();
@@ -49,7 +49,7 @@ public class TokenProvider {
 
         // DB에 refresh token 저장
         UserRefreshToken userRefreshToken = new UserRefreshToken(user.getUsername(), refresh_token);
-        userRefreshTokenRepo.save(userRefreshToken);
+        userRefreshTokenRepository.save(userRefreshToken);
 
         log.info("User {} token : \n {}", user.getUsername(), token);
         return token;

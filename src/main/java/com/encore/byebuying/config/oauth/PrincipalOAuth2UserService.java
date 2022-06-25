@@ -2,10 +2,10 @@ package com.encore.byebuying.config.oauth;
 
 import com.encore.byebuying.config.Exception.OAuth2AuthenticationProcessingException;
 import com.encore.byebuying.config.auth.PrincipalDetails;
-import com.encore.byebuying.domain.User;
-import com.encore.byebuying.domain.ProviderType;
-import com.encore.byebuying.domain.Role;
-import com.encore.byebuying.repo.UserRepo;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.code.ProviderType;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service @RequiredArgsConstructor @Slf4j
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -39,7 +39,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         ProviderType providerType = ProviderType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(providerType, user.getAttributes());
 
-        User saveUser = userRepo.findByUsername(oAuth2UserInfo.getUsername()).orElse(null);
+        User saveUser = userRepository.findByUsername(oAuth2UserInfo.getUsername()).orElse(null);
         if (saveUser != null && !saveUser.getProvider().equals(providerType)) {
             throw new OAuth2AuthenticationProcessingException("Miss Match Provider Type. User: {}"+ saveUser);
         }
@@ -52,9 +52,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         User user = new User(
                 oAuth2UserInfo.getUsername(),
                 oAuth2UserInfo.getEmail(),
-                Role.USER,
+                RoleType.USER,
                 providerType,
                 oAuth2UserInfo.getProviderId());
-        return userRepo.save(user);
+        return userRepository.save(user);
     }
 }
