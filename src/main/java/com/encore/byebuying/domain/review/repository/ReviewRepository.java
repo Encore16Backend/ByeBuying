@@ -14,11 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long>{
-
-	Review save(Review review);
-
-	List<Review> findByItem(Item item);
-
+	List<Review> findByItemId(Long itemId);
+	List<Review> findByUserId(Long userId);
 //	Review findReviewById(Long id);
 //	Page<Review> findByItemid(Pageable pageable,Long itemid);
 //
