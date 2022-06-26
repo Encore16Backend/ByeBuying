@@ -2,13 +2,16 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.basket.dto.BasketItemDTO;
 import com.encore.byebuying.domain.basket.service.BasketServiceImpl;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
 import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.user.dto.UserSaveDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +27,7 @@ import javax.persistence.PersistenceContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,20 +49,20 @@ public class BasketServiceImplTest {
     @PersistenceContext
     private EntityManager entityManager;
 
+    public UserSaveDTO createUser() {
+        Collection<Location> locations = new ArrayList<>();
+        locations.add(new Location(null, "testetesttest"));
+        return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
+    }
+
+
+
 
     public User givenUser(){
-        Basket basket = Basket.builder().id(1L)
-                .basketItems(new ArrayList<>()).build();
-
-        basketRepository.save(basket);
-        User user = User.builder()
-                .username("유저1")
-                .password("1111")
-                .email("test@naver.com")
-                .basket(basket)
-                .roleType(RoleType.USER)
-                .build();
-        return userRepository.save(user);
+        User user = userRepository.save(new User(createUser()));
+        entityManager.flush();
+        entityManager.clear();
+        return user;
     }
 
     public Item givenItem(){
@@ -70,67 +74,24 @@ public class BasketServiceImplTest {
                 .build();
         return itemRepository.save(item);
     }
-    
-    @Test
-    public void test(){
-        Basket basket = Basket.builder().id(1L).build();
-        basketRepository.save(basket);
-
-        entityManager.flush();
-        entityManager.clear();
-
-        User user = User.builder()
-                .username("유저1")
-                .password("1111")
-                .email("test@naver.com")
-                .basket(basket)
-                .roleType(RoleType.USER)
-                .build();
-        userRepository.save(user);
-
-        entityManager.flush();
-        entityManager.clear();
-
-        User findUser = userRepository.getById(1L);
-
-        System.out.println("user :" + user);
-        System.out.println("findUser = " + findUser);
-        
-        assertThat(user.getId()).isEqualTo(findUser.getId());
-    }
 
     /***
      * param : String username, Long item_id
      *
      */
     @Test
-    public void createBasketItem() throws Exception{
-        // given
+    public void createBasket() throws Exception {
         User user = givenUser();
         Item item = givenItem();
         entityManager.flush();
         entityManager.clear();
-        BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-
-        // when
-        // 유저 장바구니에 add
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
-
-        System.out.println("user.basket.getId = " + user.getBasket().getId());
-        System.out.println("basketItem.getBasket().getId() = " + basketItem.getBasket().getId());
-
-        List<BasketItem> lists  = user.getBasket().getBasketItems();
-        for (int i = 0; i < lists.size(); i ++){
-            System.out.println("item : " + lists.get(i).getItem());
-        }
-
-        // then
-        assertThat(user.getBasket().getId()).isEqualTo(basketItem.getBasket().getId());
+        System.out.println(user.getBasket().getBasketItems().get(0).getItem().getName());
+        System.out.println(user.getBasket().getBasketItems().get(0).getCount());
+        assertThat(user.getBasket().getBasketItems().get(0).getItem().getName()).isEqualTo("상품");
     }
 
     @Test
@@ -140,21 +101,25 @@ public class BasketServiceImplTest {
         Item item = givenItem();
         entityManager.flush();
         entityManager.clear();
-        BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-        // 유저 장바구니에 add
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
 
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
 
-        // when
-        user.getBasket().deleteBasketItem(item.getId());
+        List<Long> ids = new ArrayList<>();
+        ids.add(item.getId());
+
+        List<BasketItem> basket = user.getBasket().getBasketItems();
+        for (Long id : ids){
+            basket.removeIf(bItem -> (bItem.getItem().getId() == id) );
+        }
+
         entityManager.flush();
         entityManager.clear();
 
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()2");
         // then
         assertThat(user.getBasket().getBasketItems().size()).isEqualTo(0);
     }
@@ -166,33 +131,58 @@ public class BasketServiceImplTest {
         Item item = givenItem();
         entityManager.flush();
         entityManager.clear();
-        BasketItem basketItem = BasketItem.createBasketItem(item, 5);
-        basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-        // 유저 장바구니에 add
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
 
-        // 수량을 변경
-//        basketItem.setCount(10);
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
+
+        List<Long> ids = new ArrayList<>();
+        ids.add(item.getId());
+
+        int changeCnt = 1;
+
+        List<BasketItem> basket = user.getBasket().getBasketItems();
+        for (Long id : ids){
+            for (BasketItem bItme : basket){
+                if (bItme.getItem().getId() == id){
+                    bItme.setCount(changeCnt);
+                }
+            }
+        }
+
         entityManager.flush();
         entityManager.clear();
 
-        user.getBasket().updateBasketItem(basketItem);
-        entityManager.flush();
-        entityManager.clear();
-
-        System.out.println("user.getBasket().getBasketItems().get(0).getCount() = " + user.getBasket().getBasketItems().get(0).getCount());
         // then
-        assertThat(user.getBasket().getBasketItems().get(0).getCount()).isEqualTo(10);
+        assertThat(user.getBasket().getBasketItems().get(0).getCount()).isEqualTo(changeCnt);
+    }
+
+    @Test
+    public void getByIdTest(){
+        User user = givenUser();
+        Item item = givenItem();
+        entityManager.flush();
+        entityManager.clear();
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
+        basketItemRepository.save(basketItem);
+        user.getBasket().addBasketItem(basketItem);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        BasketItemDTO basketItemDTO = basketServiceImpl.getById(basketItem.getId());
+        System.out.println(basketItemDTO);
     }
 
 
     @Test
     public void BasketItemPaging(){
+        // given
         User user = givenUser();
+        entityManager.flush();
+        entityManager.clear();
 
         Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
         Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
@@ -201,14 +191,17 @@ public class BasketServiceImplTest {
         Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
 
         itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
+        entityManager.flush();
+        entityManager.clear();
 
-        BasketItem basketItem1 = BasketItem.createBasketItem(item1, 5);
-        BasketItem basketItem2 = BasketItem.createBasketItem(item2, 5);
-        BasketItem basketItem3 = BasketItem.createBasketItem(item3, 5);
-        BasketItem basketItem4 = BasketItem.createBasketItem(item4, 5);
-        BasketItem basketItem5 = BasketItem.createBasketItem(item5, 5);
 
-        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+
+        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem2 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem3 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem4 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem5 = BasketItem.createBasketItem().item(item1).count(5).build();
+
 
         Basket userBasket = user.getBasket();
 
@@ -218,13 +211,14 @@ public class BasketServiceImplTest {
         userBasket.addBasketItem(basketItem4);
         userBasket.addBasketItem(basketItem5);
 
+        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+
         entityManager.flush();
         entityManager.clear();
 
         PageRequest pageRequest = PageRequest.of(1, 2);
 
-        Page<BasketItem> basketItems = basketServiceImpl.findByUserId(pageRequest, user.getId());
-
+        Page<BasketItem> basketItems = basketServiceImpl.findById(pageRequest, user.getId());
 
         System.out.println("basketItems.getContent() = " + basketItems.getContent());
         System.out.println("basketItems.getTotalElements() = " + basketItems.getTotalElements());

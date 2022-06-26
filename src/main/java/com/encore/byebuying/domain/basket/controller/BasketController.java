@@ -22,9 +22,9 @@ public class BasketController {
     @GetMapping("/items")
     public ResponseEntity<?> getBasketItems(@RequestParam(defaultValue="",value="userId") Long userId,
                                             @RequestParam(required = false, defaultValue="1",value="page") int page) {
-        PageRequest pageRequest = PageRequest.of(page-1, 5);
-        Page<BasketItem> basketItems = basketService.findByUserId(pageRequest, userId);
-        return new ResponseEntity<>(basketItems, HttpStatus.OK);
+//        PageRequest pageRequest = PageRequest.of(page-1, 5);
+//        Page<BasketItem> basketItems = basketService.findById(pageRequest, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Transactional
