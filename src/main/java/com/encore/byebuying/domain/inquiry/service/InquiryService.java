@@ -1,19 +1,18 @@
 package com.encore.byebuying.domain.inquiry.service;
 
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import org.springframework.data.domain.Page;
+import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import org.springframework.data.domain.Pageable;
 
 public interface InquiryService {
-    InquiryDTO saveInquiry(InquirySaveDTO dto);
-    InquiryDTO getById(Long id);
+    InquiryResponseDTO saveInquiry(InquirySaveDTO dto);
+    InquiryResponseDTO getById(Long id);
     void answerToInquiry(InquiryAnswerDTO dto);
-    InquiryListDTO getInquiries(Pageable pageable);
-    InquiryListDTO getByUser(Pageable pageable, String username);
+    PagingResponse<Inquiry, InquiryResponseDTO> getInquiries(Pageable pageable);
+    PagingResponse<Inquiry, InquiryResponseDTO> getByUser(Pageable pageable, String username);
     void deleteInquiryById(Long id);
 
 //    Item과 무관
