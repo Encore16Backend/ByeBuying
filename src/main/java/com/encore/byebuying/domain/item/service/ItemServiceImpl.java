@@ -3,7 +3,7 @@ package com.encore.byebuying.domain.item.service;
 import com.encore.byebuying.domain.item.ItemImage;
 import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.item.Item;
-import com.encore.byebuying.domain.item.repository.CategoryRepository;
+import com.encore.byebuying.domain.category.repository.CategoryRepository;
 import com.encore.byebuying.domain.item.repository.ItemImageRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;

@@ -39,3 +39,5 @@ DataCrwaling/**
 ## 환경 설정파일들
 application-db.yml
 application-oauth.yml
+application-test.yml
+application-mail.yml

@@ -33,7 +33,7 @@ public class Order extends BaseTimeEntity {
 	// 하나의 주문내역은 여러 주문된 아이템들을 가짐
 	@Builder.Default
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<OrderItem> items = new ArrayList<>();
+	private List<OrderItem> orderItems = new ArrayList<>();
 
 	@Embedded
 	private Address address;
@@ -76,7 +76,7 @@ public class Order extends BaseTimeEntity {
 	/** 연관관계 */
 	public void addOrderItem(OrderItem orderItem) {
 		orderItem.setOrder(this);
-		items.add(orderItem);
+		orderItems.add(orderItem);
 	}
 }
 

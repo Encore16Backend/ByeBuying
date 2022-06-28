@@ -3,6 +3,7 @@ package com.encore.byebuying.domain.order.service;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoDTO;
 import com.encore.byebuying.domain.order.dto.OrderDTO;
+import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
@@ -56,8 +57,6 @@ public class OrderServiceImpl implements OrderService {
 		Order order = Order.createOrder(findUser, orderItems, findUser.getAddress());
 		orderRepository.save(order);
 
-//		em.flush();
-//		em.clear();
 		return order.getId();
 	}
 
@@ -71,7 +70,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public Order findById(Long orderId) {
-		Order order = orderRepository.findById(orderId).orElse(null);
+		Order order = orderRepository.getById(orderId);
+
+		new OrderResponseDTO(order);
 
 		return order;
 	}
