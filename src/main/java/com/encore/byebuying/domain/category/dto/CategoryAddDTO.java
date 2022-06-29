@@ -13,6 +13,7 @@ public class CategoryAddDTO {
     private Long parentId;
 
     public CategoryAddDTO(String name, Long parentId) {
-
+        this.name = name;
+        this.parentId = parentId;
     }
 }
