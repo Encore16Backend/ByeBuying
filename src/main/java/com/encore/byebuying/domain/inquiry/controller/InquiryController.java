@@ -1,25 +1,19 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
 import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
+import com.encore.byebuying.domain.inquiry.dto.InquiryGetDTO;
 import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
-import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/inquiry")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
-    private final int PAGECOUNT = 5;
 
     // 문의사항 등록
     @PostMapping
@@ -30,7 +24,7 @@ public class InquiryController {
 
     // 문의사항 답변 등록
     @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(InquiryAnswerDTO dto){
+    public ResponseEntity<?> answerToInquiry(@RequestBody InquiryAnswerDTO dto){
         inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
@@ -38,25 +32,22 @@ public class InquiryController {
     // 문의사항 하나
     @GetMapping("/{id}")
     public ResponseEntity<?> getInquiryById(@PathVariable Long id){
-        InquiryDTO inquiryDTO = inquiryService.getById(id);
-        return new ResponseEntity<>(inquiryDTO, HttpStatus.OK);
+        var inquiryResponseDTO = inquiryService.getById(id);
+        return new ResponseEntity<>(inquiryResponseDTO, HttpStatus.OK);
     }
 
     // 문의사항 전체(페이징)
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1", value="page") int page) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        InquiryListDTO inquiryListDTO = inquiryService.getInquiries(pageRequest);
-        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    public ResponseEntity<?> getInquiries(@RequestBody InquiryGetDTO dto) {
+        var inquiries = inquiryService.getInquiries(dto.getPageRequest());
+        return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 유저별 문의사항 불러오기
     @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1", value="page") int page,
-        String username) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        InquiryListDTO inquiryListDTO = inquiryService.getByUser(pageRequest, username);
-        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    public ResponseEntity<?> getByUserId(@RequestBody InquiryGetDTO dto) {
+        var inquiries = inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
+        return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 문의사항 삭제
