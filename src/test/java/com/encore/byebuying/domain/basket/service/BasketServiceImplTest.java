@@ -1,10 +1,9 @@
-package com.encore.byebuying.service;
+package com.encore.byebuying.domain.basket.service;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.dto.BasketItemDTO;
-import com.encore.byebuying.domain.basket.service.BasketServiceImpl;
-import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.basket.dto.BasketItemResponseDTO;
+import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,9 +52,6 @@ public class BasketServiceImplTest {
         locations.add(new Location(null, "testetesttest"));
         return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
     }
-
-
-
 
     public User givenUser(){
         User user = userRepository.save(new User(createUser()));
@@ -154,27 +149,10 @@ public class BasketServiceImplTest {
 
         entityManager.flush();
         entityManager.clear();
-
         // then
         assertThat(user.getBasket().getBasketItems().get(0).getCount()).isEqualTo(changeCnt);
     }
 
-    @Test
-    public void getByIdTest(){
-        User user = givenUser();
-        Item item = givenItem();
-        entityManager.flush();
-        entityManager.clear();
-        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
-        basketItemRepository.save(basketItem);
-        user.getBasket().addBasketItem(basketItem);
-
-        entityManager.flush();
-        entityManager.clear();
-
-        BasketItemDTO basketItemDTO = basketServiceImpl.getById(basketItem.getId());
-        System.out.println(basketItemDTO);
-    }
 
 
     @Test
@@ -195,12 +173,11 @@ public class BasketServiceImplTest {
         entityManager.clear();
 
 
-
         BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem2 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem3 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem4 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem5 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
+        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
+        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
+        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
 
 
         Basket userBasket = user.getBasket();
@@ -216,13 +193,68 @@ public class BasketServiceImplTest {
         entityManager.flush();
         entityManager.clear();
 
-        PageRequest pageRequest = PageRequest.of(1, 2);
+        PageRequest byUserPaging = PageRequest.of(0, 5);
+        User byUser = userRepository.getById(1L);
+        var byUserBasketItems = basketServiceImpl.getByUser(byUserPaging, byUser.getUsername());
+        var byUserBasketItemsContent = byUserBasketItems.getContent();
+        System.out.println(byUserBasketItemsContent);
+        for (int i=0; i<5; i++) {
+            assertThat(byUserBasketItemsContent.get(i).getItemName()).isEqualTo("상품"+(i+1));
+        }
+    }
 
-        Page<BasketItem> basketItems = basketServiceImpl.findById(pageRequest, user.getId());
 
-        System.out.println("basketItems.getContent() = " + basketItems.getContent());
-        System.out.println("basketItems.getTotalElements() = " + basketItems.getTotalElements());
-        System.out.println("basketItems.getTotalPages() = " + basketItems.getTotalPages());
+    @Test
+    public void BasketItemSearch(){
+        // given
+        User user = givenUser();
+        entityManager.flush();
+        entityManager.clear();
+
+        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
+        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
+        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
+        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
+        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
+
+        itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
+        entityManager.flush();
+        entityManager.clear();
+
+
+        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
+        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
+        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
+        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
+
+
+        Basket userBasket = user.getBasket();
+
+        userBasket.addBasketItem(basketItem1);
+        userBasket.addBasketItem(basketItem2);
+        userBasket.addBasketItem(basketItem3);
+        userBasket.addBasketItem(basketItem4);
+        userBasket.addBasketItem(basketItem5);
+
+        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+
+        entityManager.flush();
+        entityManager.clear();
+
+
+        User byUser = userRepository.getById(1L);
+        BasketItemSearchDTO basketItemSearchDTO = new BasketItemSearchDTO();
+        basketItemSearchDTO.setUser_id(1L);
+        basketItemSearchDTO.setItemName("상품");
+
+        PageRequest byItemPaging = PageRequest.of(0, 5);
+
+        var basketItemResponseDTO = basketServiceImpl.getByItemName(byItemPaging, basketItemSearchDTO);
+        var byUserBasketItemsContent = basketItemResponseDTO.getContent();
+
+        System.out.println(byUserBasketItemsContent);
+
 
     }
 }

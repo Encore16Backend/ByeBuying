@@ -1,13 +1,10 @@
 package com.encore.byebuying.domain.basket.controller;
 
-import com.encore.byebuying.domain.basket.dto.BasketAddDTO;
-import com.encore.byebuying.domain.basket.dto.BasketDeleteDTO;
+import com.encore.byebuying.domain.basket.dto.BasketItemAddDTO;
+import com.encore.byebuying.domain.basket.dto.BasketItemDeleteDTO;
 import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
-import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.service.BasketService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +26,7 @@ public class BasketController {
 
     @Transactional
     @PostMapping("/add")
-    public ResponseEntity<?> addBasket(@RequestBody BasketAddDTO basketAddDTO) {
+    public ResponseEntity<?> addBasket(@RequestBody BasketItemAddDTO basketAddDTO) {
         basketService.addBasketItem(basketAddDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
@@ -42,7 +39,7 @@ public class BasketController {
 
     @Transactional
     @PostMapping("/delete")
-    public ResponseEntity<?> deleteBasket(@RequestBody BasketDeleteDTO basketDeleteDTO) {
+    public ResponseEntity<?> deleteBasket(@RequestBody BasketItemDeleteDTO basketDeleteDTO) {
         basketService.deleteBasketItem(basketDeleteDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }

@@ -24,7 +24,6 @@ public class Basket extends BaseTimeEntity {
     @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     private List<BasketItem> basketItems = new ArrayList<>();
 
-
     public void addBasketItem(BasketItem basketItem) {
         basketItem.setBasket(this);
         this.basketItems.add(basketItem);

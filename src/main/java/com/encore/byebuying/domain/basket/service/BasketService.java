@@ -1,24 +1,21 @@
 package com.encore.byebuying.domain.basket.service;
 
-import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
+import com.encore.byebuying.domain.common.paging.PagingResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface BasketService {
 
 
-//    Page<Order> findByUsername(Pageable pageable, String username);
-//    Page<Order> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;
+//    BasketItemResponseDTO getById(Long id);
+//    Page<BasketItem> findById(Pageable pageable, Long user_id);
 
-    BasketItemListDTO getBasketItems(Long user_id);
-    BasketItemDTO getById(Long id);
-    Page<BasketItem> findById(Pageable pageable, Long user_id);
+    PagingResponse<BasketItem, BasketItemResponseDTO> getByUser(Pageable pageable, String username);
+    PagingResponse<BasketItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO);
     void updateBasketItem(BasketUpdateDTO basketUpdateDTO);
-    void addBasketItem(BasketAddDTO basketAddDTO);
-    void deleteBasketItem(BasketDeleteDTO basketDeleteDTO);
+    void addBasketItem(BasketItemAddDTO basketAddDTO);
+    void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO);
 
 }

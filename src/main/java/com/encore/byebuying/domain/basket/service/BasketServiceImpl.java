@@ -1,10 +1,8 @@
 package com.encore.byebuying.domain.basket.service;
 
-import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
+import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
@@ -14,12 +12,12 @@ import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -37,26 +35,29 @@ public class BasketServiceImpl implements BasketService{
     private final EntityManager em;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * @param pageable, username
+     * 페이징해서 장바구니 아이템을 조회
+     * 
+     * */
     @Override
-    public BasketItemDTO getById(Long id){
-        return new BasketItemDTO(basketItemRepository.getById(id));
-    }
-
-    @Override
-    public BasketItemListDTO getBasketItems(Long user_id) {
-        return null;
+    public PagingResponse<BasketItem, BasketItemResponseDTO> getByUser(Pageable pageable, String username) {
+        Long basket_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getBasket().getId();
+        Page<BasketItem> basketItems = basketItemRepository.findByBasketId(pageable, basket_id);
+        return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }
 
     /**
-     * 페이징해서 장바구니 아이템을 리턴
-     * dto로 변환해서 리턴, dto에서 페이징 처리필요
-     * 조회만 할때는 get으로 조회하여 변경의 여지를 줄인다.
+     * @Param
+     * 장바구니에서 아이템 검색
      * */
     @Override
-    public Page<BasketItem> findById(Pageable pageable, Long user_id) {
-        // user_id로 basket_id를 찾은 다음 조회
-        Long basket_id = userRepository.getById(user_id).getBasket().getId();
-        return basketItemRepository.findByBasketId(pageable, basket_id);
+    public PagingResponse<BasketItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO) {
+        User findUser = userRepository.findById(basketItemSearchDTO.getUser_id()).orElseThrow(()-> {throw new NullPointerException();});
+        Long basket_id = findUser.getBasket().getId();
+        System.out.println("basket_id : " + basket_id);
+        Page<BasketItem> basketItems = basketItemRepository.findByBasketIdAndItem_NameLike(pageable, basket_id, basketItemSearchDTO.getItemName());
+        return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }
 
     /**
@@ -68,19 +69,19 @@ public class BasketServiceImpl implements BasketService{
     public void updateBasketItem(BasketUpdateDTO basketUpdateDTO) {
 
         Long user_id = basketUpdateDTO.getUser_id();
-        List<Long> item_ids = basketUpdateDTO.getItem_ids();
-        List<Integer> counts = basketUpdateDTO.getCounts();
+        Long item_id = basketUpdateDTO.getItem_id();
+        int count = basketUpdateDTO.getCount();
 
         User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
 
-        List<BasketItem> basket = findUser.getBasket().getBasketItems();
-        for (Long id : item_ids){
-            int i = 0;
-            for (BasketItem bItme : basket){
-                if (bItme.getItem().getId() == id) bItme.setCount(counts.get(i));
+        List<BasketItem> basketItems = findUser.getBasket().getBasketItems();
+
+        for (BasketItem bItem : basketItems){
+            if (bItem.getItem().getId() == item_id){
+                bItem.setCount(count);
             }
-            i++;
         }
+
     }
 
     /**
@@ -88,10 +89,9 @@ public class BasketServiceImpl implements BasketService{
      * Long user_id,Long item_id,int count
      * 장바구니에 상품 추가
      * */
-
     @Transactional
     @Override
-    public void addBasketItem(BasketAddDTO basketAddDTO) {
+    public void addBasketItem(BasketItemAddDTO basketAddDTO) {
 
         Long user_id = basketAddDTO.getUser_id();
         Long item_id = basketAddDTO.getItem_id();
@@ -99,14 +99,20 @@ public class BasketServiceImpl implements BasketService{
 
         User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
         Item findItem = itemRepository.findById(item_id).orElseThrow(()-> {throw new NullPointerException();});
-        BasketItem basketItem = BasketItem.createBasketItem().item(findItem).count(5).build();
+        BasketItem basketItem = BasketItem.createBasketItem().item(findItem).count(count).build();
         basketItemRepository.save(basketItem);
         findUser.getBasket().addBasketItem(basketItem);
     }
 
+
+    /**
+     * @param basketDeleteDTO
+     * Long user_id,Long item_id,int count
+     * 장바구니 상품 삭제
+     * */
     @Transactional
     @Override
-    public void deleteBasketItem(BasketDeleteDTO basketDeleteDTO) {
+    public void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO) {
         Long user_id = basketDeleteDTO.getUser_id();
         List<Long> item_ids = basketDeleteDTO.getItem_ids();
         User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});

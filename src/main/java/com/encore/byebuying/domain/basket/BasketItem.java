@@ -33,9 +33,6 @@ public class BasketItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    // 장바구니에 들어있는 상품의 총 가격
-//    private int price;
-
     // 장바구니에 담은 해당 상품의 갯수
     private int count;
 

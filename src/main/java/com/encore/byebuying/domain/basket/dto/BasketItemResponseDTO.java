@@ -1,8 +1,9 @@
 package com.encore.byebuying.domain.basket.dto;
 
-import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.common.paging.GenericConvertor;
 import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
 import com.encore.byebuying.domain.item.ItemImage;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.Collection;
 
 @Getter
 @ToString
-public class BasketItemDTO {
+public class BasketItemResponseDTO implements GenericConvertor<BasketItem, BasketItemResponseDTO> {
 
     @JsonProperty("basketItemId")
     private Long basketItem_id;
@@ -22,8 +23,9 @@ public class BasketItemDTO {
     private int price;
     private Collection<ItemImage> itemImages;
 
+    public BasketItemResponseDTO() {}
 
-    public BasketItemDTO(BasketItem basketItem) {
+    public BasketItemResponseDTO(BasketItem basketItem) {
         this.count = basketItem.getCount();
         this.basketItem_id = basketItem.getId();
         this.itemName = basketItem.getItem().getName();
@@ -31,5 +33,12 @@ public class BasketItemDTO {
         this.price = basketItem.getItem().getPrice();
         this.itemImages = basketItem.getItem().getItemImages();
     }
+
+    @Override
+    public BasketItemResponseDTO convertor(BasketItem basketItem) {
+        return new BasketItemResponseDTO(basketItem);
+    }
+
+
 }
 
