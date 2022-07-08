@@ -195,7 +195,7 @@ public class BasketServiceImplTest {
 
         PageRequest byUserPaging = PageRequest.of(0, 5);
         User byUser = userRepository.getById(1L);
-        var byUserBasketItems = basketServiceImpl.getByUser(byUserPaging, byUser.getUsername());
+        var byUserBasketItems = basketServiceImpl.getByUser(byUserPaging, byUser.getId());
         var byUserBasketItemsContent = byUserBasketItems.getContent();
         System.out.println(byUserBasketItemsContent);
         for (int i=0; i<5; i++) {

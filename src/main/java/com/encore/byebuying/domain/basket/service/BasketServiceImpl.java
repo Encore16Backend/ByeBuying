@@ -41,21 +41,20 @@ public class BasketServiceImpl implements BasketService{
      * 
      * */
     @Override
-    public PagingResponse<BasketItem, BasketItemResponseDTO> getByUser(Pageable pageable, String username) {
-        Long basket_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getBasket().getId();
+    public PagingResponse<BasketItem, BasketItemResponseDTO> getByUser(Pageable pageable, Long id) {
+        Long basket_id = userRepository.findById(id).orElseThrow(EntityNotFoundException::new).getBasket().getId();
         Page<BasketItem> basketItems = basketItemRepository.findByBasketId(pageable, basket_id);
         return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }
 
     /**
      * @Param
-     * 장바구니에서 아이템 검색
+     * 장바구니에서 아이템 검색 (like)
      * */
     @Override
     public PagingResponse<BasketItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO) {
-        User findUser = userRepository.findById(basketItemSearchDTO.getUser_id()).orElseThrow(()-> {throw new NullPointerException();});
+        User findUser = userRepository.findById(basketItemSearchDTO.getUser_id()).orElseThrow(EntityNotFoundException::new);
         Long basket_id = findUser.getBasket().getId();
-        System.out.println("basket_id : " + basket_id);
         Page<BasketItem> basketItems = basketItemRepository.findByBasketIdAndItem_NameLike(pageable, basket_id, basketItemSearchDTO.getItemName());
         return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }

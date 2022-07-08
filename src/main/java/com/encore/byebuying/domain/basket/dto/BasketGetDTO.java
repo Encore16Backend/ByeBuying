@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BasketItemSearchDTO extends PagingRequest {
-    private String itemName;
+public class BasketGetDTO extends PagingRequest {
     private Long user_id;
 }
