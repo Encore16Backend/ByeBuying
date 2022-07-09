@@ -7,14 +7,20 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.config.properties.AppProperties;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.UserRefreshToken;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.UserInfoDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.service.UserService;
-import lombok.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,23 +29,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
-import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -50,96 +51,82 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final AppProperties appProperties;
 
-//    @PostMapping("/login")
-//    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-//        );
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        return ResponseEntity.ok(new AuthResponse(tokenProvider.createToken(authentication)));
-//
-//    }
-
-    @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@RequestBody UserSaveDTO userSaveDTO) {
-        URI uri = URI.create(
-                ServletUriComponentsBuilder
-                        .fromCurrentContextPath()
-                        .path("/api/user/save").toUriString());
-
-        User newUser = userService.saveUser(userSaveDTO);
+    @PostMapping
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
+        String username = userService.saveUser(userDTO);
 //        webClientService.newUser(newUser.getUsername());
-
-        return ResponseEntity.created(uri).body(newUser);
+        return new ResponseEntity<>(username, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getUser(@RequestParam String username) {
+        UserInfoDTO user = userService.getUserInfo(username);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 
-    @GetMapping("/users") // 관리자 유저들 확인
+    @GetMapping("/sy/user") // 관리자 유저들 확인 todo: 관리자 UserDTO 나중에 수정, 유저 정보에 들어갈 것들 생각 필요함
     public ResponseEntity<Page<User>> getUsers(
             @RequestParam(required = false, defaultValue="1",value="page") int page) {
         Pageable pageable = PageRequest.of(page-1, 20, Sort.by(Sort.Direction.DESC, "id"));
         return ResponseEntity.ok().body(userService.getUsers(pageable));
     }
 
-    @PostMapping("/user/getUser") // 회원 확인용 - 수정 or 삭제
-    public ResponseEntity<User> getUser(@RequestBody User userinfo) {
-        User user = userService.getUser(userinfo.getUsername());
-        System.out.println(userinfo.getUsername()+" "+userinfo.getPassword());
-        if (passwordEncoder.matches(userinfo.getPassword(), user.getPassword())){
-            return ResponseEntity.ok().body(user);
-        }
-        return ResponseEntity.badRequest().body(null);
+    // todo: 수정 or 삭제 시 비밀번호 확인할 것인지 확인 필요
+//    @PostMapping("/user/getUser") // 회원 확인용 - 수정 or 삭제
+//    public ResponseEntity<User> getUser(@RequestBody User userinfo) {
+//        User user = userService.getUser(userinfo.getUsername());
+//        System.out.println(userinfo.getUsername()+" "+userinfo.getPassword());
+//        if (passwordEncoder.matches(userinfo.getPassword(), user.getPassword())){
+//            return ResponseEntity.ok().body(user);
+//        }
+//        return ResponseEntity.badRequest().body(null);
+//    }
+
+    @GetMapping("/location") // 회원 배송지
+    public ResponseEntity<?> getUserLocation(@RequestParam String username) {
+        Collection<Location> locations = userService.getLocation(username);
+        return new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
-    @GetMapping("/user/getinfo") // 회원 배송지
-    public ResponseEntity<List<Location>> getUserLocation(@RequestParam String username) {
-        List<Location> locations = new ArrayList<>(userService.getUser(username).getLocations());
-        return ResponseEntity.ok().body(locations);
-    }
-
-    @GetMapping("/checkUser") // 아이디 중복 검사 확인
+    @GetMapping("/check") // 아이디 중복 검사 확인
     public ResponseEntity<?> checkUser(
             @RequestParam(defaultValue = "", value = "username") String username) {
-        boolean check = userService.checkUser(username);
-        if (check) {
-            return new ResponseEntity<>("SUCCESS", HttpStatus.ACCEPTED);
-        }
-        return new ResponseEntity<>("FAIL", HttpStatus.ACCEPTED);
+        String checkValue = userService.checkUser(username);
+        return new ResponseEntity<>(checkValue, HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/delete") // 토큰 필요, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
+    @DeleteMapping // 토큰 필요, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
     public ResponseEntity<?> deleteUser(
     		@RequestParam(defaultValue = "", value="username") String username) {
         userService.deleteUser(username);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    @Transactional
-    @PutMapping("/user/update") // 토큰 필요
-    public ResponseEntity<?> updateUser(@RequestBody UserSaveDTO userForm) {
+    // todo: 수정 필요
+    @PutMapping // 토큰 필요
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO userForm) {
         User user = userService.getUser(userForm.getUsername());
         if (user == null){
             return new ResponseEntity<>("FAIL", HttpStatus.OK);
         }
-        if (userForm.getPassword() != null && !userForm.getPassword().equals("")) // 비밀번호도 수정될 때
-            user.setPassword(userForm.getPassword());
-        user.setEmail(userForm.getEmail());
-        user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
-        
+    //        if (userForm.getPassword() != null && !userForm.getPassword().equals("")) // 비밀번호도 수정될 때
+    //            user.setPassword(userForm.getPassword());
+    //        user.setEmail(userForm.getEmail());
+    //        user.setDefaultLocationIdx(userForm.getDefaultLocationIdx());
+
         // 현재주소 갈아엎고 새주소 넣기
         List<Location> list = (List<Location>) user.getLocations();
         Long[] idList = new Long[list.size()];
         for(int i=0;i<list.size();i++)
-        	idList[i]=list.get(i).getId();
-        
+          idList[i]=list.get(i).getId();
+
         user.getLocations().clear();
         for(Long id : idList) {
-        	locationRepository.deleteById(id);
+          locationRepository.deleteById(id);
         }
-        
-    	user.getLocations().addAll(userForm.getLocations());
-//        userService.saveUser(user);
+
+        user.getLocations().addAll(userForm.getLocations());
+    //        userService.saveUser(user);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
@@ -236,31 +223,3 @@ public class UserController {
         }
     }
 }
-
-//@Data
-//class RoleToUserForm {
-//    private String userid;
-//    private String rolename;
-//}
-
-//@Data
-//@Builder
-//@NoArgsConstructor
-//@AllArgsConstructor
-//class UserForm {
-//    private String username;
-//    private String password;
-//    private String email;
-//    private int defaultLocationIdx;
-//    private Collection<Location> locations;
-//
-//    public User toEntity(){
-//        return User.builder()
-//                .username(this.username)
-//                .password(this.password)
-//                .email(this.email)
-//                .defaultLocationIdx(this.defaultLocationIdx)
-//                .locations(this.locations)
-//                .build();
-//    }
-//}
