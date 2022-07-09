@@ -1,14 +1,15 @@
 package com.encore.byebuying.domain.category.repository;
 
 import com.encore.byebuying.domain.category.Category;
-import org.assertj.core.api.Assertions;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@Slf4j
 @DataJpaTest
 class CategoryRepositoryTest {
 
@@ -19,10 +20,7 @@ class CategoryRepositoryTest {
     @Test
     public void categoryTest() throws Exception {
         // given
-        Category category = Category.createCategory()
-                .name("전체")
-                .parentId(null)
-                .build();
+        Category category = Category.createCategory("전체", null);
 
         // when
         Category save = categoryRepository.save(category);
@@ -36,22 +34,18 @@ class CategoryRepositoryTest {
     @Test
     public void categoryInCategoryTest() throws Exception {
         // given
-        Category category = Category.createCategory()
-                .name("전체")
-                .parentId(null)
-                .build();
-        Category save = categoryRepository.save(category);
+        Category allCategory = Category.createCategory("전체", null);
+        Category save = categoryRepository.save(allCategory);
 
         // when
-        Category inCategory = Category.createCategory()
-                .name("패션")
-                .parentId(save.getId())
-                .build();
-        Category saveInCategory = categoryRepository.save(inCategory);
+        Category fashionCategory = Category.createCategory("패션", allCategory);
+        Category saveInCategory = categoryRepository.save(fashionCategory);
+
+        log.info("result = {}", allCategory.getChildCategories());
 
         // then
         assertThat(saveInCategory.getId()).isNotNull();
-        assertThat(saveInCategory.getParentId()).isEqualTo(save.getId());
+        assertThat(saveInCategory.getParentCategory().getId()).isEqualTo(save.getId());
         assertThat(saveInCategory.getName()).isEqualTo("패션");
     }
 }

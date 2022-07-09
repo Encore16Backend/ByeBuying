@@ -4,12 +4,17 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Entity
-@Table(name = "categories")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "categories")
+@Entity
 public class Category {
 
     @Id
@@ -23,11 +28,25 @@ public class Category {
 
     // 자기 자신을 참조한다.
     // depth = 상위 id - 자기 id - 하위카테고리가 자신을 참조
-    private Long parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_category_id")
+    private Category parentCategory;
 
-    @Builder(builderMethodName = "createCategory")
-    public Category(String name, Long parentId) {
-        this.name = name;
-        this.parentId = parentId;
+    // 셀프 조인 방식으로 변경
+    @Builder.Default
+    @OneToMany(mappedBy = "parentCategory")
+    private List<Category> childCategories = new ArrayList<>();
+
+    public static Category createCategory(String name, Category parentCategory) {
+        Category category = Category.builder()
+                .name(name)
+                .parentCategory(parentCategory)
+                .build();
+
+        if (parentCategory != null) {
+            parentCategory.getChildCategories().add(category);
+        }
+
+        return category;
     }
 }
