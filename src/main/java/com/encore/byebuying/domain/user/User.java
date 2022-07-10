@@ -79,7 +79,7 @@ public class User extends BaseTimeEntity {
         this.provider = provider;
         this.inquiries = new ArrayList<>();
         this.basket = Basket.createBasket();
-        this.orders = new ArrayList<>();
+        this.orders = new ArrayList<>();git
         this.reviews = new ArrayList<>();
     }
 
