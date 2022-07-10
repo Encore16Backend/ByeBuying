@@ -8,8 +8,7 @@ import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.review.Review;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
-import java.util.LinkedList;
+import com.encore.byebuying.domain.user.dto.UserDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,11 +20,11 @@ import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
 @Entity
-@Data
 @Table(name = "Users")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Getter
 @ToString(exclude = {"inquiries", "orders"})
 public class User extends BaseTimeEntity {
 
@@ -68,32 +67,29 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Review> reviews = new ArrayList<>();
 
-    // OAuth
-    public User(String username, String email, RoleType roleType, ProviderType providerType, String providerId) {
-        this.username = username;
-        this.password = "OAUTHLOGIN";
-        this.defaultLocationIdx = 0;
-        this.locations = new ArrayList<>();
-        this.email = email;
-        this.roleType = roleType;
-        this.provider = providerType;
-        this.providerId = providerId;
-        this.inquiries = new ArrayList<>();
-    }
-
     // 일반
     @Builder(builderClassName = "init", builderMethodName = "initUser")
-    public User(UserSaveDTO dto) {
+    private User(UserDTO dto, ProviderType provider) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
         this.defaultLocationIdx = 0;
         this.locations = dto.getLocations();
         this.roleType = RoleType.USER;
-        this.provider = ProviderType.LOCAL;
+        this.provider = provider;
         this.inquiries = new ArrayList<>();
         this.basket = Basket.createBasket();
+        this.orders = new ArrayList<>();
+        this.reviews = new ArrayList<>();
     }
 
+    public void encodePassword(String password) {
+        this.password = password;
+    }
 
+    public void changeUser(User user) {
+        this.email = user.getEmail();
+        this.defaultLocationIdx = user.getDefaultLocationIdx();
+        this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
+    }
 }

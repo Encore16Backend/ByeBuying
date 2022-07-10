@@ -2,7 +2,6 @@ package com.encore.byebuying.domain.basket.service;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.dto.BasketItemResponseDTO;
 import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.Location;
@@ -10,7 +9,7 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
 import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import com.encore.byebuying.domain.user.dto.UserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.encore.byebuying.domain.code.ProviderType.GOOGLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -47,14 +47,14 @@ public class BasketServiceImplTest {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserSaveDTO createUser() {
+    public UserDTO createUser() {
         Collection<Location> locations = new ArrayList<>();
         locations.add(new Location(null, "testetesttest"));
-        return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
+        return new UserDTO("test", "test123", "test@test.com", 0, locations);
     }
 
-    public User givenUser(){
-        User user = userRepository.save(new User(createUser()));
+    public User givenUser() throws Exception {
+        User user = userRepository.save(User.builder().username("test").basket(Basket.createBasket()).build());
         entityManager.flush();
         entityManager.clear();
         return user;
@@ -90,7 +90,7 @@ public class BasketServiceImplTest {
     }
 
     @Test
-    public void deleteBasketItem(){
+    public void deleteBasketItem() throws Exception {
         // given
         User user = givenUser();
         Item item = givenItem();
@@ -120,7 +120,7 @@ public class BasketServiceImplTest {
     }
 
     @Test
-    public void updateBasketItem(){
+    public void updateBasketItem() throws Exception {
         // given
         User user = givenUser();
         Item item = givenItem();
@@ -156,7 +156,7 @@ public class BasketServiceImplTest {
 
 
     @Test
-    public void BasketItemPaging(){
+    public void BasketItemPaging() throws Exception {
         // given
         User user = givenUser();
         entityManager.flush();
@@ -205,7 +205,7 @@ public class BasketServiceImplTest {
 
 
     @Test
-    public void BasketItemSearch(){
+    public void BasketItemSearch() throws Exception {
         // given
         User user = givenUser();
         entityManager.flush();
