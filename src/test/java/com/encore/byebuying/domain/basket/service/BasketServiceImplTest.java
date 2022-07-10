@@ -47,11 +47,6 @@ public class BasketServiceImplTest {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserDTO createUser() {
-        Collection<Location> locations = new ArrayList<>();
-        locations.add(new Location(null, "testetesttest"));
-        return new UserDTO("test", "test123", "test@test.com", 0, locations);
-    }
 
     public User givenUser() throws Exception {
         User user = userRepository.save(User.builder().username("test").basket(Basket.createBasket()).build());
