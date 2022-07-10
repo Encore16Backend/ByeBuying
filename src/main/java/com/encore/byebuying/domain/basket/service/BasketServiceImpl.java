@@ -53,7 +53,7 @@ public class BasketServiceImpl implements BasketService{
      * */
     @Override
     public PagingResponse<BasketItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO) {
-        User findUser = userRepository.findById(basketItemSearchDTO.getUser_id()).orElseThrow(EntityNotFoundException::new);
+        User findUser = userRepository.findById(basketItemSearchDTO.getUserId()).orElseThrow(EntityNotFoundException::new);
         Long basket_id = findUser.getBasket().getId();
         Page<BasketItem> basketItems = basketItemRepository.findByBasketIdAndItem_NameLike(pageable, basket_id, basketItemSearchDTO.getItemName());
         return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
@@ -67,20 +67,11 @@ public class BasketServiceImpl implements BasketService{
     @Override
     public void updateBasketItem(BasketUpdateDTO basketUpdateDTO) {
 
-        Long user_id = basketUpdateDTO.getUser_id();
-        Long item_id = basketUpdateDTO.getItem_id();
+        Long BasketItemId = basketUpdateDTO.getBasketItemId();
         int count = basketUpdateDTO.getCount();
 
-        User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
-
-        List<BasketItem> basketItems = findUser.getBasket().getBasketItems();
-
-        for (BasketItem bItem : basketItems){
-            if (bItem.getItem().getId() == item_id){
-                bItem.setCount(count);
-            }
-        }
-
+        BasketItem findBasketItem = basketItemRepository.findById(BasketItemId).orElseThrow(EntityNotFoundException::new);
+        findBasketItem.setCount(count);
     }
 
     /**
@@ -92,8 +83,8 @@ public class BasketServiceImpl implements BasketService{
     @Override
     public void addBasketItem(BasketItemAddDTO basketAddDTO) {
 
-        Long user_id = basketAddDTO.getUser_id();
-        Long item_id = basketAddDTO.getItem_id();
+        Long user_id = basketAddDTO.getUserId();
+        Long item_id = basketAddDTO.getItemId();
         int count = basketAddDTO.getCount();
 
         User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
@@ -112,8 +103,8 @@ public class BasketServiceImpl implements BasketService{
     @Transactional
     @Override
     public void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO) {
-        Long user_id = basketDeleteDTO.getUser_id();
-        List<Long> item_ids = basketDeleteDTO.getItem_ids();
+        Long user_id = basketDeleteDTO.getUserId();
+        List<Long> item_ids = basketDeleteDTO.getItemIds();
         User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
 
         List<BasketItem> basket = findUser.getBasket().getBasketItems();

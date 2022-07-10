@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BasketItemAddDTO {
-    private Long item_id;
-    private Long user_id;
+    private Long itemId;
+    private Long userId;
     private int count;
 }
