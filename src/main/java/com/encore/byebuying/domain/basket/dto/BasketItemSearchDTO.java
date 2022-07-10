@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BasketItemSearchDTO extends PagingRequest {
     private String itemName;
-    private Long user_id;
+    private Long userId;
 }

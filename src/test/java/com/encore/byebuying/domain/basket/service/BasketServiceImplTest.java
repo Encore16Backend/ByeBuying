@@ -2,7 +2,6 @@ package com.encore.byebuying.domain.basket.service;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.dto.BasketItemResponseDTO;
 import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.Location;
@@ -10,7 +9,7 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
 import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import com.encore.byebuying.domain.user.dto.UserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static com.encore.byebuying.domain.code.ProviderType.GOOGLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -47,17 +47,73 @@ public class BasketServiceImplTest {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserSaveDTO createUser() {
-        Collection<Location> locations = new ArrayList<>();
-        locations.add(new Location(null, "testetesttest"));
-        return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
-    }
 
-    public User givenUser(){
-        User user = userRepository.save(new User(createUser()));
+    public User givenUser() throws Exception {
+        User user = userRepository.save(User.builder().username("test").basket(Basket.createBasket()).build());
         entityManager.flush();
         entityManager.clear();
         return user;
+    }
+
+    public void saveBasketItemsToUser(User user){
+        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
+        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
+        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
+        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
+        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
+
+        itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
+        entityManager.flush();
+        entityManager.clear();
+
+
+        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
+        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
+        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
+        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
+
+        Basket userBasket = user.getBasket();
+
+        userBasket.addBasketItem(basketItem1);
+        userBasket.addBasketItem(basketItem2);
+        userBasket.addBasketItem(basketItem3);
+        userBasket.addBasketItem(basketItem4);
+        userBasket.addBasketItem(basketItem5);
+
+        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    public List<BasketItem> getBasketItems(){
+        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
+        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
+        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
+        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
+        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
+
+        itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
+        entityManager.flush();
+        entityManager.clear();
+
+        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
+        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
+        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
+        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
+        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
+
+        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+
+        List<BasketItem> basketItemList = new ArrayList<>();
+        basketItemList.add(basketItem1);
+        basketItemList.add(basketItem2);
+        basketItemList.add(basketItem3);
+        basketItemList.add(basketItem4);
+        basketItemList.add(basketItem5);
+
+        return basketItemList;
     }
 
     public Item givenItem(){
@@ -90,7 +146,7 @@ public class BasketServiceImplTest {
     }
 
     @Test
-    public void deleteBasketItem(){
+    public void deleteBasketItem() throws Exception {
         // given
         User user = givenUser();
         Item item = givenItem();
@@ -120,75 +176,49 @@ public class BasketServiceImplTest {
     }
 
     @Test
-    public void updateBasketItem(){
+    public void updateBasketItem() throws Exception {
         // given
         User user = givenUser();
         Item item = givenItem();
         entityManager.flush();
         entityManager.clear();
         BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).build();
+        basketItemRepository.save(basketItem);
         user.getBasket().addBasketItem(basketItem);
         entityManager.flush();
         entityManager.clear();
 
-        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
-
-        List<Long> ids = new ArrayList<>();
-        ids.add(item.getId());
-
         int changeCnt = 1;
 
-        List<BasketItem> basket = user.getBasket().getBasketItems();
-        for (Long id : ids){
-            for (BasketItem bItme : basket){
-                if (bItme.getItem().getId() == id){
-                    bItme.setCount(changeCnt);
-                }
-            }
-        }
+        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
+
+        BasketItem findBasketItem = basketItemRepository.findById(basketItem.getId()).orElseThrow(()-> {throw new NullPointerException();});
+        findBasketItem.setCount(changeCnt);
 
         entityManager.flush();
         entityManager.clear();
+
+        User findUser = userRepository.getById(1L);
         // then
-        assertThat(user.getBasket().getBasketItems().get(0).getCount()).isEqualTo(changeCnt);
+        assertThat(findUser.getBasket().getBasketItems().get(0).getCount()).isEqualTo(changeCnt);
     }
 
 
 
     @Test
-    public void BasketItemPaging(){
+    public void BasketItemPaging() throws Exception {
         // given
         User user = givenUser();
         entityManager.flush();
         entityManager.clear();
 
-        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
-        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
-        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
-        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
-        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
-
-        itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
-        entityManager.flush();
-        entityManager.clear();
-
-
-        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
-        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
-        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
-        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
-
+        List<BasketItem> basketItemList = getBasketItems();
 
         Basket userBasket = user.getBasket();
 
-        userBasket.addBasketItem(basketItem1);
-        userBasket.addBasketItem(basketItem2);
-        userBasket.addBasketItem(basketItem3);
-        userBasket.addBasketItem(basketItem4);
-        userBasket.addBasketItem(basketItem5);
-
-        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
+        for (BasketItem basketItem : basketItemList){
+            userBasket.addBasketItem(basketItem);
+        }
 
         entityManager.flush();
         entityManager.clear();
@@ -201,51 +231,21 @@ public class BasketServiceImplTest {
         for (int i=0; i<5; i++) {
             assertThat(byUserBasketItemsContent.get(i).getItemName()).isEqualTo("상품"+(i+1));
         }
+
     }
 
 
     @Test
-    public void BasketItemSearch(){
+    public void BasketItemSearch() throws Exception {
         // given
         User user = givenUser();
         entityManager.flush();
         entityManager.clear();
 
-        Item item1 = Item.builder().id(1L).name("상품1").price(1000).stockQuantity(10).build();
-        Item item2 = Item.builder().id(2L).name("상품2").price(1000).stockQuantity(10).build();
-        Item item3 = Item.builder().id(3L).name("상품3").price(1000).stockQuantity(10).build();
-        Item item4 = Item.builder().id(4L).name("상품4").price(1000).stockQuantity(10).build();
-        Item item5 = Item.builder().id(5L).name("상품5").price(1000).stockQuantity(10).build();
+        saveBasketItemsToUser(user);
 
-        itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
-        entityManager.flush();
-        entityManager.clear();
-
-
-        BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).build();
-        BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).build();
-        BasketItem basketItem3 = BasketItem.createBasketItem().item(item3).count(5).build();
-        BasketItem basketItem4 = BasketItem.createBasketItem().item(item4).count(5).build();
-        BasketItem basketItem5 = BasketItem.createBasketItem().item(item5).count(5).build();
-
-
-        Basket userBasket = user.getBasket();
-
-        userBasket.addBasketItem(basketItem1);
-        userBasket.addBasketItem(basketItem2);
-        userBasket.addBasketItem(basketItem3);
-        userBasket.addBasketItem(basketItem4);
-        userBasket.addBasketItem(basketItem5);
-
-        basketItemRepository.saveAll(Arrays.asList(basketItem1, basketItem2, basketItem3, basketItem4, basketItem5));
-
-        entityManager.flush();
-        entityManager.clear();
-
-
-        User byUser = userRepository.getById(1L);
         BasketItemSearchDTO basketItemSearchDTO = new BasketItemSearchDTO();
-        basketItemSearchDTO.setUser_id(1L);
+        basketItemSearchDTO.setUserId(1L);
         basketItemSearchDTO.setItemName("상품");
 
         PageRequest byItemPaging = PageRequest.of(0, 5);

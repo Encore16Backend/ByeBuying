@@ -1,17 +1,11 @@
 package com.encore.byebuying.domain.basket;
-
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
 import lombok.*;
 
 import javax.persistence.*;
 
-//@Entity
-//@Getter
-//@Builder
-//@AllArgsConstructor
-//@NoArgsConstructor
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
 @Getter // all args constructor method에 붙여서

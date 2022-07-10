@@ -1,6 +1,7 @@
 package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
+import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
@@ -9,7 +10,7 @@ import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import com.encore.byebuying.domain.user.dto.UserDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -39,10 +40,10 @@ class InquiryTest {
   @Autowired
   EntityManager em;
 
-  public UserSaveDTO createUser() {
+  public UserDTO createUser() {
     Collection<Location> locations = new ArrayList<>();
     locations.add(new Location(null, "testetesttest"));
-    return new UserSaveDTO("test", "test123", "test@test.com", 0, locations);
+    return new UserDTO("test", "test123", "test@test.com", 0, locations);
   }
 
   public InquirySaveDTO createInquiry(String username) {
@@ -53,7 +54,9 @@ class InquiryTest {
   @Transactional
   public void 문의사항_등록() {
     // 유저 회원가입
-    User user = userRepository.save(new User(createUser()));
+    User user = userRepository.save(User.initUser()
+        .dto(createUser())
+        .provider(ProviderType.LOCAL).build());
     log.info(">>> 회원가입 : {}", user);
     em.clear(); // 영속성 컨텍스트 초기화
 
@@ -91,7 +94,9 @@ class InquiryTest {
   @Test
   @Transactional
   public void 문의사항_답변등록() {
-    User user = userRepository.save(new User(createUser()));
+    User user = userRepository.save(User.initUser()
+        .dto(createUser())
+        .provider(ProviderType.LOCAL).build());
     em.clear();
 
     InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
@@ -119,7 +124,9 @@ class InquiryTest {
   @Test
   @Transactional(readOnly = true)
   public void 문의사항_불러오기() {
-    User user = userRepository.save(new User(createUser()));
+    User user = userRepository.save(User.initUser()
+        .dto(createUser())
+        .provider(ProviderType.LOCAL).build());
     em.clear();
 
     InquirySaveDTO inquiryDTO;
@@ -159,7 +166,9 @@ class InquiryTest {
   @Test
   @Transactional
   public void 문의사항_삭제() {
-    User user = userRepository.save(new User(createUser()));
+    User user = userRepository.save(User.initUser()
+        .dto(createUser())
+        .provider(ProviderType.LOCAL).build());
     em.clear();
 
     InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());

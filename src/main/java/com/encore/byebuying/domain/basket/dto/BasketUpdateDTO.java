@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class BasketUpdateDTO {
-    private Long item_id;
-    private Long user_id;
+    private Long basketItemId;
     private int count;
 }

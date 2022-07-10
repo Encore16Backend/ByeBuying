@@ -18,7 +18,7 @@ public class BasketController {
     // 유저별 장바구니 상품 조회
     @GetMapping("/by-user")
     public ResponseEntity<?> getBasketByUSer(@RequestBody BasketGetDTO dto) {
-        var basketItemsByUser = basketService.getByUser(dto.getPageRequest(), dto.getUser_id());
+        var basketItemsByUser = basketService.getByUser(dto.getPageRequest(), dto.getUserId());
         return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
@@ -36,16 +36,15 @@ public class BasketController {
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    // 장바구니 상품 수정
-    @PostMapping("/update")
+    // 장바구니 상품 갯수 수정
+    @PostMapping("/update-count")
     public ResponseEntity<?> updateBasket(@RequestBody BasketUpdateDTO basketUpdateDTO) {
         basketService.updateBasketItem(basketUpdateDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-
     // 장바구니 상품 삭제
-    @PostMapping("/remove")
+    @PostMapping("/removal-item")
     public ResponseEntity<?> deleteBasket(@RequestBody BasketItemDeleteDTO basketDeleteDTO) {
         basketService.deleteBasketItem(basketDeleteDTO);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
