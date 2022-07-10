@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BasketGetDTO extends PagingRequest {
-    private Long user_id;
+    private Long userId;
 }

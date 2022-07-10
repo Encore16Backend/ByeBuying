@@ -13,7 +13,4 @@ import java.util.List;
 
 public interface BasketRepository extends JpaRepository<Basket, Long> {
 
-    @Query("select b.basketItems from Basket b where b.id = :id")
-    Page<BasketItem> myFindAllById(Pageable pageable, @Param("id") Long id);
-
 }

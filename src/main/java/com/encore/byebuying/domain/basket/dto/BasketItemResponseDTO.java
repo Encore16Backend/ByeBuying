@@ -16,7 +16,7 @@ import java.util.Collection;
 public class BasketItemResponseDTO implements GenericConvertor<BasketItem, BasketItemResponseDTO> {
 
     @JsonProperty("basketItemId")
-    private Long basketItem_id;
+    private Long basketItemId;
     private String itemName;
     private int count;
     private Long categoryId;
@@ -27,7 +27,7 @@ public class BasketItemResponseDTO implements GenericConvertor<BasketItem, Baske
 
     public BasketItemResponseDTO(BasketItem basketItem) {
         this.count = basketItem.getCount();
-        this.basketItem_id = basketItem.getId();
+        this.basketItemId = basketItem.getId();
         this.itemName = basketItem.getItem().getName();
         this.categoryId = basketItem.getItem().getCategoryId();
         this.price = basketItem.getItem().getPrice();
