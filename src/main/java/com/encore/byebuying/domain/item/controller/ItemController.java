@@ -4,7 +4,7 @@ import com.encore.byebuying.domain.item.ItemImage;
 import com.encore.byebuying.domain.item.dto.ItemAddDTO;
 import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.item.Item;
-import com.encore.byebuying.domain.item.repository.CategoryRepository;
+import com.encore.byebuying.domain.category.repository.CategoryRepository;
 import com.encore.byebuying.domain.item.repository.ItemImageRepository;
 import com.encore.byebuying.domain.item.service.ItemService;
 import com.fasterxml.jackson.core.type.TypeReference;

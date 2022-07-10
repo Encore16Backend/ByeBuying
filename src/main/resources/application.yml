@@ -1,27 +1,13 @@
 server:
-address: 127.0.0.1
-port: 8081
+  address: 127.0.0.1
+  port: 8081
 
 spring:
   profiles:
     include:
       - oauth
       - db
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
-      hibernate.format_sql: true
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ByeBuying.Manager@gmail.com
-    password: encore123!@
-    properties:
-      mail.smtp:
-        auth: true
-        starttls.enable: true
+      - mail
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
