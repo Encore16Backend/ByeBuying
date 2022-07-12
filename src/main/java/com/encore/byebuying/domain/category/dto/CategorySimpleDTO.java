@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CategorySimpleDTO {
-
     private Long categoryId;
     private String name;
-    private Long parentId;
+    private CategorySimpleDTO parentCategory;
 }

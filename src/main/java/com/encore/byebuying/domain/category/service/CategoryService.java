@@ -22,18 +22,18 @@ public class CategoryService {
     /* Todo : JPA 로 자기 참조 가능한지 알아보기 끝 */
     // Todo : 전체 카테고리 조회(원하는 반환 결과 만들기), 아이템 카테고리
 
-//    public CategoryDTO findAll() {
-//        List<CategoryDTO> collect = categoryRepository.findAll()
-//                .stream().map(CategoryDTO::new).collect(Collectors.toList());
-//
-//
-//        CategoryDTO rootCategory = new CategoryDTO();
-//        rootCategory.setCategoryId(0L);
-//        rootCategory.setName("전체");
-//
-//
-//        return rootCategory;
-//    }
+    public CategoryDTO findAll() {
+        List<CategoryDTO> collect = categoryRepository.findAll()
+                .stream().map(CategoryDTO::new).collect(Collectors.toList());
+
+
+        CategoryDTO rootCategory = new CategoryDTO();
+        rootCategory.setCategoryId(0L);
+        rootCategory.setName("전체");
+
+
+        return rootCategory;
+    }
 //
 //    /** 카테고리 생성 */
 //    @Transactional
