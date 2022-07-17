@@ -10,11 +10,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @DataJpaTest
 class CategoryRepositoryTest {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -72,5 +78,25 @@ class CategoryRepositoryTest {
         // then
         Assertions.assertThat(item.getCategory().getName()).isEqualTo("test");
         log.info("{}", item.getCategory().getParentCategory().getName());
+    }
+
+    @DisplayName("루트 카테고리 테스트")
+    @Test
+    public void findRootCategoryTest() throws Exception {
+        // given
+        Category allCategory = Category.createCategory("전체", null);
+        Category subCategory = Category.createCategory("test", allCategory);
+
+        // when
+        categoryRepository.save(allCategory);
+        categoryRepository.save(subCategory);
+        entityManager.flush();
+        entityManager.clear();
+
+        Category root = categoryRepository.findByParentCategoryIsNull().orElseThrow(() -> new NullPointerException("없음"));
+        log.info("{}", root);
+
+        // then
+        assertThat(root.getName()).isEqualTo("전체");
     }
 }
