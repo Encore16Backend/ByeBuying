@@ -13,13 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.encore.byebuying.domain.order.service.OrderService;
 
@@ -27,27 +21,14 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orderHistory")
+@RequestMapping("/orders")
 public class OrderController {
 	private final OrderService orderService;
 	private final BasketService basketService;
 	private final ItemService itemService;
-	private final WebClientService webClientService;
 
-	// List<OrderHistory> orderHistory: JSON parse error
-	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
-	@PostMapping("/add")
-	public ResponseEntity<?> addOrderHistory(@RequestBody OrderDTO orderDTO) {
-		try {
-			orderService.order(orderDTO);
-		} catch (Exception e) {
-			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
-	}
-
-	@GetMapping("/getOrderHistories")
-	public ResponseEntity<Page<Order>> getOrderHistories(
+	@GetMapping("")
+	public ResponseEntity<Page<Order>> getOrders(
 			@RequestParam(defaultValue = "", value = "username") String username,
 			@RequestParam(required = false, defaultValue = "", value = "start") String start,
 			@RequestParam(required = false, defaultValue = "", value = "end") String end,
@@ -64,9 +45,27 @@ public class OrderController {
 		return ResponseEntity.ok().body(orderHistories);
 	}
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> deleteOrderHistory(
-			@RequestParam(defaultValue = "", value = "basketid") Long id) {
+	@GetMapping("/{orderId}")
+	public ResponseEntity getOrder(@PathVariable Long orderId) {
+		orderService.findById(orderId);
+
+		return ResponseEntity.ok().body(null);
+	}
+
+	// List<OrderHistory> orderHistory: JSON parse error
+	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
+	@PostMapping("")
+	public ResponseEntity<?> addOrderHistory(@RequestBody OrderDTO orderDTO) {
+		try {
+			orderService.order(orderDTO);
+		} catch (Exception e) {
+			return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+	}
+
+	@DeleteMapping("/{order_id}")
+	public ResponseEntity<?> deleteOrderHistory(@PathVariable("order_id") Long id) {
 
 		orderService.deleteOrder(id);
 		return new ResponseEntity<>("SUCCESS", HttpStatus.OK);

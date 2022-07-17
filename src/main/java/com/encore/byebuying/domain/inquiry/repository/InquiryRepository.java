@@ -1,7 +1,6 @@
 package com.encore.byebuying.domain.inquiry.repository;
 
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

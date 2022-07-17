@@ -2,10 +2,11 @@ package com.encore.byebuying.config.oauth;
 
 import com.encore.byebuying.config.Exception.OAuth2AuthenticationProcessingException;
 import com.encore.byebuying.config.auth.PrincipalDetails;
-import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
+import com.encore.byebuying.domain.user.dto.UserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -49,12 +50,15 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo oAuth2UserInfo, ProviderType providerType) {
-        User user = new User(
-                oAuth2UserInfo.getUsername(),
-                oAuth2UserInfo.getEmail(),
-                RoleType.USER,
-                providerType,
-                oAuth2UserInfo.getProviderId());
-        return userRepository.save(user);
+        UserDTO dto = UserDTO.builder()
+            .username(oAuth2UserInfo.getUsername())
+            .password("OAUTHLOGIN")
+            .email(oAuth2UserInfo.getEmail())
+            .defaultLocationIdx(0)
+            .locations(new ArrayList<>()).build();
+        return userRepository.save(
+            User.initUser()
+                .dto(dto)
+                .provider(providerType).build());
     }
 }

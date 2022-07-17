@@ -12,10 +12,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.Date;
 import java.util.Optional;
 
-public interface
-OrderRepository extends JpaRepository<Order, Long>{
+public interface OrderRepository extends JpaRepository<Order, Long>{
 	@EntityGraph(attributePaths = {"items"})
 	Optional<Order> findById(Long id);
+
+	@Override
+	@EntityGraph(attributePaths = {"items"})
+	Order getById(Long aLong);
 
 	@Query("select o from Order o where o.user.username = :username")
 	Page<Order> findByUsername(Pageable pageable,@Param("username") String username);
