@@ -23,15 +23,15 @@ public class Inquiry extends BaseTimeEntity {
     @Column(name = "inquiry_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
     private User user;
-//    문의사항은 아이템 기준이 아니기 때문에 Item 필요 x
-//    @ManyToOne
-//    @JoinColumn(name = "item_id")
-//    private Item item;
+    @Column(name = "title", nullable = false)
     private String title;
+    @Column(name = "content", nullable = false, length = 2000)
     private String content;
+    @Column(name = "answer", length = 2000)
     private String answer = "";
+    @Column(name = "chkAnswer", nullable = false)
     private InquiryType chkAnswer = InquiryType.WAITING;
 
     @Builder(builderClassName = "init", builderMethodName = "initInquiry")
