@@ -68,7 +68,7 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Embedded
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private Address address;
 
     @Builder.Default
@@ -124,5 +124,9 @@ public class User extends BaseTimeEntity {
         this.email = user.getEmail();
         this.defaultLocationIdx = user.getDefaultLocationIdx();
         this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
+    }
+
+    public void changeRoleTypeUser(RoleType roleType) {
+        this.roleType = roleType;
     }
 }

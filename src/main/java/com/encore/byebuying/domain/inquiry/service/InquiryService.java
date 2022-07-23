@@ -83,6 +83,7 @@ public class InquiryService {
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
         // 권한 체크
         userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
+        inquiry.getUser().getInquiries().removeIf(item -> item == inquiry);
         inquiryRepository.delete(inquiry);
     }
 

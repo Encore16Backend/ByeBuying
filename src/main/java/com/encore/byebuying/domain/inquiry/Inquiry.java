@@ -36,6 +36,7 @@ public class Inquiry extends BaseTimeEntity {
 
     @Builder(builderClassName = "update", builderMethodName = "updateBuildInquiry")
     private Inquiry(UpdateInquiryDTO dto, User user) {
+        this.id = dto.getInquiryId();
         this.title = dto.getTitle();
         this.content = dto.getContent();
         if (user != null)
