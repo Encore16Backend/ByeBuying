@@ -1,9 +1,9 @@
 package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.common.paging.PagingResponse;
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,37 +26,37 @@ public class InquiryServiceImpl implements InquiryService{
 
     @Override
     @Transactional // 서비스 메소드에 transactional 걸어야 함
-    public InquiryResponseDTO saveInquiry(InquirySaveDTO inquirySaveDTO) {
-        User user = userRepository.findByUsername(inquirySaveDTO.getUsername())
+    public InquiryResponseVO saveInquiry(UpdateInquiryDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
             .orElseThrow(EntityNotFoundException::new);
-        Inquiry inquiry = inquiryRepository.save(Inquiry.createInquiry(inquirySaveDTO, user));
-        return new InquiryResponseDTO(inquiry);
+        Inquiry inquiry = inquiryRepository.save(Inquiry.createInquiry(dto, user));
+        return new InquiryResponseVO(inquiry);
     }
 
     @Override
     @Transactional
-    public void answerToInquiry(InquiryAnswerDTO dto) {
+    public void answerToInquiry(AnswerInquiryDTO dto) {
         Inquiry inquiry = inquiryRepository.findById(dto.getInquiry_id())
             .orElseThrow(NullPointerException::new);
         inquiry.inquiryAnswer(dto.getAnswer());
     }
 
     @Override
-    public InquiryResponseDTO getById(Long id) {
-        return new InquiryResponseDTO(inquiryRepository.getById(id)); // 없으면 EntityNotFoundException 뜸
+    public InquiryResponseVO getById(Long id) {
+        return new InquiryResponseVO(inquiryRepository.getById(id)); // 없으면 EntityNotFoundException 뜸
     }
 
     @Override
-    public PagingResponse<Inquiry, InquiryResponseDTO> getInquiries(Pageable pageable) {
+    public PagingResponse<Inquiry, InquiryResponseVO> getInquiries(Pageable pageable) {
         Page<Inquiry> inquiries = inquiryRepository.findAll(pageable);
-        return new PagingResponse<>(new InquiryResponseDTO(), inquiries);
+        return new PagingResponse<>(new InquiryResponseVO(), inquiries);
     }
 
     @Override
-    public PagingResponse<Inquiry, InquiryResponseDTO> getByUser(Pageable pageable, String username) {
+    public PagingResponse<Inquiry, InquiryResponseVO> getByUser(Pageable pageable, String username) {
         Long user_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getId();
         Page<Inquiry> inquiries = inquiryRepository.findByUserId(pageable, user_id);
-        return new PagingResponse<>(new InquiryResponseDTO(), inquiries);
+        return new PagingResponse<>(new InquiryResponseVO(), inquiries);
     }
 
     @Override

@@ -2,10 +2,10 @@ package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import com.encore.byebuying.domain.user.Location;
@@ -46,8 +46,8 @@ class InquiryTest {
     return new UserDTO("test", "test123", "test@test.com", 0, locations);
   }
 
-  public InquirySaveDTO createInquiry(String username) {
-    return new InquirySaveDTO("testInquiry", "testestestest", username);
+  public UpdateInquiryDTO createInquiry(String username) {
+    return new UpdateInquiryDTO("testInquiry", "testestestest", username);
   }
 
   @Test
@@ -61,15 +61,15 @@ class InquiryTest {
     em.clear(); // 영속성 컨텍스트 초기화
 
     // 문의등록 Request
-    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
+    UpdateInquiryDTO inquiryDTO = createInquiry(user.getUsername());
     log.info(">>> Req : {}", inquiryDTO);
 
     // 문의등록
-    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    InquiryResponseVO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
     log.info(">>> save Inquiry : {}", saveInquiry);
     em.clear();
 
-    Inquiry inquiry = inquiryRepository.findById(saveInquiry.getInquiry_id())
+    Inquiry inquiry = inquiryRepository.findById(saveInquiry.getInquiryId())
         .orElseThrow(EntityNotFoundException::new);
     User userInInquiry = userRepository.findById(inquiry.getUser().getId())
         .orElseThrow(EntityNotFoundException::new);
@@ -99,14 +99,14 @@ class InquiryTest {
         .provider(ProviderType.LOCAL).build());
     em.clear();
 
-    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
-    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
-    Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
+    UpdateInquiryDTO inquiryDTO = createInquiry(user.getUsername());
+    InquiryResponseVO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiryId());
     log.info(">>> create At: {}, update At: {}", saveResult.getCreatedAt(), saveResult.getModifiedAt());
     em.clear();
 
     // 문의사항 답변 Request
-    InquiryAnswerDTO answerDTO = new InquiryAnswerDTO(saveInquiry.getInquiry_id(), "testAnswer");
+    AnswerInquiryDTO answerDTO = new AnswerInquiryDTO(saveInquiry.getInquiryId(), "testAnswer");
     log.info("Req : {}", answerDTO);
 
     // 답변 추가
@@ -129,7 +129,7 @@ class InquiryTest {
         .provider(ProviderType.LOCAL).build());
     em.clear();
 
-    InquirySaveDTO inquiryDTO;
+    UpdateInquiryDTO inquiryDTO;
     for (int i=0; i<8; i++) {
       inquiryDTO = createInquiry(user.getUsername());
       inquiryDTO.setTitle((i+1) + ". " + inquiryDTO.getTitle());
@@ -149,7 +149,7 @@ class InquiryTest {
 
     // 문의사항 한개 불러오기 TEST
     var inquiry = inquiryService.getById(3L);
-    assertThat(inquiry.getInquiry_id()).isEqualTo(3L);
+    assertThat(inquiry.getInquiryId()).isEqualTo(3L);
     assertThat(inquiry.getTitle()).isEqualTo("3. testInquiry");
     assertThat(inquiry.getContent()).isEqualTo("3. testestestest");
 
@@ -171,9 +171,9 @@ class InquiryTest {
         .provider(ProviderType.LOCAL).build());
     em.clear();
 
-    InquirySaveDTO inquiryDTO = createInquiry(user.getUsername());
-    InquiryResponseDTO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
-    Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiry_id());
+    UpdateInquiryDTO inquiryDTO = createInquiry(user.getUsername());
+    InquiryResponseVO saveInquiry = inquiryService.saveInquiry(inquiryDTO);
+    Inquiry saveResult = inquiryRepository.getById(saveInquiry.getInquiryId());
     em.clear();
 
     Long inquiry_id = saveResult.getId();

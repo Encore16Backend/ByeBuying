@@ -2,10 +2,10 @@ package com.encore.byebuying.domain.inquiry.controller;
 
 import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryGetDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryResponseDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ public class InquiryController {
 
     // 문의사항 등록
     @PostMapping
-    public ResponseEntity<?> saveInquiry(@Valid @RequestBody InquirySaveDTO dto){
+    public ResponseEntity<?> saveInquiry(@Valid @RequestBody UpdateInquiryDTO dto){
         inquiryService.saveInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     // 문의사항 답변 등록
     @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(@Valid @RequestBody InquiryAnswerDTO dto){
+    public ResponseEntity<?> answerToInquiry(@Valid @RequestBody AnswerInquiryDTO dto){
         inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
@@ -37,29 +37,31 @@ public class InquiryController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getInquiryById(
         @PathVariable(value = "id") Long inquiryId){
-        InquiryResponseDTO inquiryResponseDTO = inquiryService.getById(inquiryId);
-        return new ResponseEntity<>(inquiryResponseDTO, HttpStatus.OK);
+        InquiryResponseVO inquiryResponseVO = inquiryService.getById(inquiryId);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
     // 문의사항 전체(페이징)
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestBody InquiryGetDTO dto) {
-        PagingResponse<Inquiry, InquiryResponseDTO> inquiries =
+    public ResponseEntity<?> getInquiries(@RequestBody SearchInquiryDTO dto) {
+        PagingResponse<Inquiry, InquiryResponseVO> inquiries =
             inquiryService.getInquiries(dto.getPageRequest());
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 유저별 문의사항 불러오기
     @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestBody InquiryGetDTO dto) {
-        var inquiries = inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
+    public ResponseEntity<?> getByUserId(@RequestBody SearchInquiryDTO dto) {
+        PagingResponse<Inquiry, InquiryResponseVO> inquiries =
+            inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 문의사항 삭제
     @PostMapping("/removal:{id}")
-    public void deleteInquiry(@PathVariable(value = "id") Long inquiryId){
+    public ResponseEntity<?> deleteInquiry(@PathVariable(value = "id") Long inquiryId){
         inquiryService.deleteInquiryById(inquiryId);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     // 지금 필요없어서 주석 처리
