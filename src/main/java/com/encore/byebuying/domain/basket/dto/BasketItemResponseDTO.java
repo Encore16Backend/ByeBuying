@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.basket.dto;
 
+import com.encore.byebuying.domain.basket.BasketAndItem;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.common.paging.GenericConvertor;
 import com.encore.byebuying.domain.inquiry.Inquiry;
@@ -10,10 +11,11 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @ToString
-public class BasketItemResponseDTO implements GenericConvertor<BasketItem, BasketItemResponseDTO> {
+public class BasketItemResponseDTO implements GenericConvertor<BasketAndItem, BasketItemResponseDTO> {
 
     @JsonProperty("basketItemId")
     private Long basketItemId;
@@ -25,20 +27,19 @@ public class BasketItemResponseDTO implements GenericConvertor<BasketItem, Baske
 
     public BasketItemResponseDTO() {}
 
-    public BasketItemResponseDTO(BasketItem basketItem) {
-        this.count = basketItem.getCount();
-        this.basketItemId = basketItem.getId();
-        this.itemName = basketItem.getItem().getName();
-        this.categoryId = basketItem.getItem().getCategoryId();
-        this.price = basketItem.getItem().getPrice();
-        this.itemImages = basketItem.getItem().getItemImages();
+    // 여기 BasketDTO 넣고 res 만들면 됨
+    public BasketItemResponseDTO(BasketAndItem basketAndItem) {
+        this.count = basketAndItem.getBasketItem().getCount();
+        this.basketItemId = basketAndItem.getBasketItem().getId();
+        this.itemName = basketAndItem.getItem().getName();
+        this.categoryId = basketAndItem.getItem().getCategoryId();
+        this.price = basketAndItem.getItem().getPrice();
+        this.itemImages = basketAndItem.getItem().getItemImages();
     }
-
     @Override
-    public BasketItemResponseDTO convertor(BasketItem basketItem) {
-        return new BasketItemResponseDTO(basketItem);
+    public BasketItemResponseDTO convertor(BasketAndItem basketAndItem) {
+        return new BasketItemResponseDTO(basketAndItem);
     }
-
 
 }
 

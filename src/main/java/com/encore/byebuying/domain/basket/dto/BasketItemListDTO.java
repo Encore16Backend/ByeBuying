@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.basket.dto;
 
+import com.encore.byebuying.domain.basket.BasketAndItem;
 import com.encore.byebuying.domain.basket.BasketItem;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +13,11 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 public class BasketItemListDTO {
+
     private List<BasketItemResponseDTO> basketItems;
 
-    public BasketItemListDTO(List<BasketItem> basketItems) {
-        this.basketItems = basketItems.stream()
+    public BasketItemListDTO(List<BasketAndItem> BasketAndItem) {
+        this.basketItems = BasketAndItem.stream()
                 .map(BasketItemResponseDTO::new).collect(Collectors.toList());
     }
 }

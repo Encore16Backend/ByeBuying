@@ -1,29 +1,47 @@
 package com.encore.byebuying.domain.basket;
+import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
 @Getter // all args constructor method에 붙여서
 @ToString
-public class BasketItem {
+@Table(indexes = @Index(name = "basket_id_index", columnList = "basket_id"),
+        uniqueConstraints={@UniqueConstraint(name = "unique_basket_id_id",columnNames={"basket_id","id"})}
+)
+public class BasketItem extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "basket_id")
     private Basket basket;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -32,9 +50,10 @@ public class BasketItem {
 
 
     @Builder(builderClassName = "create", builderMethodName = "createBasketItem")
-    private BasketItem(Item item, int count) {
+    private BasketItem(Item item, int count, Basket basket) {
         this.count = count;
         this.item = item;
+        this.basket = basket;
     }
 
     public void setBasket(Basket basket) {
