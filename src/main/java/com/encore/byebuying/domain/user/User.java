@@ -22,6 +22,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,9 +44,10 @@ import static javax.persistence.GenerationType.*;
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"}),
-        @UniqueConstraint(columnNames = {"username", "password", "email"}),
+        @UniqueConstraint(columnNames = {"username", "password"}),
         @UniqueConstraint(columnNames = {"username", "address"})
-    }
+    },
+    indexes = {@Index(columnList = "username")}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)

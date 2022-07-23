@@ -15,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class UpdateInquiryDTO {
+    private Long inquiryId;
     @NotBlank
     private String title;
     @NotNull
