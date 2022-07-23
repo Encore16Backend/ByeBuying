@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,13 +35,13 @@ public class Inquiry extends BaseTimeEntity {
     private InquiryType chkAnswer = InquiryType.WAITING;
 
     @Builder(builderClassName = "init", builderMethodName = "initInquiry")
-    private Inquiry(InquirySaveDTO dto, User user) {
+    private Inquiry(UpdateInquiryDTO dto, User user) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.user = user;
     }
 
-    public static Inquiry createInquiry(InquirySaveDTO dto, User user) {
+    public static Inquiry createInquiry(UpdateInquiryDTO dto, User user) {
         Inquiry inquiry = Inquiry.initInquiry().dto(dto).user(user).build();
         user.getInquiries().add(inquiry);
         return inquiry;

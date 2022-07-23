@@ -1,7 +1,7 @@
-package com.encore.byebuying.domain.inquiry.dto;
+package com.encore.byebuying.domain.inquiry.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +11,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-// for test
-@ToString
+// for Test
 @AllArgsConstructor
-public class InquiryAnswerDTO {
+@ToString
+public class UpdateInquiryDTO {
     @NotBlank
-    @JsonProperty("inquiryId")
-    private Long inquiry_id;
+    private String title;
+    @NotNull
+    private String content;
     @NotBlank
-    private String answer;
+    private String username;
 }
