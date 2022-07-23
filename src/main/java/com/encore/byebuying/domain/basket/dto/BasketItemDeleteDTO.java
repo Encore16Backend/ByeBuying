@@ -2,10 +2,11 @@ package com.encore.byebuying.domain.basket.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
 public class BasketItemDeleteDTO {
-    private List<Long> itemIds;
-    private Long userId;
+    @NotBlank
+    private List<Long> basketItemIds;
 }

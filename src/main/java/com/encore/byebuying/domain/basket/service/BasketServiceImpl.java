@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.basket.service;
 
+import com.encore.byebuying.domain.basket.BasketAndItem;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.common.paging.PagingResponse;
@@ -16,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -27,23 +26,21 @@ import java.util.List;
 @Slf4j
 public class BasketServiceImpl implements BasketService{
 
-    private final BasketRepository basketRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BasketItemRepository basketItemRepository;
 
-    private final EntityManager em;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * @param pageable, username
      * 페이징해서 장바구니 아이템을 조회
-     * 
-     * */
+     *
+     * @return*/
     @Override
-    public PagingResponse<BasketItem, BasketItemResponseDTO> getByUser(Pageable pageable, Long id) {
-        Long basket_id = userRepository.findById(id).orElseThrow(EntityNotFoundException::new).getBasket().getId();
-        Page<BasketItem> basketItems = basketItemRepository.findByBasketId(pageable, basket_id);
+    public PagingResponse<BasketAndItem, BasketItemResponseDTO> getByUser(Pageable pageable, Long id) {
+        Long basket_id = userRepository.findById(id).orElseThrow(RuntimeException::new).getBasket().getId();
+        Page<BasketAndItem> basketItems = basketItemRepository.findByBasketId(pageable, basket_id);
         return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }
 
@@ -52,10 +49,14 @@ public class BasketServiceImpl implements BasketService{
      * 장바구니에서 아이템 검색 (like)
      * */
     @Override
-    public PagingResponse<BasketItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO) {
-        User findUser = userRepository.findById(basketItemSearchDTO.getUserId()).orElseThrow(EntityNotFoundException::new);
-        Long basket_id = findUser.getBasket().getId();
-        Page<BasketItem> basketItems = basketItemRepository.findByBasketIdAndItem_NameLike(pageable, basket_id, basketItemSearchDTO.getItemName());
+    public PagingResponse<BasketAndItem, BasketItemResponseDTO> getByItemName(Pageable pageable, BasketItemSearchDTO basketItemSearchDTO) {
+        // 검색 조건 분류
+        Long basket_id = userRepository.findById(basketItemSearchDTO.getUserId()).orElseThrow(RuntimeException::new).getBasket().getId();
+        Page<BasketAndItem> basketItems;
+
+        if (basketItemSearchDTO.hasDate()) basketItems = basketItemRepository.findByBasketIdAndCreatedAtBetween(pageable, basket_id, basketItemSearchDTO.getItemName(), basketItemSearchDTO.getStartDate(), basketItemSearchDTO.getEndDate());
+        else basketItems = basketItemRepository.findByBasketIdAndItem_NameLike(pageable, basket_id, basketItemSearchDTO.getItemName());
+
         return new PagingResponse<>(new BasketItemResponseDTO(), basketItems);
     }
 
@@ -66,11 +67,9 @@ public class BasketServiceImpl implements BasketService{
     @Transactional
     @Override
     public void updateBasketItem(BasketUpdateDTO basketUpdateDTO) {
-
         Long BasketItemId = basketUpdateDTO.getBasketItemId();
         int count = basketUpdateDTO.getCount();
-
-        BasketItem findBasketItem = basketItemRepository.findById(BasketItemId).orElseThrow(EntityNotFoundException::new);
+        BasketItem findBasketItem = basketItemRepository.findById(BasketItemId).orElseThrow(RuntimeException::new);
         findBasketItem.setCount(count);
     }
 
@@ -87,11 +86,10 @@ public class BasketServiceImpl implements BasketService{
         Long item_id = basketAddDTO.getItemId();
         int count = basketAddDTO.getCount();
 
-        User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
-        Item findItem = itemRepository.findById(item_id).orElseThrow(()-> {throw new NullPointerException();});
-        BasketItem basketItem = BasketItem.createBasketItem().item(findItem).count(count).build();
+        User findUser = userRepository.findById(user_id).orElseThrow(RuntimeException::new);
+        Item findItem = itemRepository.findById(item_id).orElseThrow(RuntimeException::new);
+        BasketItem basketItem = BasketItem.createBasketItem().item(findItem).count(count).basket(findUser.getBasket()).build();
         basketItemRepository.save(basketItem);
-        findUser.getBasket().addBasketItem(basketItem);
     }
 
 
@@ -103,14 +101,10 @@ public class BasketServiceImpl implements BasketService{
     @Transactional
     @Override
     public void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO) {
-        Long user_id = basketDeleteDTO.getUserId();
-        List<Long> item_ids = basketDeleteDTO.getItemIds();
-        User findUser = userRepository.findById(user_id).orElseThrow(()-> {throw new NullPointerException();});
 
-        List<BasketItem> basket = findUser.getBasket().getBasketItems();
-        for (Long id : item_ids){
-            basket.removeIf(bItem -> (bItem.getItem().getId() == id) );
-        }
+        List<Long> basketItemIds = basketDeleteDTO.getBasketItemIds();
+        basketItemRepository.deleteAllByIdInBatch(basketItemIds);
+
     }
 
 

@@ -22,7 +22,6 @@ public class Basket extends BaseTimeEntity {
     private List<BasketItem> basketItems = new ArrayList<>();
 
     public void addBasketItem(BasketItem basketItem) {
-        basketItem.setBasket(this);
         this.basketItems.add(basketItem);
     }
 
