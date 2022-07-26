@@ -1,14 +1,15 @@
 package com.encore.byebuying.domain.user.service;
 
-import com.encore.byebuying.domain.basket.repository.BasketRepository;
-import com.encore.byebuying.domain.code.RoleType;
-import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.config.Exception.ResourceNotFoundException;
 import com.encore.byebuying.domain.order.repository.OrderRepository;
 import com.encore.byebuying.domain.review.repository.ReviewRepository;
+import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.user.dto.UserSaveDTO;
+import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.UserInfoDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -51,23 +53,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User saveUser(UserSaveDTO dto) {
-        log.info("Saving new user {} to the database", dto.getUsername());
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        User user = User.initUser().dto(dto).build();
-        return userRepository.save(user);
+    public String saveUser(UserDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername()).orElseGet(() ->
+                User.initUser().dto(dto).provider(ProviderType.LOCAL).build());
+
+        if (user.getPassword() != null || !user.getPassword().isEmpty()) { // 회원정보수정, 회원가입 공통
+            user.encodePassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        if (user.getId() == null) { // 회원가입
+            log.info("Saving new user {} to the database", user.getUsername());
+            userRepository.save(user);
+        } else { // 회원정보수정
+            user.changeUser(user);
+        }
+        return user.getUsername();
     }
 
     @Override
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public Collection<Location> getLocation(String username) {
+        log.info("Fetching user {}", username);
+        return userRepository.findByUsername(username).orElseThrow(() ->
+            new ResourceNotFoundException(username, "username", User.class))
+            .getLocations();
     }
 
+    @Override
+    public UserInfoDTO getUserInfo(String username) {
+        log.info("Fetching user {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+            new ResourceNotFoundException(username, "username", User.class));
+        return new UserInfoDTO(user.getUsername(), user.getEmail());
+    }
 
     @Override
-    public User getUser(String userName) {
-        log.info("Fetching user {}", userName);
-        return userRepository.findByUsername(userName).orElse(null);
+    public User getUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() ->
+            new ResourceNotFoundException(username, "username", User.class));
     }
 
     @Override
@@ -77,12 +99,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkUser(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        return user == null;
+    public String checkUser(String username) {
+        return userRepository.existsByUsername(username) ? "FAIL" : "SUCCESS";
     }
 
     @Override
+    @Transactional
     public void deleteUser(String username) {
 //        basketRepo.deleteAllByUsername(username);
 //        inquiryRepo.deleteAllByUsername(username);
