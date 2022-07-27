@@ -3,6 +3,7 @@ package com.encore.byebuying.domain.inquiry;
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
@@ -164,13 +165,13 @@ class InquiryTest {
     em.clear();
 
     log.info("문의사항 전체 불러오기 TEST");
-    PageRequest allInquiryPaging = PageRequest.of(0, 5);
-    var allInquiries = inquiryRepository.findAll(allInquiryPaging);
-    assertThat(allInquiries.getContent().size()).isEqualTo(5);
+    SearchInquiryDTO dto = new SearchInquiryDTO();
+    dto.setPageNumber(0);
+    dto.setSize(10);
 
-    allInquiryPaging = PageRequest.of(1, 5);
-    allInquiries = inquiryRepository.findAll(allInquiryPaging);
-    assertThat(allInquiries.getContent().size()).isEqualTo(3);
+    var inquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
+    assertThat(inquiries.getContent().size()).isEqualTo(8);
+
 
     log.info("문의사항 한개 불러오기 TEST");
     var inquiry = inquiryRepository.getById(3L);
@@ -179,11 +180,11 @@ class InquiryTest {
     assertThat(inquiry.getContent()).isEqualTo("3. testestestest");
 
     log.info("문의사항 유저별 불러오기 TEST");
-    PageRequest byUserPaging = PageRequest.of(0, 5);
-    var byUserInquiries = inquiryRepository.findByUserId(byUserPaging, user.getId());
+    dto.setUsername("test");
+    var byUserInquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
     var byUserInquiriesContent = byUserInquiries.getContent();
     for (int i=0; i<5; i++) {
-      assertThat(byUserInquiriesContent.get(i).getUser().getId()).isEqualTo(user.getId());
+      assertThat(byUserInquiriesContent.get(i).getUsername()).isEqualTo(user.getUsername());
     }
   }
 
