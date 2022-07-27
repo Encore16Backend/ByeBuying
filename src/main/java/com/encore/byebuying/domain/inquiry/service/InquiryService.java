@@ -1,16 +1,15 @@
 package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.code.InquiryType;
-import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.common.service.UserAuthorityHelper;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
-import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,13 +41,14 @@ public class InquiryService {
                 throw new RuntimeException("Inquiry has already been answered");
             }
 
-            // 권한 체크
+            // 권한 체크 - 문의사항 작성자 또는 관리자만 수정 가능
             userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
-            user = null; // 수정 작업: user -> null 이어야 함
+            inquiry = Inquiry.updateInquiry(dto, null);
+        } else {
+            inquiry = Inquiry.updateInquiry(dto, user);
         }
-        inquiry = Inquiry.updateInquiry(dto, user);
         inquiryRepository.save(inquiry);
-        return new InquiryResponseVO(inquiry);
+        return InquiryResponseVO.valueOf(inquiry);
     }
 
     @Transactional
@@ -56,25 +56,18 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(dto.getInquiryId())
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
         inquiry.inquiryAnswer(dto.getAnswer());
-        return new InquiryResponseVO(inquiry);
+        return InquiryResponseVO.valueOf(inquiry);
     }
 
     public InquiryResponseVO getInquiryDetail(String username, Long inquiryId) {
         Inquiry inquiry = inquiryRepository.getById(inquiryId);
         // 권한 체크
         userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
-        return new InquiryResponseVO(inquiry);
+        return InquiryResponseVO.valueOf(inquiry);
     }
 
-    public PagingResponse<Inquiry, InquiryResponseVO> getInquiries(Pageable pageable) {
-        Page<Inquiry> inquiries = inquiryRepository.findAll(pageable);
-        return new PagingResponse<>(new InquiryResponseVO(), inquiries);
-    }
-
-    public PagingResponse<Inquiry, InquiryResponseVO> getByUser(Pageable pageable, String username) {
-        Long user_id = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new).getId();
-        Page<Inquiry> inquiries = inquiryRepository.findByUserId(pageable, user_id);
-        return new PagingResponse<>(new InquiryResponseVO(), inquiries);
+    public Page<InquiryResponseVO> getInquiries(SearchInquiryDTO dto, Pageable pageable) {
+        return inquiryRepository.findAll(dto, pageable);
     }
 
     @Transactional
