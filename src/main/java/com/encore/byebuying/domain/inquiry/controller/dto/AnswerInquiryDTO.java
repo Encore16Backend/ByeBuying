@@ -17,7 +17,7 @@ import lombok.ToString;
 public class AnswerInquiryDTO {
     @NotBlank
     @JsonProperty("inquiryId")
-    private Long inquiry_id;
+    private Long inquiryId;
     @NotBlank
     private String answer;
 }
