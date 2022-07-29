@@ -22,8 +22,8 @@ public class BasketController {
 
     // 유저별 장바구니 상품 조회
     @GetMapping("/by-user")
-    public ResponseEntity<?> getBasketByUSer(@RequestBody @Valid BasketGetDTO dto) {
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(dto.getPageRequest(), dto.getUserId());
+    public ResponseEntity<?> getBasketByUSer(@RequestBody @Valid BasketGetDTO basketGetDTO) {
+        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketGetDTO.getPageRequest(), basketGetDTO.getUserId());
         return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
@@ -38,23 +38,24 @@ public class BasketController {
     @PostMapping
     public ResponseEntity<?> addBasket(@RequestBody @Valid BasketItemAddDTO basketAddDTO) {
         basketService.addBasketItem(basketAddDTO);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketAddDTO.getPageRequest(), basketAddDTO.getUserId());
+        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
     // 장바구니 상품 갯수 수정
     @PostMapping("/update-count")
     public ResponseEntity<?> updateBasket(@RequestBody @Valid BasketUpdateDTO basketUpdateDTO) {
         basketService.updateBasketItem(basketUpdateDTO);
-        // 수정된 장바구니 아이템 리턴
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketUpdateDTO.getPageRequest(), basketUpdateDTO.getUserId());
+        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
     // 장바구니 상품 삭제
-    @PostMapping("/removal-item")
+    @DeleteMapping("/removal-item")
     public ResponseEntity<?> deleteBasket(@RequestBody @Valid BasketItemDeleteDTO basketDeleteDTO) {
         basketService.deleteBasketItem(basketDeleteDTO);
-        // 수정된 장바구니 아이템 리턴
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketDeleteDTO.getPageRequest(), basketDeleteDTO.getUserId());
+        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
 }
