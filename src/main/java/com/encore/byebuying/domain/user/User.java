@@ -77,7 +77,7 @@ public class User extends BaseTimeEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY ,cascade = CascadeType.ALL)
     @JoinColumn(name = "basket_id", referencedColumnName = "id")
     private Basket basket;
 
@@ -110,6 +110,7 @@ public class User extends BaseTimeEntity {
         this.roleType = RoleType.USER;
         this.provider = provider;
         this.inquiries = new ArrayList<>();
+        this.basket = Basket.createBasket();
         this.orders = new ArrayList<>();
         this.reviews = new ArrayList<>();
     }

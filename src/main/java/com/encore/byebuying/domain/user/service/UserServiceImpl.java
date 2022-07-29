@@ -12,6 +12,7 @@ import com.encore.byebuying.domain.user.repository.UserRepository;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -112,6 +113,7 @@ public class UserServiceImpl implements UserService {
 //        reviewRepository.deleteAllByUsername(username);
         userRepository.deleteByUsername(username);
     }
+
 
     @Override
     public boolean existsEmail(String email) {
