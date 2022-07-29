@@ -27,21 +27,21 @@ import javax.persistence.UniqueConstraint;
 @Getter // all args constructor method에 붙여서
 @ToString
 @Table(indexes = @Index(name = "basket_id_index", columnList = "basket_id"),
-        uniqueConstraints={@UniqueConstraint(name = "unique_basket_id_id",columnNames={"basket_id","id"})}
+        uniqueConstraints={@UniqueConstraint(name = "unique_basket_id_id",columnNames={"basket_id","basket_item_id"})}
 )
 public class BasketItem extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "basket_item_id")
+    @Column(name = "basket_item_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket_id", nullable = false, referencedColumnName = "basket_id")
+    @JoinColumn(name = "basket_id", nullable = false)
     private Basket basket;
 
     @ManyToOne(fetch = FetchType.LAZY)
