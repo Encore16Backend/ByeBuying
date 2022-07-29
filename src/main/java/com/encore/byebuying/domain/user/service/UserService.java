@@ -5,8 +5,11 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UserDTO;
 import com.encore.byebuying.domain.user.dto.UserInfoDTO;
 import java.util.Collection;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 
 public interface UserService {
     String saveUser(UserDTO user);

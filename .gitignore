@@ -40,3 +40,5 @@ DataCrwaling/**
 application-db.yml
 application-oauth.yml
 application-mail.yml
+application.yml
+application-mail.yml

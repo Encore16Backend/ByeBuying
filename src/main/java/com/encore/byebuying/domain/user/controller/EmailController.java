@@ -3,21 +3,27 @@ package com.encore.byebuying.domain.user.controller;
 import java.util.Random;
 
 import com.encore.byebuying.domain.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+
+
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
+@RestController
 public class EmailController {
+
 	private final JavaMailSender javaMailSender;
 	private final UserService userService;
-	
+
 	@GetMapping("/checkMail")
 	public String SendMail(@RequestParam(value = "email") String email) throws Exception {
 		log.info("email : {}",email);
@@ -28,7 +34,7 @@ public class EmailController {
 		try {
 			Random random = new Random();
 			String key = "";
-			
+
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setTo(email); // 스크립트에서 보낸 메일을 받을 사용자 이메일 주소
 			// 입력 키를 위한 코드
@@ -42,9 +48,9 @@ public class EmailController {
 			message.setText("인증 번호 : " + key);
 			javaMailSender.send(message);
 			return key;
-			
+
 		} catch (Exception e) {
-			
+
 			return "FAIL";
 		}
 	}
