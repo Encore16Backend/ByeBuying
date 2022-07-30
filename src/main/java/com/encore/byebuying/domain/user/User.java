@@ -22,6 +22,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -43,9 +44,10 @@ import static javax.persistence.GenerationType.*;
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"}),
-        @UniqueConstraint(columnNames = {"username", "password", "email"}),
+        @UniqueConstraint(columnNames = {"username", "password"}),
         @UniqueConstraint(columnNames = {"username", "address"})
-    }
+    },
+    indexes = {@Index(columnList = "username")}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -66,7 +68,7 @@ public class User extends BaseTimeEntity {
     private String email;
 
     @Embedded
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private Address address;
 
     @Builder.Default
@@ -123,5 +125,9 @@ public class User extends BaseTimeEntity {
         this.email = user.getEmail();
         this.defaultLocationIdx = user.getDefaultLocationIdx();
         this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
+    }
+
+    public void changeRoleTypeUser(RoleType roleType) {
+        this.roleType = roleType;
     }
 }

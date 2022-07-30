@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,16 +34,24 @@ public class Inquiry extends BaseTimeEntity {
     @Column(name = "chkAnswer", nullable = false)
     private InquiryType chkAnswer = InquiryType.WAITING;
 
-    @Builder(builderClassName = "init", builderMethodName = "initInquiry")
-    private Inquiry(InquirySaveDTO dto, User user) {
+    @Builder(builderClassName = "update", builderMethodName = "updateBuildInquiry")
+    private Inquiry(UpdateInquiryDTO dto, User user) {
+        this.id = dto.getInquiryId();
         this.title = dto.getTitle();
         this.content = dto.getContent();
-        this.user = user;
+        if (user != null)
+            this.user = user;
     }
 
-    public static Inquiry createInquiry(InquirySaveDTO dto, User user) {
-        Inquiry inquiry = Inquiry.initInquiry().dto(dto).user(user).build();
-        user.getInquiries().add(inquiry);
+    public static Inquiry updateInquiry(UpdateInquiryDTO dto, User user) {
+        Inquiry inquiry = Inquiry.updateBuildInquiry()
+            .dto(dto)
+            .user(user)
+            .build();
+
+        if (user != null)
+            user.getInquiries().add(inquiry);
+
         return inquiry;
     }
 
