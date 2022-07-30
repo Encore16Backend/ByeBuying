@@ -17,6 +17,7 @@ import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.dto.UserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class BasketServiceImplTest {
 
+    // 겸용금지
+
     @Autowired private BasketServiceImpl basketServiceImpl;
     @Autowired private UserRepository userRepository;
     @Autowired private ItemRepository itemRepository;
@@ -51,7 +54,7 @@ public class BasketServiceImplTest {
     @PersistenceContext
     private EntityManager entityManager;
 
-
+    @BeforeEach
     public User givenUser() throws Exception {
         User user = userRepository.save(User.builder().username("test").roleType(RoleType.USER).provider(LOCAL).address(new Address("d","t","t")).password("1111").email("test@naver.com").basket(Basket.createBasket()).build());
         entityManager.flush();
@@ -69,7 +72,6 @@ public class BasketServiceImplTest {
         itemRepository.saveAll(Arrays.asList(item1, item2, item3, item4, item5));
         entityManager.flush();
         entityManager.clear();
-
 
         BasketItem basketItem1 = BasketItem.createBasketItem().item(item1).count(5).basket(user.getBasket()).build();
         BasketItem basketItem2 = BasketItem.createBasketItem().item(item2).count(5).basket(user.getBasket()).build();

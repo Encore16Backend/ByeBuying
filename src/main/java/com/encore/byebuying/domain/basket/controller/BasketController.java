@@ -8,6 +8,7 @@ import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.inquiry.dto.InquiryGetDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,47 +16,45 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/basket")
+@RequestMapping("/api/baskets")
 @RequiredArgsConstructor
 public class BasketController {
     private final BasketService basketService;
 
     // 유저별 장바구니 상품 조회
     @GetMapping("/by-user")
-    public ResponseEntity<?> getBasketByUSer(@RequestBody @Valid BasketGetDTO basketGetDTO) {
+    public ResponseEntity<?> getBasketByUser(@Valid BasketGetDTO basketGetDTO) {
         PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketGetDTO.getPageRequest(), basketGetDTO.getUserId());
         return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
     // 상품이름으로 장바구니 검색
     @GetMapping("/by-itemname")
-    public ResponseEntity<?> getBasketItemByItemName(@RequestBody @Valid BasketItemSearchDTO dto) {
+    public ResponseEntity<?> getBasketItemByItemName(@Valid BasketItemSearchDTO dto) {
         PagingResponse<BasketAndItem, BasketItemResponseDTO> findItem = basketService.getByItemName(dto.getPageRequest(), dto);
         return new ResponseEntity<>(findItem,HttpStatus.OK);
     }
 
     // 장바구니 상품 추가
-    @PostMapping
+    @PostMapping(value = "/basket-item",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addBasket(@RequestBody @Valid BasketItemAddDTO basketAddDTO) {
         basketService.addBasketItem(basketAddDTO);
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketAddDTO.getPageRequest(), basketAddDTO.getUserId());
-        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
+        return new ResponseEntity<>("OK",HttpStatus.OK);
     }
 
     // 장바구니 상품 갯수 수정
-    @PostMapping("/update-count")
+    @PutMapping(value = "/count" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateBasket(@RequestBody @Valid BasketUpdateDTO basketUpdateDTO) {
         basketService.updateBasketItem(basketUpdateDTO);
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketUpdateDTO.getPageRequest(), basketUpdateDTO.getUserId());
-        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
+        return new ResponseEntity<>("OK",HttpStatus.OK);
     }
 
     // 장바구니 상품 삭제
-    @DeleteMapping("/removal-item")
+    @DeleteMapping(value = "/{basket-id}/basket-items" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteBasket(@RequestBody @Valid BasketItemDeleteDTO basketDeleteDTO) {
+        // item이 basket안에 들어있는지 확인 하기위해 item_id 확인
         basketService.deleteBasketItem(basketDeleteDTO);
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketDeleteDTO.getPageRequest(), basketDeleteDTO.getUserId());
-        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
+        return new ResponseEntity<>("OK",HttpStatus.OK);
     }
 
 }

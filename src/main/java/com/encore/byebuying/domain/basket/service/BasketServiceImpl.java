@@ -30,8 +30,6 @@ public class BasketServiceImpl implements BasketService{
     private final UserRepository userRepository;
     private final BasketItemRepository basketItemRepository;
 
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
     /**
      * @param pageable, username
      * 페이징해서 장바구니 아이템을 조회
@@ -81,17 +79,19 @@ public class BasketServiceImpl implements BasketService{
     @Transactional
     @Override
     public void addBasketItem(BasketItemAddDTO basketAddDTO) {
-
+    //  ctrl + alt + N
         Long user_id = basketAddDTO.getUserId();
         Long item_id = basketAddDTO.getItemId();
         int count = basketAddDTO.getCount();
 
         User findUser = userRepository.findById(user_id).orElseThrow(RuntimeException::new);
         Item findItem = itemRepository.findById(item_id).orElseThrow(RuntimeException::new);
-        BasketItem basketItem = BasketItem.createBasketItem().item(findItem).count(count).basket(findUser.getBasket()).build();
+        BasketItem basketItem = BasketItem.createBasketItem()
+                .item(findItem)
+                .count(count)
+                .basket(findUser.getBasket()).build();
         basketItemRepository.save(basketItem);
     }
-
 
     /**
      * @param basketDeleteDTO
@@ -101,13 +101,10 @@ public class BasketServiceImpl implements BasketService{
     @Transactional
     @Override
     public void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO) {
-
         List<Long> basketItemIds = basketDeleteDTO.getBasketItemIds();
         basketItemRepository.deleteAllByIdInBatch(basketItemIds);
-
+        // 리스트로 삭제 시 -> 하나씩 돌면서 삭제 해야함
     }
 
-
-
-
+    
 }

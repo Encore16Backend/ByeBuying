@@ -29,9 +29,7 @@ public class DateRequest {
     }
 
     public boolean hasDate(){
-        boolean hasDate = false;
-        if (this.startDate != null & this.endDate != null) hasDate = true;
-        return hasDate;
+        return this.startDate != null && this.endDate != null;
     }
 
 }

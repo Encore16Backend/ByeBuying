@@ -26,19 +26,15 @@ import javax.persistence.UniqueConstraint;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
 @Getter // all args constructor method에 붙여서
 @ToString
-@Table(indexes = @Index(name = "basket_id_index", columnList = "basket_id"),
-        uniqueConstraints={@UniqueConstraint(name = "unique_basket_id_id",columnNames={"basket_id","basket_item_id"})}
+@Table(indexes = @Index(columnList = "basket_id"),
+        uniqueConstraints={@UniqueConstraint(columnNames={"basket_id","basket_item_id"})}
 )
 public class BasketItem extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "basket_item_id", nullable = false)
+    @Column(name = "basket_item_id")
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "basket_id", nullable = false)
@@ -56,10 +52,6 @@ public class BasketItem extends BaseTimeEntity {
     private BasketItem(Item item, int count, Basket basket) {
         this.count = count;
         this.item = item;
-        this.basket = basket;
-    }
-
-    public void setBasket(Basket basket) {
         this.basket = basket;
     }
 

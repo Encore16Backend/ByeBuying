@@ -28,6 +28,7 @@ public class BasketItemResponseDTO implements GenericConvertor<BasketAndItem, Ba
     public BasketItemResponseDTO() {}
 
     public BasketItemResponseDTO(BasketAndItem basketAndItem) {
+        // validation, item많이쓰니까 따로 뺴자
         this.count = basketAndItem.getCount();
         this.basketItemId = basketAndItem.getBasketItemId();
         this.itemName = basketAndItem.getItem().getName();
