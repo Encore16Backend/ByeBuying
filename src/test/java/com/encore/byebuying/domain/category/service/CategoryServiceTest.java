@@ -82,6 +82,12 @@ class CategoryServiceTest {
         List<Category> categories = List.of(
                 root, sub1, sub2, sub11, sub12, sub21, sub22
         );
+        // - CATE3
+        // CATE1 - CATE2 - CATE4 - CATE7 - cate8
+        //                               - CATE9
+        //       - CATE5 - CATE8
+        //       - CATE6 - CATE9
+        // iTEM -> ㅅ
         return categories;
     }
 }

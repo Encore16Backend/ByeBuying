@@ -1,7 +1,6 @@
 package com.encore.byebuying.domain.category.dto;
 
 import com.encore.byebuying.domain.category.Category;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

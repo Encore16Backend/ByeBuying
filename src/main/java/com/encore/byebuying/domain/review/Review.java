@@ -3,14 +3,14 @@ package com.encore.byebuying.domain.review;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
-import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-import lombok.*;
-
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.TemporalType.DATE;
 
 @Entity
 @NoArgsConstructor

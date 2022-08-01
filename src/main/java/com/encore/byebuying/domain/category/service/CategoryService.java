@@ -43,4 +43,11 @@ public class CategoryService {
 
         return new CategoryDTO(categoryRepository.save(category));
     }
+
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        Category targetCategory = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("already delete category"));
+        targetCategory.deleteCategory();
+        categoryRepository.delete(targetCategory);
+    }
 }
