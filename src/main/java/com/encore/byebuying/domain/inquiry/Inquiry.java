@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.inquiry;
 
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,27 +23,35 @@ public class Inquiry extends BaseTimeEntity {
     @Column(name = "inquiry_id")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
     private User user;
-//    문의사항은 아이템 기준이 아니기 때문에 Item 필요 x
-//    @ManyToOne
-//    @JoinColumn(name = "item_id")
-//    private Item item;
+    @Column(name = "title", nullable = false)
     private String title;
+    @Column(name = "content", nullable = false, length = 2000)
     private String content;
+    @Column(name = "answer", length = 2000)
     private String answer = "";
+    @Column(name = "chkAnswer", nullable = false)
     private InquiryType chkAnswer = InquiryType.WAITING;
 
-    @Builder(builderClassName = "init", builderMethodName = "initInquiry")
-    private Inquiry(InquirySaveDTO dto, User user) {
+    @Builder(builderClassName = "update", builderMethodName = "updateBuildInquiry")
+    private Inquiry(UpdateInquiryDTO dto, User user) {
+        this.id = dto.getInquiryId();
         this.title = dto.getTitle();
         this.content = dto.getContent();
-        this.user = user;
+        if (user != null)
+            this.user = user;
     }
 
-    public static Inquiry createInquiry(InquirySaveDTO dto, User user) {
-        Inquiry inquiry = Inquiry.initInquiry().dto(dto).user(user).build();
-        user.getInquiries().add(inquiry);
+    public static Inquiry updateInquiry(UpdateInquiryDTO dto, User user) {
+        Inquiry inquiry = Inquiry.updateBuildInquiry()
+            .dto(dto)
+            .user(user)
+            .build();
+
+        if (user != null)
+            user.getInquiries().add(inquiry);
+
         return inquiry;
     }
 

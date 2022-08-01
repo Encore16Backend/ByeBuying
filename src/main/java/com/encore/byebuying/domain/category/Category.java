@@ -1,5 +1,7 @@
 package com.encore.byebuying.domain.category;
 
+import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.item.Item;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "categories")
 @Entity
-public class Category {
+public class Category extends BaseTimeEntity {
 
     @Id
     @Column(name = "category_id")
@@ -36,6 +38,10 @@ public class Category {
     @Builder.Default
     @OneToMany(mappedBy = "parentCategory")
     private List<Category> childCategories = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "category")
+    private List<Item> items = new ArrayList<>();
 
     public static Category createCategory(String name, Category parentCategory) {
         Category category = Category.builder()
