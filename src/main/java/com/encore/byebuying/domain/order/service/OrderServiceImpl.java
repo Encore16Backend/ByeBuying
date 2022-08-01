@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.order.service;
 
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoDTO;
-import com.encore.byebuying.domain.order.dto.OrderDTO;
+import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.order.Order;
@@ -34,11 +34,11 @@ public class OrderServiceImpl implements OrderService {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Transactional
-	public Long order(OrderDTO orderDto) {
-		List<Long> itemIdList = orderDto.getItems().stream().map(OrderItemInfoDTO::getItemId).collect(Collectors.toList());
+	public Long order(OrderRequestDTO orderRequestDto) {
+		List<Long> itemIdList = orderRequestDto.getItems().stream().map(OrderItemInfoDTO::getItemId).collect(Collectors.toList());
 
 		// 필요 엔티티 조회
-		User findUser = userRepository.findById(orderDto.getUserId()).orElseThrow(() -> new NullPointerException());
+		User findUser = userRepository.findById(orderRequestDto.getUserId()).orElseThrow(() -> new NullPointerException());
 
 
 		List<Item> items = itemRepository.findByIds(itemIdList);
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		// OrderItem 생성
-		List<OrderItemInfoDTO> infos = orderDto.getItems();
+		List<OrderItemInfoDTO> infos = orderRequestDto.getItems();
 		List<OrderItem> orderItems = infos.stream()
 				.map(info -> OrderItem.createOrderItem(search.get(info.getItemId()), info.getCount(), info.getOrderPrice()))
 				.collect(Collectors.toList());
@@ -69,18 +69,15 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public Order findById(Long orderId) {
-		Order order = orderRepository.getById(orderId);
-
-		new OrderResponseDTO(order);
-
-		return order;
+	public OrderResponseDTO findById(Long orderId) {
+		Order order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Not found Order"));
+		return new OrderResponseDTO(order);
 	}
 
 	@Override
 	public Page<Order> findByUsername(Pageable pageable, String username) {
 		log.info("get OrderHistory by Username : {}",username);
-		return orderRepository.findByUsername(pageable,username);
+		return orderRepository.findByUsername(pageable, username);
 	}
 
 	@Override

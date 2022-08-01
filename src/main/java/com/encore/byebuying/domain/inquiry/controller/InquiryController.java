@@ -1,68 +1,70 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryListDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/inquiry")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
-    private final int PAGECOUNT = 5;
 
-    // 문의사항 등록
+    // 문의사항 등록 및 수정
     @PostMapping
-    public ResponseEntity<?> saveInquiry(@RequestBody InquirySaveDTO inquirySaveDTO){
-        inquiryService.saveInquiry(inquirySaveDTO);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    public ResponseEntity<?> updateInquiry(@Valid @RequestBody UpdateInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.updateInquiry(dto);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 답변 등록
-    @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(InquiryAnswerDTO dto){
-        inquiryService.answerToInquiry(dto);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    // 문의사항 답변 등록 - 관리자
+    @PostMapping("/sy/answer")
+    public ResponseEntity<?> answerToInquiry(@Valid @RequestBody AnswerInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(dto);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 하나
+    // 문의사항 상세 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getInquiryById(@PathVariable Long id){
-        InquiryDTO inquiryDTO = inquiryService.getById(id);
-        return new ResponseEntity<>(inquiryDTO, HttpStatus.OK);
+    public ResponseEntity<?> getInquiryDetail(
+        @RequestParam(value = "username") String username,
+        @PathVariable(value = "id") Long inquiryId){
+        InquiryResponseVO inquiryResponseVO = inquiryService.getInquiryDetail(username, inquiryId);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 전체(페이징)
+    // TODO: SearchInquiryDTO 수정 후 문의사항 전체 불러오기와 유저별 불러오기 합치기
+   // 문의사항 전체(페이징)
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestParam(required = false, defaultValue="1", value="page") int page) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        InquiryListDTO inquiryListDTO = inquiryService.getInquiries(pageRequest);
-        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    public ResponseEntity<?> getInquiries(@RequestBody SearchInquiryDTO dto) {
+        PagingResponse<Inquiry, InquiryResponseVO> inquiries = inquiryService.getInquiries(dto.getPageRequest());
+        return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 유저별 문의사항 불러오기
     @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestParam(required = false, defaultValue="1", value="page") int page,
-        String username) {
-        PageRequest pageRequest = PageRequest.of(page-1, PAGECOUNT);
-        InquiryListDTO inquiryListDTO = inquiryService.getByUser(pageRequest, username);
-        return new ResponseEntity<>(inquiryListDTO, HttpStatus.OK);
+    public ResponseEntity<?> getByUserId(@RequestBody SearchInquiryDTO dto) {
+        PagingResponse<Inquiry, InquiryResponseVO> inquiries =
+            inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
+        return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 문의사항 삭제
     @PostMapping("/removal:{id}")
-    public void deleteInquiry(@PathVariable("id") Long id){
-        inquiryService.deleteInquiryById(id);
+    public ResponseEntity<?> deleteInquiry(
+        @RequestParam(value = "username") String username,
+        @PathVariable(value = "id") Long inquiryId){
+        inquiryService.deleteInquiryById(username, inquiryId);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     // 지금 필요없어서 주석 처리

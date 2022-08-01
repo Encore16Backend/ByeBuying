@@ -1,7 +1,7 @@
 package com.encore.byebuying.domain.item.controller;
 
 import com.encore.byebuying.domain.item.ItemImage;
-import com.encore.byebuying.domain.item.dto.ItemAddDTO;
+import com.encore.byebuying.domain.item.dto.ItemRequestDTO;
 import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.category.repository.CategoryRepository;
@@ -9,7 +9,8 @@ import com.encore.byebuying.domain.item.repository.ItemImageRepository;
 import com.encore.byebuying.domain.item.service.ItemService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
@@ -19,7 +20,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -27,7 +34,8 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/main")
-@RequiredArgsConstructor @Slf4j
+@RequiredArgsConstructor
+@Slf4j
 public class ItemController {
     private final ItemService itemService;
     private final CategoryRepository categoryRepository;
@@ -128,7 +136,7 @@ public class ItemController {
         ObjectMapper mapper = new ObjectMapper();
         
         // 상품 등록
-        ItemAddDTO itemform = mapper.convertValue(itemSave.get("item"), ItemAddDTO.class);
+        ItemRequestDTO itemform = mapper.convertValue(itemSave.get("item"), ItemRequestDTO.class);
         Item item = itemService.saveItem(itemform.toEntity());
 
         // 생성한 상품에 카테고리 삽입
@@ -269,6 +277,7 @@ public class ItemController {
         return ResponseEntity.ok().body(itemService.getItemByItemid(itemid));
     }
 
+    // todo : mapping 은 get, post 만 사용하기로 정함
     @DeleteMapping("/item/delete")
     public ResponseEntity<?> deleteItem(
             @RequestParam(defaultValue = "", value = "itemid") Long itemid) {
