@@ -1,8 +1,8 @@
 package com.encore.byebuying.domain.user.controller;
 
+import com.encore.byebuying.domain.user.service.UserService;
 import java.util.Random;
 
-import com.encore.byebuying.domain.user.service.UserService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
