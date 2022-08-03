@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.user.controller;
 
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.encore.byebuying.domain.user.service.UserService;
 import java.util.Random;
 
@@ -16,12 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmailController {
 	private final JavaMailSender javaMailSender;
-	private final UserService userService;
+	private final UserRepository userRepository;
 	
 	@GetMapping("/checkMail")
 	public String SendMail(@RequestParam(value = "email") String email) throws Exception {
 		log.info("email : {}",email);
-		boolean flag = userService.existsEmail(email);
+		boolean flag = userRepository.existsByEmail(email);
 		if (flag) {
 			return "EXIST";
 		}
