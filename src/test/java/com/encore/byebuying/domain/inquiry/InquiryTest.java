@@ -9,7 +9,7 @@ import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,15 +42,15 @@ class InquiryTest {
 
     Collection<Location> userLocations = new ArrayList<>();
     userLocations.add(new Location(null, "testetesttest"));
-    UserDTO userDTO = new UserDTO("test", "test123", "test@test.com", 0, userLocations);
+    CreateUserDTO createUserDTO = new CreateUserDTO("test", "test123", "test@test.com", 0, userLocations);
 
     Collection<Location> adminLocations = new ArrayList<>();
     adminLocations.add(new Location(null, "adminadminadmin"));
-    UserDTO adminDTO = new UserDTO("admin", "admin123", "admin@admin.com", 0, adminLocations);
+    CreateUserDTO adminDTO = new CreateUserDTO("admin", "admin123", "admin@admin.com", 0, adminLocations);
 
     // 일반 유저 회원가입
     user = userRepository.save(User.initUser()
-        .dto(userDTO)
+        .dto(createUserDTO)
         .provider(ProviderType.LOCAL).build());
     log.info(">>> 일반 유저 회원가입 : {}", user);
 

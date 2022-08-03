@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor // for Test
-public class UserDTO {
+public class CreateUserDTO {
     private String username;
     private String password;
     private String email;

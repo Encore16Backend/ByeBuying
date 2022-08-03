@@ -7,14 +7,14 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.config.properties.AppProperties;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.UserRefreshToken;
-import com.encore.byebuying.domain.user.dto.UserDTO;
-import com.encore.byebuying.domain.user.dto.UserInfoDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.service.UserService;
+import com.encore.byebuying.domain.user.vo.UserVO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.encore.byebuying.domain.user.Location;
-import com.encore.byebuying.domain.user.service.UserService;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,15 +52,15 @@ public class UserController {
     private final AppProperties appProperties;
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
-        String username = userService.saveUser(userDTO);
+    public ResponseEntity<?> saveUser(@RequestBody CreateUserDTO createUserDTO) {
+        String username = userService.saveUser(createUserDTO);
 //        webClientService.newUser(newUser.getUsername());
         return new ResponseEntity<>(username, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<?> getUser(@RequestParam String username) {
-        UserInfoDTO user = userService.getUserInfo(username);
+        UserVO user = userService.getUserInfo(username);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -104,7 +104,7 @@ public class UserController {
 
     // todo: 수정 필요
     @PutMapping // 토큰 필요
-    public ResponseEntity<?> updateUser(@RequestBody UserDTO userForm) {
+    public ResponseEntity<?> updateUser(@RequestBody CreateUserDTO userForm) {
         User user = userService.getUser(userForm.getUsername());
         if (user == null){
             return new ResponseEntity<>("FAIL", HttpStatus.OK);
