@@ -8,7 +8,7 @@ import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.review.Review;
-import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,7 @@ import static javax.persistence.GenerationType.*;
         @UniqueConstraint(columnNames = {"username", "password"}),
         @UniqueConstraint(columnNames = {"username", "address"})
     },
-    indexes = {@Index(columnList = "username")}
+    indexes = {@Index(columnList = "username"), @Index(columnList = "email")}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -121,7 +121,7 @@ public class User extends BaseTimeEntity {
 
     // 일반
     @Builder(builderClassName = "init", builderMethodName = "initUser")
-    private User(UserDTO dto, ProviderType provider) {
+    private User(CreateUserDTO dto, ProviderType provider) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
