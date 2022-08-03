@@ -1,59 +1,63 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
-import com.encore.byebuying.domain.inquiry.dto.InquiryAnswerDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquiryGetDTO;
-import com.encore.byebuying.domain.inquiry.dto.InquirySaveDTO;
+import com.encore.byebuying.domain.common.paging.PagingResponse;
+import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/inquiry")
+@RequestMapping("/api/inquiries")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
 
-    // 문의사항 등록
+    // 문의사항 등록 및 수정
     @PostMapping
-    public ResponseEntity<?> saveInquiry(@RequestBody InquirySaveDTO inquirySaveDTO){
-        inquiryService.saveInquiry(inquirySaveDTO);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    public ResponseEntity<?> updateInquiry(@Valid @RequestBody UpdateInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.updateInquiry(dto);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 답변 등록
-    @PostMapping("/answer")
-    public ResponseEntity<?> answerToInquiry(@RequestBody InquiryAnswerDTO dto){
-        inquiryService.answerToInquiry(dto);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    // 문의사항 답변 등록 - 관리자
+    @PostMapping("/sy/{id}/answer")
+    public ResponseEntity<?> answerToInquiry(@PathVariable(value = "id") long inquiryId,
+        @Valid @RequestBody AnswerInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(inquiryId, dto);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 하나
+    // 문의사항 상세 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getInquiryById(@PathVariable Long id){
-        var inquiryResponseDTO = inquiryService.getById(id);
-        return new ResponseEntity<>(inquiryResponseDTO, HttpStatus.OK);
+    public ResponseEntity<?> getInquiryDetail(
+        @RequestParam(value = "username") String username,
+        @PathVariable(value = "id") Long inquiryId){
+        InquiryResponseVO inquiryResponseVO = inquiryService.getInquiryDetail(username, inquiryId);
+        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 전체(페이징)
+    // 문의사항 목록 불러오기
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestBody InquiryGetDTO dto) {
-        var inquiries = inquiryService.getInquiries(dto.getPageRequest());
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
-    }
-
-    // 유저별 문의사항 불러오기
-    @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestBody InquiryGetDTO dto) {
-        var inquiries = inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
+    public ResponseEntity<?> getInquiries(SearchInquiryDTO dto) {
+        Page<InquiryResponseVO> inquiries = inquiryService.getInquiries(dto, dto.getPageRequest());
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 문의사항 삭제
-    @PostMapping("/removal:{id}")
-    public void deleteInquiry(@PathVariable("id") Long id){
-        inquiryService.deleteInquiryById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteInquiry(
+        @RequestParam(value = "username") String username,
+        @PathVariable(value = "id") Long inquiryId){
+        inquiryService.deleteInquiryById(username, inquiryId);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
     // 지금 필요없어서 주석 처리

@@ -9,20 +9,48 @@ import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.review.Review;
 import com.encore.byebuying.domain.user.dto.UserDTO;
-import lombok.*;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
 @Entity
-@Table(name = "Users")
+@Table(
+    name = "Users",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"}),
+        @UniqueConstraint(columnNames = {"username", "password"}),
+        @UniqueConstraint(columnNames = {"username", "address"})
+    },
+    indexes = {@Index(columnList = "username")}
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 @ToString(exclude = {"inquiries", "orders"})
@@ -32,11 +60,15 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "user_id")
     private Long id; // PK
+    @Column(name = "username", nullable = false)
     private String username; // Spring Security 의 User 에서 사용하는 필드명
+    @Column(name = "password", nullable = false)
     private String password; // 마찬가지
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Embedded
+    @Column(name = "address")
     private Address address;
 
     @Builder.Default
@@ -48,15 +80,17 @@ public class User extends BaseTimeEntity {
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
     @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "basket_id")
+    @JoinColumn(name = "basket_id", referencedColumnName = "id")
     private Basket basket;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role_type", nullable = false)
     private RoleType roleType;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "provider_type", nullable = false)
     private ProviderType provider;
-
+    @Column(name = "provider_id")
     private String providerId;
 
     @Builder.Default
@@ -90,5 +124,9 @@ public class User extends BaseTimeEntity {
         this.email = user.getEmail();
         this.defaultLocationIdx = user.getDefaultLocationIdx();
         this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
+    }
+
+    public void changeRoleTypeUser(RoleType roleType) {
+        this.roleType = roleType;
     }
 }
