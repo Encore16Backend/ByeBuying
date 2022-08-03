@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/inquiry")
+@RequestMapping("/api/inquiries")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
@@ -28,9 +28,10 @@ public class InquiryController {
     }
 
     // 문의사항 답변 등록 - 관리자
-    @PostMapping("/sy/answer")
-    public ResponseEntity<?> answerToInquiry(@Valid @RequestBody AnswerInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(dto);
+    @PostMapping("/sy/{id}/answer")
+    public ResponseEntity<?> answerToInquiry(@PathVariable(value = "id") long inquiryId,
+        @Valid @RequestBody AnswerInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(inquiryId, dto);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
@@ -43,7 +44,7 @@ public class InquiryController {
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 불러오기
+    // 문의사항 목록 불러오기
     @GetMapping
     public ResponseEntity<?> getInquiries(SearchInquiryDTO dto) {
         Page<InquiryResponseVO> inquiries = inquiryService.getInquiries(dto, dto.getPageRequest());
