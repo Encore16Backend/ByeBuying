@@ -54,17 +54,15 @@ class InquiryTest {
         .dto(userDTO)
         .provider(ProviderType.LOCAL).build());
     log.info(">>> 일반 유저 회원가입 : {}", user);
-    em.flush();
-    em.clear(); // 영속성 컨텍스트 초기화
 
     // 관리자 회원가입
     admin = userRepository.save(User.initUser()
         .dto(adminDTO)
         .provider(ProviderType.LOCAL).build());
     admin.changeRoleTypeUser(RoleType.ADMIN);
-    log.info(">>> 관리자 회원가입 : {}", user);
-    em.flush();
+    log.info(">>> 관리자 회원가입 : {}", admin);
     em.clear(); // 영속성 컨텍스트 초기화
+    log.info(">>> BeforeEach Method End");
   }
 
   public UpdateInquiryDTO createInquiry() {
@@ -118,8 +116,10 @@ class InquiryTest {
     // 문의사항 수정
     UpdateInquiryDTO updateInquiryDTO =
         new UpdateInquiryDTO(saveInquiry.getId(), "updateInquiry", "updateupdate", saveInquiry.getUser().getUsername());
-    Inquiry updateInquiry = Inquiry.updateInquiry(updateInquiryDTO, user);
-    inquiryRepository.save(updateInquiry);
+    Inquiry updateInquiry = inquiryRepository.findById(saveInquiry.getId())
+        .orElseThrow(() -> new RuntimeException("inquiry not found"));
+    updateInquiry.setTitle(updateInquiryDTO.getTitle());
+    updateInquiry.setContent(updateInquiryDTO.getContent());
     em.flush();
     em.clear();
 
@@ -140,15 +140,17 @@ class InquiryTest {
     em.clear();
 
     // 답변 추가
-    saveInquiry.inquiryAnswer("testAnswer");
-    inquiryRepository.save(saveInquiry);
+    Inquiry answerInquiry = inquiryRepository.findById(saveInquiry.getId())
+        .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
+    answerInquiry.setAnswer("answer");
+    answerInquiry.setChkAnswer(InquiryType.COMPLETE);
     em.flush(); // flush 되는 시점에 변경된 컬럼이 있을 경우 update 쿼리 발생함
     em.clear();
 
     Inquiry inquiry = inquiryRepository.getById(saveInquiry.getId());
     log.info(">>> {}", inquiry);
     assertThat(inquiry.getChkAnswer()).isEqualTo(InquiryType.COMPLETE);
-    assertThat(inquiry.getAnswer()).isEqualTo("testAnswer");
+    assertThat(inquiry.getAnswer()).isEqualTo("answer");
   }
 
   @Test
