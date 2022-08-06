@@ -1,4 +1,4 @@
-package com.encore.byebuying.service;
+package com.encore.byebuying.domain.Basket;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
@@ -37,7 +37,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 public class BasketServiceImplTest {
 
-    // 겸용금지
     @Autowired private BasketService basketServiceImpl;
     @Autowired private UserRepository userRepository;
     @Autowired private ItemRepository itemRepository;
