@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -45,5 +47,21 @@ public class OrderItem {
     }
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+        OrderItem orderItem = (OrderItem) obj;
+        return Objects.equals(this.id, orderItem.getId()) &&
+                this.item.equals(orderItem.getItem());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order, item);
     }
 }

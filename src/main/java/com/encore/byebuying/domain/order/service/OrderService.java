@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
-	Long order(OrderRequestDTO orderRequestDto);
+	OrderResponseDTO order(OrderRequestDTO orderRequestDto);
 	OrderResponseDTO findById(Long id);
 	Page<Order> findByUsername(Pageable pageable, String username);
 	Page<Order> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;

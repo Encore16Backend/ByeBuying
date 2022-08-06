@@ -3,12 +3,15 @@ package com.encore.byebuying.domain.order;
 import com.encore.byebuying.domain.code.OrderType;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -77,6 +80,26 @@ public class Order extends BaseTimeEntity {
 	public void addOrderItem(OrderItem orderItem) {
 		orderItem.setOrder(this);
 		orderItems.add(orderItem);
+	}
+	public OrderResponseDTO toOrderResponseDTO() {
+		return new OrderResponseDTO(this);
+	}
+
+	// 참고(내용 좋음): https://velog.io/@park2348190/JPA-Entity%EC%9D%98-equals%EC%99%80-hashCode
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+			return false;
+		}
+		Order order = (Order) obj;
+		return Objects.equals(this.id, order.getId()) &&
+				this.user.equals(order.getUser());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, user.getUsername(), orderItems, orderType, getCreatedAt());
 	}
 }
 
