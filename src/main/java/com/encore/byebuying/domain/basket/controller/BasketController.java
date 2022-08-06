@@ -1,7 +1,6 @@
 package com.encore.byebuying.domain.basket.controller;
 
 import com.encore.byebuying.domain.basket.dto.*;
-import com.encore.byebuying.domain.basket.service.BasketService;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
