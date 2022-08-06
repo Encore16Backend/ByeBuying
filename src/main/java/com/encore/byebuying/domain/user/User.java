@@ -8,11 +8,12 @@ import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.review.Review;
-import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -47,7 +48,7 @@ import static javax.persistence.GenerationType.*;
         @UniqueConstraint(columnNames = {"username", "password"}),
         @UniqueConstraint(columnNames = {"username", "address"})
     },
-    indexes = {@Index(columnList = "username")}
+    indexes = {@Index(columnList = "username"), @Index(columnList = "email")}
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -101,9 +102,26 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Review> reviews = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        User that = (User) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     // 일반
     @Builder(builderClassName = "init", builderMethodName = "initUser")
-    private User(UserDTO dto, ProviderType provider) {
+    private User(CreateUserDTO dto, ProviderType provider) {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();

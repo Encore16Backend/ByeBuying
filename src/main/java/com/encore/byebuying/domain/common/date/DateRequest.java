@@ -19,17 +19,15 @@ public class DateRequest {
     LocalDateTime endDate;
 
     public LocalDateTime getEndDate() {
-        if (startDate == null) setStartDate(LocalDateTime.now());
-        return endDate;
+        return this.endDate;
     }
 
     public LocalDateTime getStartDate() {
-        if (this.startDate.isAfter(endDate)) setStartDate(this.endDate);
         return startDate;
     }
 
-    public boolean hasDate(){
-        return this.startDate != null && this.endDate != null;
-    }
+//    public boolean hasDate(){
+//        return this.startDate != null && this.endDate != null;
+//    }
 
 }

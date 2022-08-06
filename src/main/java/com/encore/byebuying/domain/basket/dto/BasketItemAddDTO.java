@@ -13,7 +13,6 @@ public class BasketItemAddDTO extends PagingRequest {
     private Long itemId;
     @NotNull
     private Long userId;
-
     @Min(1)
     @Max(100)
     private int count;

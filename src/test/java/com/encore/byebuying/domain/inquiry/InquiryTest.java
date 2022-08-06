@@ -9,7 +9,7 @@ import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,28 +42,26 @@ class InquiryTest {
 
     Collection<Location> userLocations = new ArrayList<>();
     userLocations.add(new Location(null, "testetesttest"));
-    UserDTO userDTO = new UserDTO("test", "test123", "test@test.com", 0, userLocations);
+    CreateUserDTO createUserDTO = new CreateUserDTO("test", "test123", "test@test.com", 0, userLocations);
 
     Collection<Location> adminLocations = new ArrayList<>();
     adminLocations.add(new Location(null, "adminadminadmin"));
-    UserDTO adminDTO = new UserDTO("admin", "admin123", "admin@admin.com", 0, adminLocations);
+    CreateUserDTO adminDTO = new CreateUserDTO("admin", "admin123", "admin@admin.com", 0, adminLocations);
 
     // 일반 유저 회원가입
     user = userRepository.save(User.initUser()
-        .dto(userDTO)
+        .dto(createUserDTO)
         .provider(ProviderType.LOCAL).build());
     log.info(">>> 일반 유저 회원가입 : {}", user);
-    em.flush();
-    em.clear(); // 영속성 컨텍스트 초기화
 
     // 관리자 회원가입
     admin = userRepository.save(User.initUser()
         .dto(adminDTO)
         .provider(ProviderType.LOCAL).build());
     admin.changeRoleTypeUser(RoleType.ADMIN);
-    log.info(">>> 관리자 회원가입 : {}", user);
-    em.flush();
+    log.info(">>> 관리자 회원가입 : {}", admin);
     em.clear(); // 영속성 컨텍스트 초기화
+    log.info(">>> BeforeEach Method End");
   }
 
   public UpdateInquiryDTO createInquiry() {
@@ -118,8 +115,10 @@ class InquiryTest {
     // 문의사항 수정
     UpdateInquiryDTO updateInquiryDTO =
         new UpdateInquiryDTO(saveInquiry.getId(), "updateInquiry", "updateupdate", saveInquiry.getUser().getUsername());
-    Inquiry updateInquiry = Inquiry.updateInquiry(updateInquiryDTO, user);
-    inquiryRepository.save(updateInquiry);
+    Inquiry updateInquiry = inquiryRepository.findById(saveInquiry.getId())
+        .orElseThrow(() -> new RuntimeException("inquiry not found"));
+    updateInquiry.setTitle(updateInquiryDTO.getTitle());
+    updateInquiry.setContent(updateInquiryDTO.getContent());
     em.flush();
     em.clear();
 
@@ -140,15 +139,17 @@ class InquiryTest {
     em.clear();
 
     // 답변 추가
-    saveInquiry.inquiryAnswer("testAnswer");
-    inquiryRepository.save(saveInquiry);
+    Inquiry answerInquiry = inquiryRepository.findById(saveInquiry.getId())
+        .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
+    answerInquiry.setAnswer("answer");
+    answerInquiry.setChkAnswer(InquiryType.COMPLETE);
     em.flush(); // flush 되는 시점에 변경된 컬럼이 있을 경우 update 쿼리 발생함
     em.clear();
 
     Inquiry inquiry = inquiryRepository.getById(saveInquiry.getId());
     log.info(">>> {}", inquiry);
     assertThat(inquiry.getChkAnswer()).isEqualTo(InquiryType.COMPLETE);
-    assertThat(inquiry.getAnswer()).isEqualTo("testAnswer");
+    assertThat(inquiry.getAnswer()).isEqualTo("answer");
   }
 
   @Test

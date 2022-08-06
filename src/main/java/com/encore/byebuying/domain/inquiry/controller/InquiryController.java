@@ -31,7 +31,7 @@ public class InquiryController {
     @PostMapping("/sy/{id}/answer")
     public ResponseEntity<?> answerToInquiry(@PathVariable(value = "id") long inquiryId,
         @Valid @RequestBody AnswerInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(inquiryId, dto);
+        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(dto);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 

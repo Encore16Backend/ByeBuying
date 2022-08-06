@@ -1,19 +1,19 @@
 package com.encore.byebuying.domain.basket.controller;
 
-import com.encore.byebuying.domain.basket.BasketAndItem;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.service.BasketService;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
 import com.encore.byebuying.domain.common.paging.PagingResponse;
-import com.encore.byebuying.domain.inquiry.dto.InquiryGetDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/baskets")
@@ -23,16 +23,9 @@ public class BasketController {
 
     // 유저별 장바구니 상품 조회
     @GetMapping("/by-user")
-    public ResponseEntity<?> getBasketByUser(@Valid BasketGetDTO basketGetDTO) {
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> basketItemsByUser = basketService.getByUser(basketGetDTO.getPageRequest(), basketGetDTO.getUserId());
+    public ResponseEntity<?> getByUser(@Valid BasketItemSearchDTO basketItemSearchDTO) {
+        Page<BasketItemResponseVO> basketItemsByUser = basketService.getByUser(basketItemSearchDTO);
         return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
-    }
-
-    // 상품이름으로 장바구니 검색
-    @GetMapping("/by-itemname")
-    public ResponseEntity<?> getBasketItemByItemName(@Valid BasketItemSearchDTO dto) {
-        PagingResponse<BasketAndItem, BasketItemResponseDTO> findItem = basketService.getByItemName(dto.getPageRequest(), dto);
-        return new ResponseEntity<>(findItem,HttpStatus.OK);
     }
 
     // 장바구니 상품 추가

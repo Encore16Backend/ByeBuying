@@ -4,7 +4,7 @@ import com.encore.byebuying.config.Exception.OAuth2AuthenticationProcessingExcep
 import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.user.dto.UserDTO;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +50,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo oAuth2UserInfo, ProviderType providerType) {
-        UserDTO dto = UserDTO.builder()
+        CreateUserDTO dto = CreateUserDTO.builder()
             .username(oAuth2UserInfo.getUsername())
             .password("OAUTHLOGIN")
             .email(oAuth2UserInfo.getEmail())

@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class BasketItemSearchDTO extends PagingRequest {
-    
-    // 없으면 전부다 검색
-    @NotNull
-    private String itemName = "";
+
     @NotNull
     private Long userId;
+    // 없으면 전부다 검색
+    private String itemName;
 
 }

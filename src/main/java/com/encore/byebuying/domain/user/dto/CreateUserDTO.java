@@ -1,6 +1,7 @@
 package com.encore.byebuying.domain.user.dto;
 
 import com.encore.byebuying.domain.user.Location;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,11 +12,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor // for Test
-public class UserDTO {
+@AllArgsConstructor
+public class CreateUserDTO {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
+    @NotBlank
     private String email;
     private int defaultLocationIdx;
+    // todo: Validation 추가 필요
     private Collection<Location> locations;
 }
