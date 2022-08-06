@@ -1,4 +1,4 @@
-package com.encore.byebuying.service;
+package com.encore.byebuying.domain.Basket;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;

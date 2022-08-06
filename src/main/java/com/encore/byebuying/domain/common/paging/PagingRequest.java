@@ -2,6 +2,8 @@ package com.encore.byebuying.domain.common.paging;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import com.encore.byebuying.domain.common.DateRequest;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
@@ -9,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 @Getter
 @Setter
-public class PagingRequest {
+public class PagingRequest extends DateRequest {
 
   @Min(value = 0)
   private int pageNumber = 0;
