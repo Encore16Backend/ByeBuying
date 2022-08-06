@@ -5,7 +5,6 @@ import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;

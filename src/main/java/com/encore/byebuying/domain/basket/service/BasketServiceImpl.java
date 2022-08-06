@@ -3,8 +3,6 @@ package com.encore.byebuying.domain.basket.service;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
-import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
