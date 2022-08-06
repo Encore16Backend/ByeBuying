@@ -1,10 +1,7 @@
 package com.encore.byebuying.domain.basket.controller;
 
-import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.dto.*;
-import com.encore.byebuying.domain.basket.service.BasketService;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
-import com.encore.byebuying.domain.common.paging.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/baskets")

@@ -2,7 +2,6 @@ package com.encore.byebuying.service;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.service.BasketServiceImpl;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
