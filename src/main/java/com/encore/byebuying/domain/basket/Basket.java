@@ -1,33 +1,49 @@
 package com.encore.byebuying.domain.basket;
+
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
-@Getter
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Basket extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "basket_id")
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "basket", fetch = FetchType.LAZY)
     private List<BasketItem> basketItems = new ArrayList<>();
 
+
     public void addBasketItem(BasketItem basketItem) {
+        basketItem.setBasket(this);
         this.basketItems.add(basketItem);
     }
-
-    public static Basket createBasket() {
-        return new Basket();
+    public void updateBasketItem(BasketItem updateBasketItem){
+        for (BasketItem basketItem : this.basketItems){
+            if (basketItem.getItem().getId() == updateBasketItem.getItem().getId()){
+                basketItem = updateBasketItem;
+            }
+        }
     }
+    // item_id로 삭제
+    public void deleteBasketItem(Long item_id) {
+        this.basketItems.removeIf(item -> item.getItem().getId() == item_id);
+    }
+
+
 }

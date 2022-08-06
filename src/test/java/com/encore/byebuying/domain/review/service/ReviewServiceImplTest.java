@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.review.service;
 
+import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

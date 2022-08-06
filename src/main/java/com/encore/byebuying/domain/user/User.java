@@ -1,9 +1,9 @@
 package com.encore.byebuying.domain.user;
 
-import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.common.Address;
@@ -80,8 +80,8 @@ public class User extends BaseTimeEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
     private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
 
-    @OneToOne(fetch = LAZY ,cascade = CascadeType.ALL)
-    @JoinColumn(name = "basket_id", referencedColumnName = "basket_id")
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "basket_id", referencedColumnName = "id")
     private Basket basket;
 
     @Enumerated(EnumType.STRING)
