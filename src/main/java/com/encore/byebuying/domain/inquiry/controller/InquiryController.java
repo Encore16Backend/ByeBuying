@@ -9,12 +9,13 @@ import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/inquiry")
+@RequestMapping("/api/inquiries")
 @RequiredArgsConstructor
 public class InquiryController {
     private final InquiryService inquiryService;
@@ -27,9 +28,10 @@ public class InquiryController {
     }
 
     // 문의사항 답변 등록 - 관리자
-    @PostMapping("/sy/answer")
-    public ResponseEntity<?> answerToInquiry(@Valid @RequestBody AnswerInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(dto);
+    @PostMapping("/sy/{id}/answer")
+    public ResponseEntity<?> answerToInquiry(@PathVariable(value = "id") long inquiryId,
+        @Valid @RequestBody AnswerInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(inquiryId, dto);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
@@ -42,24 +44,15 @@ public class InquiryController {
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // TODO: SearchInquiryDTO 수정 후 문의사항 전체 불러오기와 유저별 불러오기 합치기
-   // 문의사항 전체(페이징)
+    // 문의사항 목록 불러오기
     @GetMapping
-    public ResponseEntity<?> getInquiries(@RequestBody SearchInquiryDTO dto) {
-        PagingResponse<Inquiry, InquiryResponseVO> inquiries = inquiryService.getInquiries(dto.getPageRequest());
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
-    }
-
-    // 유저별 문의사항 불러오기
-    @GetMapping("/by-user")
-    public ResponseEntity<?> getByUserId(@RequestBody SearchInquiryDTO dto) {
-        PagingResponse<Inquiry, InquiryResponseVO> inquiries =
-            inquiryService.getByUser(dto.getPageRequest(), dto.getUsername());
+    public ResponseEntity<?> getInquiries(SearchInquiryDTO dto) {
+        Page<InquiryResponseVO> inquiries = inquiryService.getInquiries(dto, dto.getPageRequest());
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
     // 문의사항 삭제
-    @PostMapping("/removal:{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInquiry(
         @RequestParam(value = "username") String username,
         @PathVariable(value = "id") Long inquiryId){

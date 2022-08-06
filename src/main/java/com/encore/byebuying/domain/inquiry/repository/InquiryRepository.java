@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+public interface InquiryRepository extends JpaRepository<Inquiry, Long>, InquiryRepositoryCustom {
 
     @Query("select i from Inquiry i where i.user.id = :userId")
     Page<Inquiry> findByUserId(Pageable pageable, @Param("userId") Long userId);
