@@ -27,7 +27,7 @@ import java.text.ParseException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 public class OrderController {
 	private final OrderService orderService;
 
