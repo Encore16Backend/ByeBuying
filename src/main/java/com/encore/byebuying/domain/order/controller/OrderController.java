@@ -1,6 +1,6 @@
 package com.encore.byebuying.domain.order.controller;
 
-import com.encore.byebuying.config.auth.PrincipalUserAdapter;
+import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.order.service.OrderService;
@@ -32,9 +32,9 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@GetMapping("test")
-	public String securityTest(@AuthenticationPrincipal PrincipalUserAdapter principalUserAdapter) {
-		log.info("test :: principalUserAdapter :: {}", principalUserAdapter.getUser());
-		return principalUserAdapter.getUser().toString();
+	public String securityTest(@AuthenticationPrincipal PrincipalDetails user) {
+		log.info("test :: principalUserAdapter :: {}", user);
+		return user.getUsername();
 	}
 
 	@GetMapping("")
