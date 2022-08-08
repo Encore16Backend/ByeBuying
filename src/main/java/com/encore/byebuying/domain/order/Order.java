@@ -5,10 +5,25 @@ import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
-import lombok.*;
-import org.hibernate.Hibernate;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +39,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Builder
 public class Order extends BaseTimeEntity {
 
-	@Id @GeneratedValue(strategy = IDENTITY)
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "order_id")
 	private Long id;
 
@@ -88,8 +104,7 @@ public class Order extends BaseTimeEntity {
 	// 참고(내용 좋음): https://velog.io/@park2348190/JPA-Entity%EC%9D%98-equals%EC%99%80-hashCode
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+		if (!(obj instanceof Order)) {
 			return false;
 		}
 		Order order = (Order) obj;
