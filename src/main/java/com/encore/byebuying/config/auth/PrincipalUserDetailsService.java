@@ -21,6 +21,6 @@ public class PrincipalUserDetailsService implements UserDetailsService {
             new UsernameNotFoundException("User not found in the database")
         );
         log.info("User found in the database: {}", username);
-        return PrincipalDetails.create(user);
+        return new PrincipalDetailsAdapter(user);
     }
 }
