@@ -34,7 +34,7 @@ public class OrderController {
 
 	@GetMapping("/test")
 	public String securityTest(@AuthenticationPrincipal PrincipalDetailsAdapter user) {
-		log.info("test :: principalUserAdapter :: {}", user.getUser());
+		log.info("test :: principalUserAdapter :: {}", user.getUserLoginInfo());
 		return user.getUsername();
 	}
 
