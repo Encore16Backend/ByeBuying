@@ -26,9 +26,7 @@ import javax.persistence.UniqueConstraint;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
 @Getter // all args constructor method에 붙여서
 @ToString
-@Table(indexes = @Index(columnList = "basket_id"),
-        uniqueConstraints={@UniqueConstraint(columnNames={"basket_id","basket_item_id"})}
-)
+@Table(indexes = @Index(columnList = "basket_id"))
 public class BasketItem extends BaseTimeEntity {
 
     @Id

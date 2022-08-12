@@ -1,7 +1,10 @@
 package com.encore.byebuying.domain.basket.service.vo;
 
+import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.ItemImage;
+import com.encore.byebuying.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

@@ -4,6 +4,7 @@ import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.dto.BasketItemDeleteDTO;
 import com.encore.byebuying.domain.basket.service.BasketService;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemRequestVO;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
 import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
 import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
@@ -17,6 +18,7 @@ import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +35,10 @@ import static com.encore.byebuying.domain.code.ProviderType.LOCAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest
+@DataJpaTest
 @Transactional
 public class BasketTest {
-
-    @Autowired private BasketService basketServiceImpl;
+    
     @Autowired private UserRepository userRepository;
     @Autowired private ItemRepository itemRepository;
     @Autowired private BasketItemRepository basketItemRepository;
@@ -82,12 +83,6 @@ public class BasketTest {
         userBasket.addBasketItem(basketItem3);
         userBasket.addBasketItem(basketItem4);
         userBasket.addBasketItem(basketItem5);
-
-        System.out.println(item1.getId());
-        System.out.println(item2.getId());
-        System.out.println(item3.getId());
-        System.out.println(item4.getId());
-        System.out.println(item5.getId());
 
         entityManager.flush();
         entityManager.clear();
@@ -139,20 +134,13 @@ public class BasketTest {
         BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).basket(user.getBasket()).build();
         user.getBasket().addBasketItem(basketItem);
         basketItemRepository.save(basketItem);
-        entityManager.flush();
-        entityManager.clear();
 
         List<Long> ids = new ArrayList<>();
         ids.add(basketItem.getId());
 
-        BasketItemDeleteDTO basketItemDeleteDTO = new BasketItemDeleteDTO();
-        basketItemDeleteDTO.setBasketItemIds(ids);
-
-        basketServiceImpl.deleteBasketItem(basketItemDeleteDTO);
+        ids.forEach(basketId -> basketItemRepository.deleteById(basketId));
         entityManager.flush();
         entityManager.clear();
-
-        System.out.println(user.getBasket().getBasketItems().size() + ": user.getBasket().getBasketItems().size()");
 
         // then
         User user1 = userRepository.getById(user.getId());
@@ -169,13 +157,9 @@ public class BasketTest {
         basketItemRepository.save(basketItem);
         user.getBasket().addBasketItem(basketItem);
 
-        BasketUpdateDTO basketUpdateDTO = new BasketUpdateDTO();
-        basketUpdateDTO.setCount(1);
-        basketUpdateDTO.setUserId(user.getId());
-        basketUpdateDTO.setBasketItemId(basketItem.getId());
-
         // 업데이트
-        basketServiceImpl.updateBasketItem(basketUpdateDTO);
+        BasketItem findBasketItem = basketItemRepository.findById(basketItem.getId()).orElseThrow(RuntimeException::new);
+        findBasketItem.setCount(1);
 
         User findUser = userRepository.getById(user.getId());
         // then
@@ -183,28 +167,7 @@ public class BasketTest {
     }
 
 
-
-    @Test
-    public void BasketItemPaging() throws Exception {
-        // given
-        User user = givenUser();
-        entityManager.flush();
-        entityManager.clear();
-
-        saveBasketItemsToUser(user);
-
-        BasketItemSearchDTO basketItemSearchDTO = new BasketItemSearchDTO();
-        basketItemSearchDTO.setUserId(user.getId());
-
-
-        var basketItemResponseDTO = basketServiceImpl.getByUser(basketItemSearchDTO);
-//        var byUserBasketItemsContent = basketItemResponseDTO.getContent();
-
-        System.out.println(basketItemResponseDTO);
-        assertThat(basketItemResponseDTO.getContent().get(0).getPrice()).isEqualTo(1000);
-    }
-
-
+    // 검색어 검색
     @Test
     public void BasketItemSearch() throws Exception {
         // given
@@ -219,10 +182,13 @@ public class BasketTest {
         basketItemSearchDTO.setItemName("1");
         basketItemSearchDTO.setStartDate(LocalDateTime.now());
 
-        var basketItemResponseDTO = basketServiceImpl.getByUser(basketItemSearchDTO);
+        Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
+        BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
+        var basketItems = basketItemRepository.findAll(basketItemSearchDTO, vo);
 
-        System.out.println(basketItemResponseDTO);
-        assertThat(basketItemResponseDTO.getContent().get(0).getPrice()).isEqualTo(1000);
+//        System.out.println(basketItems.getContent());
+
+        assertThat(basketItems.getContent().get(0).getItemName()).isEqualTo("상품1");
     }
 
     // 날짜, 유저 id 검색
@@ -242,22 +208,22 @@ public class BasketTest {
         basketItemSearchDTO.setEndDate(LocalDateTime.now().minusDays(1L));
 
         // 날짜포함 검색
-        var basketItemResponseDTO = basketServiceImpl.getByUser(basketItemSearchDTO);
-        var byUserBasketItemsContent = basketItemResponseDTO.getContent();
-        assertThat(byUserBasketItemsContent.size()).isEqualTo(0);
+        Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
+        BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
+        var basketItems = basketItemRepository.findAll(basketItemSearchDTO, vo);
+
+        assertThat(basketItems.getContent().size()).isEqualTo(0);
 
 
         // 날짜 없이 검색
         BasketItemSearchDTO basketItemSearchDTO2 = new BasketItemSearchDTO();
         basketItemSearchDTO2.setUserId(user.getId());
 
-        var basketItemResponseDTO2 = basketServiceImpl.getByUser(basketItemSearchDTO2);
-        var byUserBasketItemsContent2 = basketItemResponseDTO2.getContent();
-        System.out.println(byUserBasketItemsContent2);
+        var basketItems2 = basketItemRepository.findAll(basketItemSearchDTO2, vo);
 
-        assertThat(byUserBasketItemsContent2.size()).isEqualTo(5);
-        for (int i = 0; i < byUserBasketItemsContent2.size(); i++){
-            BasketItemResponseVO item = byUserBasketItemsContent2.get(i);
+        assertThat(basketItems2.getContent().size()).isEqualTo(5);
+        for (int i = 0; i < basketItems2.getContent().size(); i++){
+            BasketItemResponseVO item = basketItems2.getContent().get(i);
             assertThat(item.getPrice()).isEqualTo(1000);
         }
 
