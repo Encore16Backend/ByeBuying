@@ -1,7 +1,9 @@
 package com.encore.byebuying.domain.basket.service;
 
+import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemRequestVO;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
 import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.item.Item;
@@ -34,8 +36,10 @@ public class BasketService {
      *
      * @return*/
     public Page<BasketItemResponseVO> getByUser(BasketItemSearchDTO basketItemSearchDTO) {
-         Long basketId = userRepository.getById(basketItemSearchDTO.getUserId()).getBasket().getId();
-         return basketItemRepository.getByUser(basketItemSearchDTO, basketId);
+        User user = userRepository.findById(basketItemSearchDTO.getUserId()).orElseThrow(RuntimeException::new);
+        Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
+        BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
+        return basketItemRepository.findAll(basketItemSearchDTO, vo);
     }
 
     /**
