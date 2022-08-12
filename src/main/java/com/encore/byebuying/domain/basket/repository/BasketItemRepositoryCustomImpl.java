@@ -81,7 +81,6 @@ public class BasketItemRepositoryCustomImpl extends QuerydslRepositorySupport im
         if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             return null;
         } // 시작, 종료날짜가 다 존재해야 검색
-        System.out.println("찍힘?");
         return basketItem.modifiedAt.between(startDate, endDate);
     }
 
