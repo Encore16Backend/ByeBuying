@@ -43,19 +43,24 @@ public class InquiryService {
 
             // 권한 체크 - 문의사항 작성자 또는 관리자만 수정 가능
             userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
-            inquiry = Inquiry.updateInquiry(dto, null);
+
+            inquiry.setTitle(dto.getTitle());
+            inquiry.setContent(dto.getContent());
         } else {
+            // 추가 작업
             inquiry = Inquiry.updateInquiry(dto, user);
+            inquiryRepository.save(inquiry);
         }
-        inquiryRepository.save(inquiry);
+
         return InquiryResponseVO.valueOf(inquiry);
     }
 
     @Transactional
-    public InquiryResponseVO answerToInquiry(AnswerInquiryDTO dto) {
-        Inquiry inquiry = inquiryRepository.findById(dto.getInquiryId())
+    public InquiryResponseVO answerToInquiry(long inquiryId, AnswerInquiryDTO dto) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
-        inquiry.inquiryAnswer(dto.getAnswer());
+        inquiry.setAnswer(dto.getAnswer());
+        inquiry.setChkAnswer(InquiryType.COMPLETE);
         return InquiryResponseVO.valueOf(inquiry);
     }
 
