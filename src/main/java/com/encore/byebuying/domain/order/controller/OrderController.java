@@ -1,7 +1,7 @@
 package com.encore.byebuying.domain.order.controller;
 
+import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.config.auth.PrincipalDetails;
-import com.encore.byebuying.config.auth.PrincipalDetailsAdapter;
 import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.order.service.OrderService;
@@ -33,16 +33,22 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@GetMapping("/test")
-	public String securityTest(@AuthenticationPrincipal PrincipalDetailsAdapter user) {
-		log.info("test :: principalUserAdapter :: {}", user.getUserLoginInfo());
+	public String securityTest(@AuthenticationPrincipal LoginUser user) {
+		log.info("test :: LoginUser :: {}", user.getRoleType());
 		return user.getUsername();
 	}
 
 	@GetMapping("")
 	public ResponseEntity<?> getPageOrders(
-			@RequestParam(defaultValue = "", value = "username") String username,
-			@RequestParam(required = false, defaultValue = "", value = "start") String start,
-			@RequestParam(required = false, defaultValue = "", value = "end") String end,
+			// TODO: 2022-08-14
+			/*  SearchOrderListDTO extends Page
+			//   - userId
+			//   - fromDateTime
+			//   - toDateTime
+			//   */
+			@RequestParam(defaultValue = "", value = "username") String username, // username => userId
+			@RequestParam(required = false, defaultValue = "", value = "start") String start, // 시작일자
+			@RequestParam(required = false, defaultValue = "", value = "end") String end, // 종료일자
 			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
 		Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(Sort.Direction.ASC, "date"));
 		Page<OrderResponseDTO> orderResponseDTOPage;
@@ -57,7 +63,7 @@ public class OrderController {
 
 	@GetMapping("/{orderId}")
 	public ResponseEntity<?> getOrder(@PathVariable Long orderId) {
-		OrderResponseDTO orderResponseDTO = null;
+		OrderResponseDTO orderResponseDTO;
 		try {
 			orderResponseDTO = orderService.findById(orderId);
 		} catch (RuntimeException e) {
@@ -70,7 +76,7 @@ public class OrderController {
 	// => deserialize value of type `java.util.ArrayList<com.encore.byebuying.domain.OrderHistory>` from Object value (token `JsonToken.START_OBJECT`);
 	@PostMapping("")
 	public ResponseEntity<?> order(@RequestBody OrderRequestDTO orderRequestDTO) {
-		OrderResponseDTO orderResult = null;
+		OrderResponseDTO orderResult;
 		try {
 			orderResult = orderService.order(orderRequestDTO);
 		} catch (Exception e) {

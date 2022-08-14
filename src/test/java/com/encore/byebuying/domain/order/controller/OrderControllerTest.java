@@ -69,7 +69,6 @@ class OrderControllerTest {
     public void test() throws Exception {
         mockMvc.perform(get("/api/orders/test").with(user(loginUser)))
                 .andExpect(content().string("test"))
-                .andDo(print())
                 .andDo(print());
     }
 

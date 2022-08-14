@@ -42,7 +42,7 @@ public class ItemController {
     private final ItemImageRepository itemImageRepository;
 
     @GetMapping("/items")
-    public ResponseEntity<Page<Item>> getItems(
+    public ResponseEntity<?> getItems(
             @RequestParam(required = false, defaultValue = "", value = "category") String cateanme,
             @RequestParam(required = false, defaultValue = "", value = "itemname") String itemname,
             @RequestParam(required = false, defaultValue = "1", value = "page") int page) {
