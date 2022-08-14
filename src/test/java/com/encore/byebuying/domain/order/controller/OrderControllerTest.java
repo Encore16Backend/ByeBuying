@@ -1,14 +1,12 @@
 package com.encore.byebuying.domain.order.controller;
 
 import com.encore.byebuying.config.SecurityConfig;
-import com.encore.byebuying.config.auth.PrincipalDetails;
-import com.encore.byebuying.config.auth.PrincipalDetailsAdapter;
+import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.config.auth.PrincipalUserDetailsService;
 import com.encore.byebuying.config.oauth.PrincipalOAuth2UserService;
 import com.encore.byebuying.config.properties.AppProperties;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
-import com.encore.byebuying.domain.order.service.OrderService;
 import com.encore.byebuying.domain.order.service.OrderServiceImpl;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.filter.TokenProvider;
@@ -23,11 +21,8 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -58,7 +53,7 @@ class OrderControllerTest {
     @MockBean
     private AppProperties appProperties;
     private MockMvc mockMvc;
-    private PrincipalDetailsAdapter principalDetailsAdapter;
+    private LoginUser loginUser;
     private final TestPrincipalDetailsService testPrincipalDetailsService = new TestPrincipalDetailsService();
 
     @BeforeEach
@@ -67,13 +62,14 @@ class OrderControllerTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        principalDetailsAdapter = (PrincipalDetailsAdapter) testPrincipalDetailsService.loadUserByUsername(TestPrincipalDetailsService.USERNAME);
+        loginUser = (LoginUser) testPrincipalDetailsService.loadUserByUsername(TestPrincipalDetailsService.USERNAME);
     }
 
     @Test
     public void test() throws Exception {
-        mockMvc.perform(get("/api/orders/test").with(user(principalDetailsAdapter)))
+        mockMvc.perform(get("/api/orders/test").with(user(loginUser)))
                 .andExpect(content().string("test"))
+                .andDo(print())
                 .andDo(print());
     }
 
@@ -90,7 +86,7 @@ class OrderControllerTest {
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
             if (USERNAME.equals(username)) {
-                return new PrincipalDetailsAdapter(getUser());
+                return new LoginUser(getUser());
             }
             return null;
         }
