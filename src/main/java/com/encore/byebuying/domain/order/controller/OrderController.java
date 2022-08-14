@@ -1,6 +1,7 @@
 package com.encore.byebuying.domain.order.controller;
 
 import com.encore.byebuying.config.auth.PrincipalDetails;
+import com.encore.byebuying.config.auth.PrincipalDetailsAdapter;
 import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.order.service.OrderService;
@@ -31,9 +32,9 @@ import java.text.ParseException;
 public class OrderController {
 	private final OrderService orderService;
 
-	@GetMapping("test")
-	public String securityTest(@AuthenticationPrincipal PrincipalDetails user) {
-		log.info("test :: principalUserAdapter :: {}", user);
+	@GetMapping("/test")
+	public String securityTest(@AuthenticationPrincipal PrincipalDetailsAdapter user) {
+		log.info("test :: principalUserAdapter :: {}", user.getUserLoginInfo());
 		return user.getUsername();
 	}
 
