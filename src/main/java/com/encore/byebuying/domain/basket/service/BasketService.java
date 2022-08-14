@@ -1,8 +1,5 @@
 package com.encore.byebuying.domain.basket.service;
 
-import com.encore.byebuying.domain.basket.dto.BasketAddDTO;
-import com.encore.byebuying.domain.basket.dto.BasketDeleteDTO;
-import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
 import com.encore.byebuying.domain.basket.BasketItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
