@@ -34,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Transactional
-	public Long order(OrderRequestDTO orderRequestDto) {
+	public OrderResponseDTO order(OrderRequestDTO orderRequestDto) {
 		List<Long> itemIdList = orderRequestDto.getItems().stream().map(OrderItemInfoDTO::getItemId).collect(Collectors.toList());
 
 		// 필요 엔티티 조회
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
 		Order order = Order.createOrder(findUser, orderItems, findUser.getAddress());
 		orderRepository.save(order);
 
-		return order.getId();
+		return new OrderResponseDTO(order);
 	}
 
 	@Transactional
