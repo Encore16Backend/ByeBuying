@@ -2,12 +2,9 @@ package com.encore.byebuying.domain.Basket;
 
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.dto.BasketItemDeleteDTO;
-import com.encore.byebuying.domain.basket.service.BasketService;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemRequestVO;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
-import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
-import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
+import com.encore.byebuying.domain.basket.service.vo.SearchBasketItemListParam;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
+import com.encore.byebuying.domain.basket.dto.SearchBasketItemListDTO;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
@@ -19,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -177,14 +173,14 @@ public class BasketTest {
 
         saveBasketItemsToUser(user);
 
-        BasketItemSearchDTO basketItemSearchDTO = new BasketItemSearchDTO();
+        SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
         basketItemSearchDTO.setUserId(user.getId());
         basketItemSearchDTO.setItemName("1");
         basketItemSearchDTO.setStartDate(LocalDateTime.now());
 
         Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
-        BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
-        var basketItems = basketItemRepository.findAll(basketItemSearchDTO, vo);
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(basketItemSearchDTO,basket.getId());
+        var basketItems = basketItemRepository.findAll(param, basketItemSearchDTO.getPageRequest());
 
 //        System.out.println(basketItems.getContent());
 
@@ -202,28 +198,29 @@ public class BasketTest {
 
         saveBasketItemsToUser(user);
 
-        BasketItemSearchDTO basketItemSearchDTO = new BasketItemSearchDTO();
+        SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
         basketItemSearchDTO.setUserId(user.getId());
         basketItemSearchDTO.setStartDate(LocalDateTime.of(2022,7,1,13,5));
         basketItemSearchDTO.setEndDate(LocalDateTime.now().minusDays(1L));
 
         // 날짜포함 검색
         Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
-        BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
-        var basketItems = basketItemRepository.findAll(basketItemSearchDTO, vo);
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(basketItemSearchDTO, basket.getId());
+        var basketItems = basketItemRepository.findAll(param, basketItemSearchDTO.getPageRequest());
 
         assertThat(basketItems.getContent().size()).isEqualTo(0);
 
 
         // 날짜 없이 검색
-        BasketItemSearchDTO basketItemSearchDTO2 = new BasketItemSearchDTO();
+        SearchBasketItemListDTO basketItemSearchDTO2 = new SearchBasketItemListDTO();
         basketItemSearchDTO2.setUserId(user.getId());
 
-        var basketItems2 = basketItemRepository.findAll(basketItemSearchDTO2, vo);
+        SearchBasketItemListParam param2 = SearchBasketItemListParam.valueOf(basketItemSearchDTO,basket.getId());
+        var basketItems2 = basketItemRepository.findAll(param2, basketItemSearchDTO2.getPageRequest());
 
         assertThat(basketItems2.getContent().size()).isEqualTo(5);
         for (int i = 0; i < basketItems2.getContent().size(); i++){
-            BasketItemResponseVO item = basketItems2.getContent().get(i);
+            BasketItemVO item = basketItems2.getContent().get(i);
             assertThat(item.getPrice()).isEqualTo(1000);
         }
 

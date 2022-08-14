@@ -132,6 +132,7 @@ public class User extends BaseTimeEntity {
         this.inquiries = new ArrayList<>();
         this.orders = new ArrayList<>();
         this.reviews = new ArrayList<>();
+        this.basket = Basket.createBasket();
     }
 
     public void encodePassword(String password) {

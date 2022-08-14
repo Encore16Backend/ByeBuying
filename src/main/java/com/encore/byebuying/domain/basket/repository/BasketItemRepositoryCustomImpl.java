@@ -2,24 +2,21 @@ package com.encore.byebuying.domain.basket.repository;
 
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.QBasketItem;
-import com.encore.byebuying.domain.basket.dto.BasketItemSearchDTO;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemRequestVO;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
 import com.encore.byebuying.domain.basket.service.vo.QBasketItemResponseVO;
-import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.basket.service.vo.SearchBasketItemListParam;
 import com.encore.byebuying.domain.item.QItem;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.util.StringUtils.hasText;
 
@@ -37,18 +34,18 @@ public class BasketItemRepositoryCustomImpl extends QuerydslRepositorySupport im
     }
 
     @Override
-    public Page<BasketItemResponseVO> findAll(BasketItemSearchDTO basketItemSearchDTO, BasketItemRequestVO vo) {
-        BooleanBuilder whereCondition = getWhereCondition(basketItemSearchDTO, vo);
+    public Page<BasketItemVO> findAll(SearchBasketItemListParam param, Pageable pageable) {
+        BooleanBuilder whereCondition = getWhereCondition(param);
 
-        JPAQuery<BasketItemResponseVO> contents = jpaQueryFactory.select(getBasketItems())
+        JPAQuery<BasketItemVO> contents = jpaQueryFactory.select(getBasketItems())
                  .from(basketItem)
                 .innerJoin(basketItem.item, item)
                 .where(whereCondition);
 
-        List<BasketItemResponseVO> result = getQuerydsl().applyPagination(basketItemSearchDTO.getPageRequest()
+        List<BasketItemVO> result = getQuerydsl().applyPagination(pageable
                 , contents).fetch();
 
-        return new PageImpl<>(result, basketItemSearchDTO.getPageRequest(), result.size());
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     private QBasketItemResponseVO getBasketItems() {
@@ -58,38 +55,26 @@ public class BasketItemRepositoryCustomImpl extends QuerydslRepositorySupport im
                 basketItem.item
         );
     }
-
-    private BooleanBuilder getWhereCondition(BasketItemSearchDTO dto, BasketItemRequestVO vo) {
+    
+    private BooleanBuilder getWhereCondition(SearchBasketItemListParam param) {
         BooleanBuilder whereCondition = new BooleanBuilder();
 
-        whereCondition.and(basketItem.basket.id.eq(vo.getBasket_id()))
-                .and(likeItemName(dto.getItemName()))
-                .and(hasDate(dto.getStartDate(), dto.getEndDate()));
+        // 동적할당 -> Builder로 조건절 만들기
+        // BooleandExpression은 join조건때 사용
+        if (Objects.nonNull(param.getBasketId())){
+            whereCondition.and(basketItem.basket.id.eq(param.getBasketId()));
+        }
+        if (hasText(param.getItemName())){
+            whereCondition.and(basketItem.item.name.contains(param.getItemName()));
+        }
+        if (Objects.nonNull(param.getStartDate())){
+            whereCondition.and(basketItem.item.modifiedAt.goe(param.getStartDate()));
+        }
+        if (Objects.nonNull(param.getEndDate())){
+            whereCondition.and(basketItem.item.modifiedAt.loe(param.getEndDate()));
+        }
 
         return whereCondition;
     }
-
-
-    private BooleanExpression likeItemName(String itemName) {
-        if (ObjectUtils.isEmpty(itemName)) {
-            return null;
-        }
-        return basketItem.item.name.contains(itemName);
-    }
-
-    private BooleanExpression hasDate(LocalDateTime startDate, LocalDateTime endDate) {
-        if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
-            return null;
-        } // 시작, 종료날짜가 다 존재해야 검색
-        return basketItem.modifiedAt.between(startDate, endDate);
-    }
-
-
-
-
-
-
-
-
 
 }

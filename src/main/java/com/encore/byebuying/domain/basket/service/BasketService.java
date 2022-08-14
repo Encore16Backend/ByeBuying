@@ -3,9 +3,8 @@ package com.encore.byebuying.domain.basket.service;
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemRequestVO;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
-import com.encore.byebuying.domain.common.paging.PagingResponse;
+import com.encore.byebuying.domain.basket.service.vo.SearchBasketItemListParam;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
@@ -14,8 +13,6 @@ import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -31,55 +28,51 @@ public class BasketService {
     private final BasketItemRepository basketItemRepository;
 
     /**
-     * @param basketItemSearchDTO
-     *
-     *
-     * @return*/
-    public Page<BasketItemResponseVO> getByUser(BasketItemSearchDTO basketItemSearchDTO) {
-         User user = userRepository.findById(basketItemSearchDTO.getUserId()).orElseThrow(RuntimeException::new);
+     * 장바구니 조회
+     */
+    public Page<BasketItemVO> getByUser(SearchBasketItemListDTO dto) {
+         User user = userRepository.findById(dto.getUserId())
+                 .orElseThrow(RuntimeException::new);
          Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
-         BasketItemRequestVO vo = BasketItemRequestVO.valueOf(basket);
-         return basketItemRepository.findAll(basketItemSearchDTO, vo);
+         Long basketId = basket.getId(); // basketId 널체크를 위해 basket과 분리
+         SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(dto, basketId);
+         return basketItemRepository.findAll(param, dto.getPageRequest());
     }
 
     /**
-     * @param basketUpdateDTO
      * 장바구니 상품 갯수 수정
      * */
     @Transactional
-    public void updateBasketItem(BasketUpdateDTO basketUpdateDTO) {
-        Long BasketItemId = basketUpdateDTO.getBasketItemId();
+    public void updateBasketItem(UpdateBasketDTO basketUpdateDTO, Long basketItemId) {
         int count = basketUpdateDTO.getCount();
-        BasketItem findBasketItem = basketItemRepository.findById(BasketItemId).orElseThrow(RuntimeException::new);
+        BasketItem findBasketItem = basketItemRepository.findById(basketItemId)
+                .orElseThrow(RuntimeException::new);
         findBasketItem.setCount(count);
     }
 
     /**
-     * @param basketAddDTO
-     * Long user_id,Long item_id,int count
-     * 장바구니에 상품 추가
+     *  장바구니 상품 추가
      * */
     @Transactional
-    public void addBasketItem(BasketItemAddDTO basketAddDTO) {
-        User findUser = userRepository.findById(basketAddDTO.getUserId()).orElseThrow(RuntimeException::new);
-        Item findItem = itemRepository.findById(basketAddDTO.getItemId()).orElseThrow(RuntimeException::new);
+    public void addBasketItem(AddBasketItemDTO AddBasketItemDTO) {
+        User findUser = userRepository.findById(AddBasketItemDTO.getUserId())
+                .orElseThrow(RuntimeException::new);
+        Item findItem = itemRepository.findById(AddBasketItemDTO.getItemId())
+                .orElseThrow(RuntimeException::new);
         BasketItem basketItem = BasketItem.createBasketItem()
                 .item(findItem)
-                .count(basketAddDTO.getCount())
+                .count(AddBasketItemDTO.getCount())
                 .basket(findUser.getBasket()).build();
         basketItemRepository.save(basketItem);
     }
 
     /**
-     * @param basketDeleteDTO
-     * Long user_id,Long item_id,int count
      * 장바구니 상품 삭제
      * */
     @Transactional
-    public void deleteBasketItem(BasketItemDeleteDTO basketDeleteDTO) {
-        List<Long> basketItemIds = basketDeleteDTO.getBasketItemIds();
+    public void deleteBasketItem(DeleteBasketItemDTO deleteBasketItemDTO) {
+        List<Long> basketItemIds = deleteBasketItemDTO.getBasketItemIds();
         basketItemIds.forEach(basketId -> basketItemRepository.deleteById(basketId));
     }
 
-    
 }
