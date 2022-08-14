@@ -20,30 +20,30 @@ public class BasketController {
 
     // 유저별 장바구니 상품 조회
     @GetMapping("/by-user")
-    public ResponseEntity<?> getByUser(@Valid SearchBasketItemListDTO SearchbasketItemDTO) {
-        Page<BasketItemVO> basketItemsByUser = basketService.getByUser(SearchbasketItemDTO);
+    public ResponseEntity<?> getByUser(@Valid SearchBasketItemListDTO SearchBasketItemDTO) {
+        Page<BasketItemVO> basketItemsByUser = basketService.getByUser(SearchBasketItemDTO);
         return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
     }
 
     // 장바구니 상품 추가
     @PostMapping(value = "/basket-item",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addBasket(@RequestBody @Valid AddBasketItemDTO addBasketDTO) {
-        basketService.addBasketItem(addBasketDTO);
+    public ResponseEntity<Void> addBasket(@RequestBody @Valid AddBasketItemDTO addBasketItemDTO) {
+        basketService.addBasketItem(addBasketItemDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 장바구니 상품 갯수 수정
     @PutMapping(value = "/basket-items/{basket-item-id}/count" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateBasket(@RequestBody @Valid UpdateBasketDTO UpdatebasketDTO,
+    public ResponseEntity<Void> updateBasket(@RequestBody @Valid UpdateBasketItemDTO updateBasketItemDTO,
                                              @PathVariable(value = "basket-item-id") Long basketItemId) {
-        basketService.updateBasketItem(UpdatebasketDTO, basketItemId);
+        basketService.updateBasketItem(updateBasketItemDTO, basketItemId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 장바구니 상품 삭제
     @DeleteMapping(value = "/basket-item" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteBasket(@RequestBody @Valid DeleteBasketItemDTO DeleteBasketDTO) {
-        basketService.deleteBasketItem(DeleteBasketDTO);
+    public ResponseEntity<Void> deleteBasket(@RequestBody @Valid DeleteBasketItemDTO deleteBasketDTO) {
+        basketService.deleteBasketItem(deleteBasketDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

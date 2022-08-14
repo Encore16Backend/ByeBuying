@@ -43,7 +43,7 @@ public class BasketService {
      * 장바구니 상품 갯수 수정
      * */
     @Transactional
-    public void updateBasketItem(UpdateBasketDTO basketUpdateDTO, Long basketItemId) {
+    public void updateBasketItem(UpdateBasketItemDTO basketUpdateDTO, Long basketItemId) {
         int count = basketUpdateDTO.getCount();
         BasketItem findBasketItem = basketItemRepository.findById(basketItemId)
                 .orElseThrow(RuntimeException::new);

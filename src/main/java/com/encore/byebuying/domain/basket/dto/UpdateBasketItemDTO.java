@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class UpdateBasketDTO {
+public class UpdateBasketItemDTO {
     @NotNull
     private Long userId;
     @NotBlank
