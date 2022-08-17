@@ -4,6 +4,7 @@ import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,13 @@ public class OrderResponseDTO {
 
     public OrderResponseDTO(Order order) {
         this.items = orderItemInfoDTOList(order.getOrderItems());
+        this.address = order.getAddress();
+        this.orderDate = order.getCreatedAt();
+        this.orderState = order.getOrderType().getStatus();
+    }
+
+    public static Page<OrderResponseDTO> toPageOrderResponseDTO(Page<Order> pageOrder) {
+        return pageOrder.map(OrderResponseDTO::new);
     }
 
     private List<OrderItemResponseDTO> orderItemInfoDTOList(List<OrderItem> orderItems) {

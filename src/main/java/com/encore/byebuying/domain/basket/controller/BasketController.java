@@ -27,8 +27,8 @@ public class BasketController {
 
     // 장바구니 상품 추가
     @PostMapping(value = "/basket-item",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addBasket(@RequestBody @Valid AddBasketItemDTO addBasketItemDTO) {
-        basketService.addBasketItem(addBasketItemDTO);
+    public ResponseEntity<Void> addBasket(@RequestBody @Valid CreateBasketItemDTO createBasketItemDTO) {
+        basketService.addBasketItem(createBasketItemDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -41,7 +41,7 @@ public class BasketController {
     }
 
     // 장바구니 상품 삭제
-    @DeleteMapping(value = "/basket-item" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/basket-items" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteBasket(@RequestBody @Valid DeleteBasketItemDTO deleteBasketDTO) {
         basketService.deleteBasketItem(deleteBasketDTO);
         return new ResponseEntity<>(HttpStatus.OK);

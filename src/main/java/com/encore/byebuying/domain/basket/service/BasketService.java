@@ -54,14 +54,14 @@ public class BasketService {
      *  장바구니 상품 추가
      * */
     @Transactional
-    public void addBasketItem(AddBasketItemDTO AddBasketItemDTO) {
-        User findUser = userRepository.findById(AddBasketItemDTO.getUserId())
+    public void addBasketItem(CreateBasketItemDTO CreateBasketItemDTO) {
+        User findUser = userRepository.findById(CreateBasketItemDTO.getUserId())
                 .orElseThrow(RuntimeException::new);
-        Item findItem = itemRepository.findById(AddBasketItemDTO.getItemId())
+        Item findItem = itemRepository.findById(CreateBasketItemDTO.getItemId())
                 .orElseThrow(RuntimeException::new);
         BasketItem basketItem = BasketItem.createBasketItem()
                 .item(findItem)
-                .count(AddBasketItemDTO.getCount())
+                .count(CreateBasketItemDTO.getCount())
                 .basket(findUser.getBasket()).build();
         basketItemRepository.save(basketItem);
     }
