@@ -1,53 +1,65 @@
 package com.encore.byebuying.domain.basket.controller;
 
+import com.encore.byebuying.domain.basket.dto.BasketAddDTO;
+import com.encore.byebuying.domain.basket.dto.BasketDeleteDTO;
+import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
 import com.encore.byebuying.domain.basket.BasketItem;
-import com.encore.byebuying.domain.basket.dto.*;
 import com.encore.byebuying.domain.basket.service.BasketService;
-import com.encore.byebuying.domain.basket.service.vo.BasketItemResponseVO;
-import com.encore.byebuying.domain.common.paging.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.nio.file.Path;
-
 @RestController
-@RequestMapping("/api/baskets")
+@RequestMapping("/basket")
 @RequiredArgsConstructor
 public class BasketController {
     private final BasketService basketService;
 
-    // 유저별 장바구니 상품 조회
-    @GetMapping("/by-user")
-    public ResponseEntity<?> getByUser(@Valid  SearchBasketItemListDTO searchbasketItemDTO) {
-        Page<BasketItemVO> basketItemsByUser = basketService.getByUser(SearchbasketItemDTO);
-        return new ResponseEntity<>(basketItemsByUser,HttpStatus.OK);
+    @GetMapping("/items")
+    public ResponseEntity<?> getBasketItems(@RequestParam(defaultValue="",value="userId") Long userId,
+                                            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+        PageRequest pageRequest = PageRequest.of(page-1, 5);
+        Page<BasketItem> basketItems = basketService.findByUserId(pageRequest, userId);
+        return new ResponseEntity<>(basketItems, HttpStatus.OK);
     }
 
-    // 장바구니 상품 추가
-    @PostMapping(value = "/basket-item",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addBasket(@RequestBody @Valid  AddBasketItemDTO addBasketDTO) {
-        basketService.addBasketItem(addBasketDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @Transactional
+    @PostMapping("/add")
+    public ResponseEntity<?> addBasket(@RequestBody BasketAddDTO basketAddDTO) {
+        basketService.addBasketItem(basketAddDTO);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+    }
+    @Transactional
+    @PutMapping("/update")
+    public ResponseEntity<?> updateBasket(@RequestBody BasketUpdateDTO basketUpdateDTO) {
+        basketService.updateBasketItem(basketUpdateDTO);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    // 장바구니 상품 갯수 수정
-    @PutMapping(value = "/basket-items/{basket-item-id}/count" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateBasket(@RequestBody @Valid UpdateBasketDTO updatebasketDTO,
-                                             @PathVariable(value = "basket-item-id") Long basketItemId) {
-        basketService.updateBasketItem(updatebasketDTO, basketItemId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @Transactional
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteBasket(@RequestBody BasketDeleteDTO basketDeleteDTO) {
+        basketService.deleteBasketItem(basketDeleteDTO);
+        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
-    // 장바구니 상품 삭제
-    @DeleteMapping(value = "/basket-item" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteBasket(@RequestBody @Valid DeleteBasketItemDTO deleteBasketDTO) {
-        basketService.deleteBasketItem(deleteBasketDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
+
+//
+//    @GetMapping("/byUsername")
+//    public ResponseEntity<Page<Basket>> getBasketByUsername(
+//            @RequestParam(defaultValue="",value="username") String username,
+//            @RequestParam(required = false, defaultValue="1",value="page") int page) {
+//        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+//        Pageable pageable = PageRequest.of(page-1, 5, sort);
+//        Page<Basket> baskets = basketService.getByUsername(pageable, username);
+//        return ResponseEntity.ok().body(baskets);
+//    }
+//
+//
+//
 }
