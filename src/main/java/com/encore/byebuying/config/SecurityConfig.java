@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
         http.authorizeRequests().antMatchers(PUT, "**")
                 .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN");
-        http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername",
+        http.authorizeRequests().antMatchers(GET, "/api/user/**","/review/all","/review/byUsername", "/api/orders/**",
                         "/basket/byUsername","/orderHistory/getOrderHistories", "/inquiry/byUserNItemid", "/flask/recommend")
                 .hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_SUPER_ADMIN");
         http.authorizeRequests().antMatchers(POST, "/review/save", "/api/user/getUser",

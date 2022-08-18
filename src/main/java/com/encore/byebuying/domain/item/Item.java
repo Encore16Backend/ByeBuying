@@ -1,6 +1,6 @@
 package com.encore.byebuying.domain.item;
 
-import com.encore.byebuying.domain.inquiry.Inquiry;
+import com.encore.byebuying.domain.category.Category;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.review.Review;
 import lombok.*;
@@ -33,9 +33,9 @@ public class Item extends BaseTimeEntity {
 
     private int price;
 
-    // 카테고리랑은 연관관계 안 잡아도 된다.
-    // 상품에서 카테고리를 확인할 일이 없음.
-    private Long categoryId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Builder.Default
     private int stockQuantity = 0; // 상품 수량
@@ -65,8 +65,9 @@ public class Item extends BaseTimeEntity {
     /**
      * 카테고리 설정
      */
-    public void settingCategory(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
+        category.getItems().add(this);
     }
 
     /**
