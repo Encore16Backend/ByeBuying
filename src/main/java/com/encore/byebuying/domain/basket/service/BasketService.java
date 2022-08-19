@@ -1,24 +1,41 @@
 package com.encore.byebuying.domain.basket.service;
 
-import com.encore.byebuying.domain.basket.dto.BasketAddDTO;
-import com.encore.byebuying.domain.basket.dto.BasketDeleteDTO;
-import com.encore.byebuying.domain.basket.dto.BasketUpdateDTO;
-import com.encore.byebuying.domain.basket.BasketItem;
+import com.encore.byebuying.domain.basket.dto.CreateBasketItemDTO;
+import com.encore.byebuying.domain.basket.dto.DeleteBasketItemListDTO;
+import com.encore.byebuying.domain.basket.dto.SearchBasketItemListDTO;
+import com.encore.byebuying.domain.basket.dto.UpdateBasketItemDTO;
+import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
+import com.encore.byebuying.domain.basket.repository.BasketRepository;
+import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface BasketService {
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Slf4j
+public class BasketService {
 
+    private final BasketRepository basketRepository;
+    private final BasketItemRepository basketItemRepository;
 
-//    Page<Order> findByUsername(Pageable pageable, String username);
-//    Page<Order> findByUsernameAndBetweenDate(Pageable pageable, String username, String start, String end) throws ParseException;
+    public Page<BasketItemVO> getBasketItemList(SearchBasketItemListDTO dto) {
+        return null;
+    }
 
-    Page<BasketItem> findByUserId(Pageable pageable, Long user_id);
-    @Transactional
-    void updateBasketItem(BasketUpdateDTO basketUpdateDTO);
-    @Transactional
-    void addBasketItem(BasketAddDTO basketAddDTO);
-    @Transactional
-    void deleteBasketItem(BasketDeleteDTO basketDeleteDTO);
+    public void createBasketItem(CreateBasketItemDTO dto) {
+
+    }
+
+    public void updateBasketItemCount(UpdateBasketItemDTO dto, Long basketItemId) {
+
+    }
+
+    public void deleteBasketItemList(DeleteBasketItemListDTO dto) {
+
+    }
+
 }
