@@ -46,7 +46,10 @@ public class BasketService {
     }
 
     public void updateBasketItemCount(UpdateBasketItemDTO dto, Long basketItemId) {
-
+        int count = dto.getCount();
+        BasketItem findBasketItem = basketItemRepository.findById(basketItemId)
+                .orElseThrow(RuntimeException::new);
+        findBasketItem.setCount(count);
     }
 
     public void deleteBasketItemList(DeleteBasketItemListDTO dto) {

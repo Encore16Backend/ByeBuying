@@ -112,6 +112,24 @@ public class BasketTest {
         assertThat(user.getBasket().getBasketItems().get(0).getItem().getName()).isEqualTo("상품");
     }
 
+    @Test
+    public void updateBasketItem() {
+        // given
+        User user = givenUser();
+        Item item = givenItem();
+
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).basket(user.getBasket()).build();
+        basketItemRepository.save(basketItem);
+        user.getBasket().addBasketItem(basketItem);
+
+        // 업데이트
+        BasketItem findBasketItem = basketItemRepository.findById(basketItem.getId()).orElseThrow(RuntimeException::new);
+        findBasketItem.setCount(1);
+
+        User findUser = userRepository.getById(user.getId());
+        // then
+        assertThat(findUser.getBasket().getBasketItems().get(0).getCount()).isEqualTo(1);
+    }
 
 
 }
