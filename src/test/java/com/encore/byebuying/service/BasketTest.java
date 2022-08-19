@@ -154,4 +154,68 @@ public class BasketTest {
         assertThat(user1.getBasket().getBasketItems().size()).isEqualTo(0);
     }
 
+
+    // 검색어 검색
+    @Test
+    public void BasketItemSearch() {
+        // given
+        User user = givenUser();
+        entityManager.flush();
+        entityManager.clear();
+
+        saveBasketItemsToUser(user);
+
+        SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
+        basketItemSearchDTO.setUserId(user.getId());
+        basketItemSearchDTO.setItemName("1");
+        basketItemSearchDTO.setStartDate(LocalDateTime.now());
+
+        Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(basketItemSearchDTO,basket.getId());
+        var basketItems = basketItemRepository.findAll(param, basketItemSearchDTO.getPageRequest());
+
+//        System.out.println(basketItems.getContent());
+
+        assertThat(basketItems.getContent().get(0).getItemName()).isEqualTo("상품1");
+    }
+
+    // 날짜, 유저 id 검색
+    @Test
+    public void BasketItemSearchDate()  {
+
+        // given
+        User user = givenUser();
+        entityManager.flush();
+        entityManager.clear();
+
+        saveBasketItemsToUser(user);
+
+        SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
+        basketItemSearchDTO.setUserId(user.getId());
+        basketItemSearchDTO.setStartDate(LocalDateTime.of(2022,7,1,13,5));
+        basketItemSearchDTO.setEndDate(LocalDateTime.now().minusDays(1L));
+
+        // 날짜포함 검색
+        Basket basket = user.getBasket();
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(basketItemSearchDTO, basket.getId());
+        var basketItems = basketItemRepository.findAll(param, basketItemSearchDTO.getPageRequest());
+
+        assertThat(basketItems.getContent().size()).isEqualTo(5);
+
+
+        // 날짜 없이 검색
+        SearchBasketItemListDTO basketItemSearchDTO2 = new SearchBasketItemListDTO();
+        basketItemSearchDTO2.setUserId(user.getId());
+
+        SearchBasketItemListParam param2 = SearchBasketItemListParam.valueOf(basketItemSearchDTO,basket.getId());
+        var basketItems2 = basketItemRepository.findAll(param2, basketItemSearchDTO2.getPageRequest());
+
+        assertThat(basketItems2.getContent().size()).isEqualTo(5);
+        for (int i = 0; i < basketItems2.getContent().size(); i++){
+            BasketItemVO item = basketItems2.getContent().get(i);
+            assertThat(item.getPrice()).isEqualTo(1000);
+        }
+
+    }
+
 }
