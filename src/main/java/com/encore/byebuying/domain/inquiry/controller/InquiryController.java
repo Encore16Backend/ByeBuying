@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
+import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.domain.common.paging.PagingResponse;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +24,10 @@ public class InquiryController {
 
     // 문의사항 등록 및 수정
     @PostMapping
-    public ResponseEntity<?> updateInquiry(@Valid @RequestBody UpdateInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.updateInquiry(dto);
+    public ResponseEntity<?> updateInquiry(@AuthenticationPrincipal LoginUser loginUser,
+        @Valid @RequestBody UpdateInquiryDTO dto){
+        InquiryResponseVO inquiryResponseVO = inquiryService
+            .updateInquiry(loginUser.getUserId(), dto);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
