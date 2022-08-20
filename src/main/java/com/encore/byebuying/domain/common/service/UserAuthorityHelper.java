@@ -23,14 +23,4 @@ public class UserAuthorityHelper {
     }
   }
 
-  public void checkAuthorityValidation(User entityUser, String requestUsername) {
-    User requestUser = userRepository.findByUsername(requestUsername)
-        .orElseThrow(() -> new RuntimeException("User entity not found"));
-
-    if (!(entityUser.equals(requestUser) ||
-        requestUser.getRoleType().equals(ADMIN) || requestUser.getRoleType().equals(SUPER_ADMIN))) {
-      throw new RuntimeException("Not Authority");
-    }
-  }
-
 }
