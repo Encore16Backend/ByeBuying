@@ -131,5 +131,27 @@ public class BasketTest {
         assertThat(findUser.getBasket().getBasketItems().get(0).getCount()).isEqualTo(1);
     }
 
+    @Test
+    public void deleteBasketItem() {
+        // given
+        User user = givenUser();
+        Item item = givenItem();
+        entityManager.flush();
+        entityManager.clear();
+        BasketItem basketItem = BasketItem.createBasketItem().item(item).count(5).basket(user.getBasket()).build();
+        user.getBasket().addBasketItem(basketItem);
+        basketItemRepository.save(basketItem);
+
+        List<Long> ids = new ArrayList<>();
+        ids.add(basketItem.getId());
+
+        ids.forEach(basketId -> basketItemRepository.deleteById(basketId));
+        entityManager.flush();
+        entityManager.clear();
+
+        // then
+        User user1 = userRepository.getById(user.getId());
+        assertThat(user1.getBasket().getBasketItems().size()).isEqualTo(0);
+    }
 
 }

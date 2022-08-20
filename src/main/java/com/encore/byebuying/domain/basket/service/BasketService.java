@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -53,7 +55,8 @@ public class BasketService {
     }
 
     public void deleteBasketItemList(DeleteBasketItemListDTO dto) {
-
+        List<Long> basketItemIds = dto.getBasketItemIds();
+        basketItemIds.forEach(basketId -> basketItemRepository.deleteById(basketId));
     }
 
 }
