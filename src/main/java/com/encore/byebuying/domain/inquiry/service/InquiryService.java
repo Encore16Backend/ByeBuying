@@ -64,10 +64,16 @@ public class InquiryService {
         return InquiryResponseVO.valueOf(inquiry);
     }
 
-    public InquiryResponseVO getInquiryDetail(String username, Long inquiryId) {
-        Inquiry inquiry = inquiryRepository.getById(inquiryId);
+    public InquiryResponseVO getInquiryDetail(Long userId, Long inquiryId) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
+
+        Inquiry inquiry = inquiryRepository.findById(inquiryId).orElseThrow(
+            () -> new RuntimeException("Inquiry Entity Not Found"));
+
         // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
+        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
+
         return InquiryResponseVO.valueOf(inquiry);
     }
 
