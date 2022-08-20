@@ -58,9 +58,9 @@ public class InquiryController {
     // 문의사항 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInquiry(
-        @RequestParam(value = "username") String username,
+        @AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "id") Long inquiryId){
-        inquiryService.deleteInquiryById(username, inquiryId);
+        inquiryService.deleteInquiry(loginUser.getUserId(), inquiryId);
         return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
     }
 
