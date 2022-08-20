@@ -23,4 +23,8 @@ public enum RoleType {
                 .findFirst()
                 .orElse(GUEST);
     }
+
+    public static boolean isAdmin(RoleType roleType) {
+        return RoleType.ADMIN.equals(roleType) || RoleType.SUPER_ADMIN.equals(roleType);
+    }
 }
