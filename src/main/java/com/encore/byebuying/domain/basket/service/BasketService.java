@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.basket.service;
 
+import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.basket.BasketItem;
 import com.encore.byebuying.domain.basket.dto.CreateBasketItemDTO;
 import com.encore.byebuying.domain.basket.dto.DeleteBasketItemListDTO;
@@ -8,6 +9,7 @@ import com.encore.byebuying.domain.basket.dto.UpdateBasketItemDTO;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
 import com.encore.byebuying.domain.basket.repository.BasketRepository;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
+import com.encore.byebuying.domain.basket.service.vo.SearchBasketItemListParam;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.User;
@@ -32,7 +34,12 @@ public class BasketService {
     private final UserRepository userRepository;
 
     public Page<BasketItemVO> getBasketItemList(SearchBasketItemListDTO dto) {
-        return null;
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(RuntimeException::new);
+        Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
+        Long basketId = basket.getId(); // basketId 널체크를 위해 basket과 분리
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(dto, basketId);
+        return basketItemRepository.findAll(param, dto.getPageRequest());
     }
 
     public void createBasketItem(CreateBasketItemDTO dto) {

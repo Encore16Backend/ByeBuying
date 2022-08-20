@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface BasketItemRepositoryCustom {
 
-//    Page<BasketItemVO> findAll(SearchBasketItemListParam param, Pageable pageable);
+    Page<BasketItemVO> findAll(SearchBasketItemListParam param, Pageable pageable);
 
 }
