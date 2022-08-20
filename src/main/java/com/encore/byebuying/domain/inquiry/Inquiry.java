@@ -1,19 +1,24 @@
 package com.encore.byebuying.domain.inquiry;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
+import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.user.User;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import javax.persistence.*;
 import lombok.Setter;
-import lombok.ToString;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -67,6 +72,13 @@ public class Inquiry extends BaseTimeEntity {
     public static Inquiry updateInquiry(Inquiry inquiry, UpdateInquiryDTO dto) {
         inquiry.setTitle(dto.getTitle());
         inquiry.setContent(dto.getContent());
+
+        return inquiry;
+    }
+
+    public static Inquiry updateAnswerInquiry(Inquiry inquiry, AnswerInquiryDTO dto) {
+        inquiry.setChkAnswer(InquiryType.COMPLETE);
+        inquiry.setAnswer(dto.getAnswer());
 
         return inquiry;
     }

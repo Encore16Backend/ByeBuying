@@ -37,9 +37,9 @@ public class InquiryController {
 
     // 문의사항 답변 등록 - 관리자
     @PostMapping("/sy/{id}/answer")
-    public ResponseEntity<?> answerToInquiry(@PathVariable(value = "id") long inquiryId,
+    public ResponseEntity<?> updateAnswerInquiry(@PathVariable(value = "id") long inquiryId,
         @Valid @RequestBody AnswerInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.answerToInquiry(inquiryId, dto);
+        InquiryResponseVO inquiryResponseVO = inquiryService.updateAnswerInquiry(inquiryId, dto);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
