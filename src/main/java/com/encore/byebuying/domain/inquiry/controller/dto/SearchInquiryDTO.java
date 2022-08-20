@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SearchInquiryDTO extends PagingRequest {
-
+  // 유저인 경우 username -> NULL
+  // 관리자인 경우 NULL 일수도 있고 아닐수도 있음
   private String username;
 }
