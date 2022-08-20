@@ -53,20 +53,21 @@ public class Inquiry extends BaseTimeEntity {
         return Objects.hash(id);
     }
 
-    @Builder(builderClassName = "update", builderMethodName = "updateBuildInquiry")
-    private Inquiry(UpdateInquiryDTO dto, User user) {
-        this.id = dto.getInquiryId();
-        this.title = dto.getTitle();
-        this.content = dto.getContent();
-        this.user = user;
+    public static Inquiry createInquiry(UpdateInquiryDTO dto, User user) {
+        Inquiry inquiry = new Inquiry();
+        inquiry.setTitle(dto.getTitle());
+        inquiry.setContent(dto.getContent());
+        inquiry.setUser(user);
+
+        user.getInquiries().add(inquiry);
+
+        return inquiry;
     }
 
-    public static Inquiry updateInquiry(UpdateInquiryDTO dto, User user) {
-        Inquiry inquiry = Inquiry.updateBuildInquiry()
-            .dto(dto)
-            .user(user)
-            .build();
-        user.getInquiries().add(inquiry);
+    public static Inquiry updateInquiry(Inquiry inquiry, UpdateInquiryDTO dto) {
+        inquiry.setTitle(dto.getTitle());
+        inquiry.setContent(dto.getContent());
+
         return inquiry;
     }
 }
