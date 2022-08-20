@@ -20,4 +20,6 @@ public class UpdateInquiryDTO {
     private String title;
     @NotNull
     private String content;
+    @NotBlank
+    private String username;
 }
