@@ -18,12 +18,15 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protect
 @Getter // all args constructor method에 붙여서
 @ToString
-@Table(indexes = @Index(columnList = "basket_id"))
+@Table(indexes = @Index(columnList = "basket_id")
+,uniqueConstraints={@UniqueConstraint(columnNames={"basket_id", "item_id"})
+        })
 public class BasketItem extends BaseTimeEntity {
 
     @Id
