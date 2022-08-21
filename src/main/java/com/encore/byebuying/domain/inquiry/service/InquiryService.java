@@ -27,9 +27,9 @@ public class InquiryService {
     private final UserAuthorityHelper userAuthorityHelper;
 
     @Transactional
-    public InquiryResponseVO updateInquiry(UpdateInquiryDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
-            .orElseThrow(() -> new RuntimeException("User Entity Not Found"));
+    public InquiryResponseVO updateInquiry(Long userId, UpdateInquiryDTO dto) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
 
         Inquiry inquiry;
         if (dto.getInquiryId() != null) {
@@ -44,13 +44,12 @@ public class InquiryService {
             // 권한 체크 - 문의사항 작성자 또는 관리자만 수정 가능
             userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
 
-            inquiry.setTitle(dto.getTitle());
-            inquiry.setContent(dto.getContent());
+            Inquiry.updateInquiry(inquiry, dto);
         } else {
             // 추가 작업
-            inquiry = Inquiry.updateInquiry(dto, user);
-            inquiryRepository.save(inquiry);
+            inquiry = Inquiry.createInquiry(dto, user);
         }
+        inquiryRepository.save(inquiry);
 
         return InquiryResponseVO.valueOf(inquiry);
     }
