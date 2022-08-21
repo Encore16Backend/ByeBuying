@@ -75,11 +75,14 @@ public class InquiryService {
     }
 
     @Transactional
-    public void deleteInquiryById(String username, Long inquiryId) {
+    public void deleteInquiry(Long userId, Long inquiryId) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
+
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
         // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
+        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
         inquiry.getUser().getInquiries().removeIf(item -> item == inquiry);
         inquiryRepository.delete(inquiry);
     }
