@@ -56,11 +56,13 @@ public class InquiryService {
     }
 
     @Transactional
-    public InquiryResponseVO answerToInquiry(long inquiryId, AnswerInquiryDTO dto) {
+    public InquiryResponseVO updateAnswerInquiry(long inquiryId, AnswerInquiryDTO dto) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
-        inquiry.setAnswer(dto.getAnswer());
-        inquiry.setChkAnswer(InquiryType.COMPLETE);
+
+        Inquiry.updateAnswerInquiry(inquiry, dto);
+        inquiryRepository.save(inquiry);
+
         return InquiryResponseVO.valueOf(inquiry);
     }
 
