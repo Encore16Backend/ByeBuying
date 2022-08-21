@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,9 +46,9 @@ public class InquiryController {
     // 문의사항 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> getInquiryDetail(
-        @RequestParam(value = "username") String username,
+        @AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "id") Long inquiryId){
-        InquiryResponseVO inquiryResponseVO = inquiryService.getInquiryDetail(username, inquiryId);
+        InquiryResponseVO inquiryResponseVO = inquiryService.getInquiryDetail(loginUser.getUserId(), inquiryId);
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
