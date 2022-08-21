@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,12 @@ public class InquiryRepositoryTest {
   @Test
   void findAllTest() {
     Pageable pageable = PageRequest.of(0, 10);
-    String username = "test";
     SearchInquiryDTO dto = new SearchInquiryDTO();
-    dto.setUsername(username);
-    Page<InquiryResponseVO> result = inquiryRepository.findAll(dto, pageable);
+    dto.setStartDate(LocalDateTime.now());
+    dto.setEndDate(LocalDateTime.now());
+
+    Page<InquiryResponseVO> result = inquiryRepository.findAll(
+        SearchInquiryListParam.valueOf(null, dto), pageable);
 
     assertThat(result).isNotNull();
   }

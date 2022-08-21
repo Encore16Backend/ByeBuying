@@ -1,10 +1,8 @@
 package com.encore.byebuying.domain.inquiry.repository;
 
-import static org.springframework.util.StringUtils.hasText;
-
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.QInquiry;
-import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.inquiry.service.vo.QInquiryResponseVO;
 import com.encore.byebuying.domain.user.QUser;
@@ -12,6 +10,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,8 +31,8 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport implements 
   }
 
   @Override
-  public Page<InquiryResponseVO> findAll(SearchInquiryDTO dto, Pageable pageable) {
-    BooleanBuilder whereCondition = getWhereCondition(dto);
+  public Page<InquiryResponseVO> findAll(SearchInquiryListParam param, Pageable pageable) {
+    BooleanBuilder whereCondition = getWhereCondition(param);
 
     JPAQuery<InquiryResponseVO> jpaQuery = query
         .select(getInquiryList())
@@ -58,11 +57,19 @@ public class InquiryRepositoryImpl extends QuerydslRepositorySupport implements 
     );
   }
 
-  private BooleanBuilder getWhereCondition(SearchInquiryDTO dto) {
+  private BooleanBuilder getWhereCondition(SearchInquiryListParam param) {
     BooleanBuilder whereCondition = new BooleanBuilder();
 
-    if (hasText(dto.getUsername())) {
-      whereCondition.and(user.username.eq(dto.getUsername()));
+    if (Objects.nonNull(param.getUserId())) {
+      whereCondition.and(user.id.eq(param.getUserId()));
+    }
+
+    if (Objects.nonNull(param.getStartDate())) {
+      whereCondition.and(inquiry.modifiedAt.goe(param.getStartDate()));
+    }
+
+    if (Objects.nonNull(param.getEndDate())) {
+      whereCondition.and(inquiry.modifiedAt.loe(param.getEndDate()));
     }
 
     return whereCondition;

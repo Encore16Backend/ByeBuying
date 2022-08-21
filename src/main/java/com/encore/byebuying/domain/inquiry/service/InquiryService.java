@@ -1,19 +1,20 @@
 package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.code.InquiryType;
+import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.common.service.UserAuthorityHelper;
+import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
-import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
-import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,8 +71,20 @@ public class InquiryService {
         return InquiryResponseVO.valueOf(inquiry);
     }
 
-    public Page<InquiryResponseVO> getInquiries(SearchInquiryDTO dto, Pageable pageable) {
-        return inquiryRepository.findAll(dto, pageable);
+    public Page<InquiryResponseVO> getInquiries(Long userId, RoleType roleType, SearchInquiryDTO dto) {
+        User user;
+
+        if (RoleType.isAdmin(roleType)) {
+            // 관리자
+            user = userRepository.findByUsername(dto.getUsername()).orElse(null);
+        } else {
+            // 유저
+            user = userRepository.findById(userId).orElseThrow(
+                () -> new RuntimeException("User Entity Not Found"));
+        }
+
+        return inquiryRepository.findAll(SearchInquiryListParam.valueOf(user, dto),
+            dto.getPageRequest());
     }
 
     @Transactional

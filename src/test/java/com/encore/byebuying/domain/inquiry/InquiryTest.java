@@ -1,15 +1,18 @@
 package com.encore.byebuying.domain.inquiry;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -20,8 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Slf4j
@@ -170,7 +171,9 @@ class InquiryTest {
     dto.setPageNumber(0);
     dto.setSize(10);
 
-    var inquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
+
+    var inquiries = inquiryRepository.findAll(
+        SearchInquiryListParam.valueOf(null, dto), dto.getPageRequest());
     assertThat(inquiries.getContent().size()).isEqualTo(8);
 
 
@@ -182,7 +185,8 @@ class InquiryTest {
 
     log.info("문의사항 유저별 불러오기 TEST");
     dto.setUsername("test");
-    var byUserInquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
+    var byUserInquiries = inquiryRepository.findAll(
+        SearchInquiryListParam.valueOf(user, dto), dto.getPageRequest());
     var byUserInquiriesContent = byUserInquiries.getContent();
     for (int i=0; i<5; i++) {
       assertThat(byUserInquiriesContent.get(i).getUsername()).isEqualTo(user.getUsername());

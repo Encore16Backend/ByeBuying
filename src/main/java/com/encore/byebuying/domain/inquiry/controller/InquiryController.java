@@ -1,20 +1,25 @@
 package com.encore.byebuying.domain.inquiry.controller;
 
 import com.encore.byebuying.config.auth.LoginUser;
-import com.encore.byebuying.domain.common.paging.PagingResponse;
-import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
+import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
-import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/inquiries")
@@ -48,10 +53,13 @@ public class InquiryController {
         return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
     }
 
-    // 문의사항 목록 불러오기
+    // 문의사항 목록 불러오기 - 유저 or 관리자
     @GetMapping
-    public ResponseEntity<?> getInquiries(SearchInquiryDTO dto) {
-        Page<InquiryResponseVO> inquiries = inquiryService.getInquiries(dto, dto.getPageRequest());
+    public ResponseEntity<?> getInquiries(
+        @AuthenticationPrincipal LoginUser loginUser,
+        SearchInquiryDTO dto) {
+        Page<InquiryResponseVO> inquiries = inquiryService
+            .getInquiries(loginUser.getUserId(), loginUser.getRoleType(), dto);
         return new ResponseEntity<>(inquiries, HttpStatus.OK);
     }
 
