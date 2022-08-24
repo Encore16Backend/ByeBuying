@@ -4,12 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.encore.byebuying.config.auth.LoginUser;
-import com.encore.byebuying.domain.code.RoleType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,14 +16,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.http.HttpStatus.FORBIDDEN; // 403 Error
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE; // APPLICATION_JSON_VALUE = "application/json"
 
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
@@ -51,7 +46,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                     String username = decodedJWT.getSubject();
 //                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                    String roles = decodedJWT.getClaim("role").as(String.class);
+                    String roles = decodedJWT.getClaim("roles").as(String.class);
 
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -60,13 +55,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 //                    });
                     authorities.add(new SimpleGrantedAuthority(roles));
                     UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(new LoginUser(username, RoleType.of(roles)), null, authorities);
+                            new UsernamePasswordAuthenticationToken(username, null, authorities);
                     // 유효성 검증 성공 시 SecurityContextHolder에 해당 Authentication을 잡아준다.
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                     filterChain.doFilter(request, response);
                 }catch (Exception exception) {
-                    exception.printStackTrace();
                     log.error("Error logging in: {}", exception.getMessage());
                     response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
