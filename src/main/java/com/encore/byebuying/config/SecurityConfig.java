@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/main/**",
                         "/api/role/save", "/api/login/**", "/api/checkUser",
-                        "/api/user/save", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
+                        "/api/users", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
                         "/api/role/save", "/login/**", "/oauth2/**", "/api/checkUser",
                         "/api/user/save", "/api/token/refresh/**", "/api/checkMail",
                         "/review/byItemid","/review/avg",
