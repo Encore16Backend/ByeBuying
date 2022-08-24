@@ -2,7 +2,6 @@ package com.encore.byebuying.domain.order.controller;
 
 import com.encore.byebuying.config.SecurityConfig;
 import com.encore.byebuying.config.auth.LoginUser;
-import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.config.auth.PrincipalUserDetailsService;
 import com.encore.byebuying.config.oauth.PrincipalOAuth2UserService;
 import com.encore.byebuying.config.properties.AppProperties;
@@ -54,7 +53,7 @@ class OrderControllerTest {
     @MockBean
     private AppProperties appProperties;
     private MockMvc mockMvc;
-    private PrincipalDetails loginUser;
+    private LoginUser loginUser;
     private final TestPrincipalDetailsService testPrincipalDetailsService = new TestPrincipalDetailsService();
 
     @BeforeEach
@@ -63,7 +62,7 @@ class OrderControllerTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-        loginUser = (PrincipalDetails) testPrincipalDetailsService.loadUserByUsername(TestPrincipalDetailsService.USERNAME);
+        loginUser = (LoginUser) testPrincipalDetailsService.loadUserByUsername(TestPrincipalDetailsService.USERNAME);
     }
 
     @Test
@@ -86,7 +85,7 @@ class OrderControllerTest {
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
             if (USERNAME.equals(username)) {
-                return PrincipalDetails.create(getUser());
+                return new LoginUser(getUser());
             }
             return null;
         }
