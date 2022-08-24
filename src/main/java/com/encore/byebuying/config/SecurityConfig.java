@@ -117,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .successHandler(new OAuth2AuthenticationSuccessHandler(tokenProvider, appProperties, cookieAuthorizationRequestRepository()))
             .failureHandler(new OAuth2AuthenticationFailHandler(cookieAuthorizationRequestRepository()));
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenProvider));
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(appProperties), UsernamePasswordAuthenticationFilter.class);
     }
 
     // Swagger
