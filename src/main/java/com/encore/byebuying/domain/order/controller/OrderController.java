@@ -34,8 +34,8 @@ public class OrderController {
 
 	@GetMapping("/test")
 	public String securityTest(@AuthenticationPrincipal LoginUser user) {
-		log.info("test :: LoginUser :: {}", user);
-		return user.toString();
+		log.info("test :: LoginUser :: {}", user.getRoleType());
+		return user.getUsername();
 	}
 
 	@GetMapping("")
