@@ -63,7 +63,10 @@ public class BasketService {
 
     public void deleteBasketItemList(DeleteBasketItemListDTO dto) {
         List<Long> basketItemIds = dto.getBasketItemIds();
-        basketItemIds.forEach(basketId -> basketItemRepository.deleteById(basketId));
+        User findUser = userRepository.findById(dto.getUserId())
+                .orElseThrow(RuntimeException::new);
+        Long userBasketId = findUser.getBasket().getId();
+        basketItemIds.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId,userBasketId));
     }
 
 }

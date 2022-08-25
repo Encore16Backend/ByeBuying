@@ -145,7 +145,7 @@ public class BasketTest {
         List<Long> ids = new ArrayList<>();
         ids.add(basketItem.getId());
 
-        ids.forEach(basketId -> basketItemRepository.deleteById(basketId));
+        ids.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId, user.getBasket().getId()));
         entityManager.flush();
         entityManager.clear();
 
