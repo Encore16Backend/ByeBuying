@@ -1,45 +1,33 @@
 package com.encore.byebuying.domain.user.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.encore.byebuying.config.properties.AppProperties;
+import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.domain.common.paging.PagingRequest;
+import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
+import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.UserRefreshToken;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.UserVO;
-import com.encore.byebuying.domain.user.repository.LocationRepository;
-import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
-import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.encore.byebuying.domain.user.Location;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/users")
@@ -59,8 +47,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable(value = "id") long userId) {
-        UserVO user = userService.getUser(userId);
+    public ResponseEntity<?> getUser(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "id") long userId) {
+        UserVO user = userService.getUser(loginUser.getUserId(), userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -82,22 +71,24 @@ public class UserController {
 //        return ResponseEntity.badRequest().body(null);
 //    }
 
-    @GetMapping("/{id}/location") // 회원 배송지
-    public ResponseEntity<?> getUserLocation(@PathVariable(value = "id") long userId) {
-        Page<Location> locations = userService.getUserLocation(userId);
+    @GetMapping("/{id}/locations") // 회원 배송지
+    public ResponseEntity<?> getUserLocation(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "id") long userId) {
+        Page<Location> locations = userService.getUserLocation(loginUser.getUserId(), userId);
         return new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
     @GetMapping("/check-duplicated-username") // 아이디 중복 검사 확인
     public ResponseEntity<?> checkDuplicatedUsername(
-            @RequestParam(defaultValue = "", value = "username") String username) {
+            @RequestParam(value = "username") String username) {
         boolean isDuplicated = userService.checkDuplicatedUsername(username);
         return new ResponseEntity<>(isDuplicated, HttpStatus.OK);
     }
 
     @DeleteMapping ("/{id}")// 토큰 필요, 삭제 전 /api/user/getUser 에서 토큰 및 비밀번호 확인
-    public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") long userId) {
-        userService.deleteUser(userId);
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "id") long userId) {
+        userService.deleteUser(loginUser.getUserId(), userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
