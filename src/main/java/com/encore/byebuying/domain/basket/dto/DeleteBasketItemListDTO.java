@@ -11,6 +11,4 @@ public class DeleteBasketItemListDTO {
     @NotNull
     @Size(min = 1)
     private List<Long> basketItemIds;
-    @NotNull
-    private Long userId;
 }
