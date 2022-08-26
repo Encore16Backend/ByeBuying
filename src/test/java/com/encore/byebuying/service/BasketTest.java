@@ -166,7 +166,6 @@ public class BasketTest {
         saveBasketItemsToUser(user);
 
         SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
-        basketItemSearchDTO.setUserId(user.getId());
         basketItemSearchDTO.setItemName("1");
         basketItemSearchDTO.setStartDate(LocalDateTime.now());
 
@@ -191,7 +190,6 @@ public class BasketTest {
         saveBasketItemsToUser(user);
 
         SearchBasketItemListDTO basketItemSearchDTO = new SearchBasketItemListDTO();
-        basketItemSearchDTO.setUserId(user.getId());
         basketItemSearchDTO.setStartDate(LocalDateTime.of(2022,7,1,13,5));
         basketItemSearchDTO.setEndDate(LocalDateTime.now().minusDays(1L));
 
@@ -205,7 +203,6 @@ public class BasketTest {
 
         // 날짜 없이 검색
         SearchBasketItemListDTO basketItemSearchDTO2 = new SearchBasketItemListDTO();
-        basketItemSearchDTO2.setUserId(user.getId());
 
         SearchBasketItemListParam param2 = SearchBasketItemListParam.valueOf(basketItemSearchDTO,basket.getId());
         var basketItems2 = basketItemRepository.findAll(param2, basketItemSearchDTO2.getPageRequest());

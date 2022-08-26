@@ -9,8 +9,6 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class UpdateBasketItemDTO {
-    @NotNull
-    private Long userId;
     @NotBlank
     @Min(1)
     @Max(100)
