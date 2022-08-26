@@ -67,10 +67,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 //                    });
                     authorities.add(new SimpleGrantedAuthority(roles));
                     UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(new LoginUser(id, username, RoleType.of(roles)), null, authorities);
+                            new UsernamePasswordAuthenticationToken(new LoginUser(decodedJWT), null, authorities);
                     // 유효성 검증 성공 시 SecurityContextHolder에 해당 Authentication을 잡아준다.
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                     filterChain.doFilter(request, response);
                 }catch (Exception exception) {
                     exception.printStackTrace();
