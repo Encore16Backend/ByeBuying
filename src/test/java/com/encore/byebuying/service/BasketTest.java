@@ -123,7 +123,7 @@ public class BasketTest {
         user.getBasket().addBasketItem(basketItem);
 
         // 업데이트
-        BasketItem findBasketItem = basketItemRepository.findById(basketItem.getId()).orElseThrow(RuntimeException::new);
+        BasketItem findBasketItem = basketItemRepository.findByIdAndBasketId(basketItem.getId(), user.getBasket().getId());
         findBasketItem.setCount(1);
 
         User findUser = userRepository.getById(user.getId());

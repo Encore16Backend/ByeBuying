@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BasketItemRepository extends JpaRepository<BasketItem, Long>, BasketItemRepositoryCustom {
-    void deleteByIdAndBasketId(Long basketItemId, Long userBasketId);
+    void deleteByIdAndBasketId(Long basketItemId, Long basketId);
+    BasketItem findByIdAndBasketId(Long basketItemId, Long basketId);
 }

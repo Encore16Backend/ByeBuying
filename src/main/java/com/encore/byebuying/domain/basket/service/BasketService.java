@@ -28,13 +28,12 @@ import java.util.List;
 @Slf4j
 public class BasketService {
 
-    private final BasketRepository basketRepository;
     private final BasketItemRepository basketItemRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
-    public Page<BasketItemVO> getBasketItemList(SearchBasketItemListDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
+    public Page<BasketItemVO> getBasketItemList(SearchBasketItemListDTO dto, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
         Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
         Long basketId = basket.getId(); // basketId 널체크를 위해 basket과 분리
@@ -42,31 +41,33 @@ public class BasketService {
         return basketItemRepository.findAll(param, dto.getPageRequest());
     }
 
-    public void createBasketItem(CreateBasketItemDTO dto) {
-        User findUser = userRepository.findById(dto.getUserId())
+    public void createBasketItem(CreateBasketItemDTO dto, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
         Item findItem = itemRepository.findById(dto.getItemId())
                 .orElseThrow(RuntimeException::new);
         BasketItem basketItem = BasketItem.createBasketItem()
                 .item(findItem)
                 .count(dto.getCount())
-                .basket(findUser.getBasket()).build();
+                .basket(user.getBasket()).build();
         basketItemRepository.save(basketItem);
     }
 
-    public void updateBasketItemCount(UpdateBasketItemDTO dto, Long basketItemId) {
-        int count = dto.getCount();
-        BasketItem findBasketItem = basketItemRepository.findById(basketItemId)
+    public void updateBasketItemCount(UpdateBasketItemDTO dto, Long basketItemId, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
-        findBasketItem.setCount(count);
+        Long basketId = user.getBasket().getId();
+        int count = dto.getCount();
+        BasketItem basketItem = basketItemRepository.findByIdAndBasketId(basketItemId, basketId);
+        basketItem.setCount(count);
     }
 
-    public void deleteBasketItemList(DeleteBasketItemListDTO dto) {
+    public void deleteBasketItemList(DeleteBasketItemListDTO dto, Long userId) {
         List<Long> basketItemIds = dto.getBasketItemIds();
-        User findUser = userRepository.findById(dto.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
-        Long userBasketId = findUser.getBasket().getId();
-        basketItemIds.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId,userBasketId));
+        Long basketId = user.getBasket().getId();
+        basketItemIds.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId,basketId));
     }
 
 }
