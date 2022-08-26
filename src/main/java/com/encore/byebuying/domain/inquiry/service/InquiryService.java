@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.code.RoleType;
-import com.encore.byebuying.domain.common.service.UserAuthorityHelper;
+import com.encore.byebuying.domain.common.service.UserServiceHelper;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
-    private final UserAuthorityHelper userAuthorityHelper;
+    private final UserServiceHelper userServiceHelper;
 
     @Transactional
     public InquiryResponseVO updateInquiry(Long userId, UpdateInquiryDTO dto) {
@@ -43,7 +43,7 @@ public class InquiryService {
             }
 
             // 권한 체크 - 문의사항 작성자 또는 관리자만 수정 가능
-            userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
+            userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
 
             Inquiry.updateInquiry(inquiry, dto);
         } else {
@@ -74,7 +74,7 @@ public class InquiryService {
             () -> new RuntimeException("Inquiry Entity Not Found"));
 
         // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
+        userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
 
         return InquiryResponseVO.valueOf(inquiry);
     }
@@ -103,7 +103,7 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
         // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
+        userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
         inquiry.getUser().getInquiries().removeIf(item -> item == inquiry);
         inquiryRepository.delete(inquiry);
     }
