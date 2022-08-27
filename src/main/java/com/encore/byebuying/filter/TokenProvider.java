@@ -34,6 +34,7 @@ public class TokenProvider {
                 .withExpiresAt(new Date(System.currentTimeMillis() + appProperties.getAuth().getAccesstokenExpiration())) // 10분
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("role", role)
+                .withClaim("id", user.getId())
                 .sign(algorithm); // 토큰 서명
 
         String refresh_token = JWT.create()

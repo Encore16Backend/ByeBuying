@@ -1,26 +1,25 @@
 package com.encore.byebuying.domain.order.controller;
 
 import com.encore.byebuying.config.auth.LoginUser;
-import com.encore.byebuying.config.auth.PrincipalDetails;
+import com.encore.byebuying.domain.common.paging.PagingRequest;
+import com.encore.byebuying.domain.order.dto.OrderListVO;
 import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
@@ -32,33 +31,24 @@ import java.text.ParseException;
 public class OrderController {
 	private final OrderService orderService;
 
-	@GetMapping("/test")
-	public String securityTest(@AuthenticationPrincipal LoginUser user) {
-		log.info("test :: LoginUser :: {}", user.getRoleType());
-		return user.getUsername();
-	}
-
 	@GetMapping("")
-	public ResponseEntity<?> getPageOrders(
-			// TODO: 2022-08-14
-			/*  SearchOrderListDTO extends Page
-			//   - userId
-			//   - fromDateTime
-			//   - toDateTime
-			//   */
-			@RequestParam(defaultValue = "", value = "username") String username, // username => userId
-			@RequestParam(required = false, defaultValue = "", value = "start") String start, // 시작일자
-			@RequestParam(required = false, defaultValue = "", value = "end") String end, // 종료일자
-			@RequestParam(required = false, defaultValue = "1", value = "page") int page) throws ParseException {
-		Pageable pageable = PageRequest.of(page - 1, 5, Sort.by(Sort.Direction.ASC, "date"));
-		Page<OrderResponseDTO> orderResponseDTOPage;
-		if (start.equals("") || end.equals("")) {
-			orderResponseDTOPage = OrderResponseDTO.toPageOrderResponseDTO(orderService.findByUsername(pageable, username));
+	public ResponseEntity<?> getPageOrders(@AuthenticationPrincipal LoginUser loginUser, @ModelAttribute PagingRequest page) throws ParseException {
+		String username = loginUser.getUsername();
+
+		Pageable pageable = page.getPageRequest();
+		Page<OrderListVO> orderListVOPage;
+		if (page.isEmpty()) {
+			orderListVOPage = OrderListVO.toPageOrderListVO(
+					orderService.getPageOrders(pageable, username)
+			);
+
 		} else {
-			orderResponseDTOPage =
-					OrderResponseDTO.toPageOrderResponseDTO(orderService.findByUsernameAndBetweenDate(pageable, username, start, end));
+			orderListVOPage =
+					OrderListVO.toPageOrderListVO(
+							orderService.getPageOrdersAndBetweenDate(pageable, username, page.getStartDate(), page.getEndDate())
+					);
 		}
-		return new ResponseEntity<>(orderResponseDTOPage, HttpStatus.OK);
+		return new ResponseEntity<>(orderListVOPage, HttpStatus.OK);
 	}
 
 	@GetMapping("/{orderId}")

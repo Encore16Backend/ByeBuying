@@ -76,7 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/main/**",
                         "/api/role/save", "/api/login/**", "/api/checkUser",
-                        "/api/user/save", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
+                        "/api/users", "/api/token/refresh/**", "/api/checkMail","/api/user/update/admin",
                         "/api/role/save", "/login/**", "/oauth2/**", "/api/checkUser",
                         "/api/user/save", "/api/token/refresh/**", "/api/checkMail",
                         "/review/byItemid","/review/avg",
@@ -117,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .successHandler(new OAuth2AuthenticationSuccessHandler(tokenProvider, appProperties, cookieAuthorizationRequestRepository()))
             .failureHandler(new OAuth2AuthenticationFailHandler(cookieAuthorizationRequestRepository()));
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean(), tokenProvider));
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(appProperties), UsernamePasswordAuthenticationFilter.class);
     }
 
     // Swagger

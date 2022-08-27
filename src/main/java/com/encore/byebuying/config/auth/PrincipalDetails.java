@@ -19,6 +19,7 @@ import java.util.Map;
 @Getter @Setter @AllArgsConstructor @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User {
 
+    private final long id;
     private final String username;
     private final String password;
     private final ProviderType providerType;
@@ -68,6 +69,7 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     public static PrincipalDetails create(User user) { // 일반 회원 생성
         return new PrincipalDetails(
+                user.getId(),
                 user.getUsername(),
                 user.getPassword(),
                 user.getProvider(),
