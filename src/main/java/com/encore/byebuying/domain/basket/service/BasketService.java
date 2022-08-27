@@ -35,39 +35,54 @@ public class BasketService {
     public Page<BasketItemVO> getBasketItemList(SearchBasketItemListDTO dto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
+
         Basket basket = user.getBasket(); // 유저가 존재하면 바스켓은 존재
-        Long basketId = basket.getId(); // basketId 널체크를 위해 basket과 분리
-        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(dto, basketId);
+
+        SearchBasketItemListParam param = SearchBasketItemListParam.valueOf(dto, basket.getId());
+
         return basketItemRepository.findAll(param, dto.getPageRequest());
     }
 
-    public void createBasketItem(CreateBasketItemDTO dto, Long userId) {
+    @Transactional
+    public BasketItemVO createBasketItem(CreateBasketItemDTO dto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
+
         Item findItem = itemRepository.findById(dto.getItemId())
                 .orElseThrow(RuntimeException::new);
+
         BasketItem basketItem = BasketItem.createBasketItem()
                 .item(findItem)
                 .count(dto.getCount())
                 .basket(user.getBasket()).build();
         basketItemRepository.save(basketItem);
+
+        return BasketItemVO.valueOf(basketItem);
     }
 
+    @Transactional
     public void updateBasketItemCount(UpdateBasketItemDTO dto, Long basketItemId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
-        Long basketId = user.getBasket().getId();
-        int count = dto.getCount();
-        BasketItem basketItem = basketItemRepository.findByIdAndBasketId(basketItemId, basketId);
-        basketItem.setCount(count);
+
+        Basket basket = user.getBasket();
+
+        BasketItem basketItem = basketItemRepository
+                .findByIdAndBasketId(basketItemId, basket.getId());
+        basketItem.setCount(dto.getCount());
+
+        basketItemRepository.save(basketItem);
     }
 
+    @Transactional
     public void deleteBasketItemList(DeleteBasketItemListDTO dto, Long userId) {
         List<Long> basketItemIds = dto.getBasketItemIds();
         User user = userRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
-        Long basketId = user.getBasket().getId();
-        basketItemIds.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId,basketId));
+
+        Basket basket = user.getBasket();
+
+        basketItemIds.forEach(basketItemId -> basketItemRepository.deleteByIdAndBasketId(basketItemId,basket.getId()));
     }
 
 }
