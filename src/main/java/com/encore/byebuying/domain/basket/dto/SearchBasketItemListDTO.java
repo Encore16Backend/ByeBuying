@@ -10,7 +10,5 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SearchBasketItemListDTO extends PagingRequest {
-    @NotNull
-    private Long userId;
     private String itemName; // 없으면 전부다 검색
 }

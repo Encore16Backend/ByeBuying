@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SearchBasketItemListParam {
 
-    Long basketId;
-    private Long userId;
+    private Long basketId;
     // 없으면 전부다 검색
     private String itemName;
     private LocalDateTime startDate;
@@ -27,7 +26,6 @@ public class SearchBasketItemListParam {
         SearchBasketItemListParam param = new SearchBasketItemListParam();
         param.setBasketId(basketId);
         param.setItemName(dto.getItemName());
-        param.setUserId(dto.getUserId());
         param.setStartDate(dto.getStartDate());
         param.setStartDate(dto.getEndDate());
         return param;
