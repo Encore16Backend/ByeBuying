@@ -146,6 +146,7 @@ public class UserService {
                     .withExpiresAt(new Date(System.currentTimeMillis() + appProperties.getAuth().getAccesstokenExpiration())) // 10분
                     .withIssuer(request.getRequestURL().toString())
                     .withClaim("role", user.getRoleType().getCode())
+                    .withClaim("id", user.getId())
                     .sign(algorithm); // 토큰 서명
 
                 Map<String, String> tokens = new HashMap<>();
