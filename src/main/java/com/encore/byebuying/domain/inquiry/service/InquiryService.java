@@ -1,19 +1,20 @@
 package com.encore.byebuying.domain.inquiry.service;
 
 import com.encore.byebuying.domain.code.InquiryType;
-import com.encore.byebuying.domain.common.service.UserAuthorityHelper;
+import com.encore.byebuying.domain.code.RoleType;
+import com.encore.byebuying.domain.common.service.UserServiceHelper;
+import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.inquiry.controller.dto.AnswerInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
-import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
-import com.encore.byebuying.domain.inquiry.Inquiry;
-import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
+import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
-    private final UserAuthorityHelper userAuthorityHelper;
+    private final UserServiceHelper userServiceHelper;
 
     @Transactional
-    public InquiryResponseVO updateInquiry(UpdateInquiryDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
-            .orElseThrow(() -> new RuntimeException("User Entity Not Found"));
+    public InquiryResponseVO updateInquiry(Long userId, UpdateInquiryDTO dto) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
 
         Inquiry inquiry;
         if (dto.getInquiryId() != null) {
@@ -42,45 +43,67 @@ public class InquiryService {
             }
 
             // 권한 체크 - 문의사항 작성자 또는 관리자만 수정 가능
-            userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), user);
+            userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
 
-            inquiry.setTitle(dto.getTitle());
-            inquiry.setContent(dto.getContent());
+            Inquiry.updateInquiry(inquiry, dto);
         } else {
             // 추가 작업
-            inquiry = Inquiry.updateInquiry(dto, user);
-            inquiryRepository.save(inquiry);
+            inquiry = Inquiry.createInquiry(dto, user);
+        }
+        inquiryRepository.save(inquiry);
+
+        return InquiryResponseVO.valueOf(inquiry);
+    }
+
+    @Transactional
+    public InquiryResponseVO updateAnswerInquiry(long inquiryId, AnswerInquiryDTO dto) {
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+            .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
+
+        Inquiry.updateAnswerInquiry(inquiry, dto);
+        inquiryRepository.save(inquiry);
+
+        return InquiryResponseVO.valueOf(inquiry);
+    }
+
+    public InquiryResponseVO getInquiryDetail(Long userId, Long inquiryId) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
+
+        Inquiry inquiry = inquiryRepository.findById(inquiryId).orElseThrow(
+            () -> new RuntimeException("Inquiry Entity Not Found"));
+
+        // 권한 체크
+        userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
+
+        return InquiryResponseVO.valueOf(inquiry);
+    }
+
+    public Page<InquiryResponseVO> getInquiries(Long userId, RoleType roleType, SearchInquiryDTO dto) {
+        User user;
+
+        if (RoleType.isAdmin(roleType)) {
+            // 관리자
+            user = userRepository.findByUsername(dto.getUsername()).orElse(null);
+        } else {
+            // 유저
+            user = userRepository.findById(userId).orElseThrow(
+                () -> new RuntimeException("User Entity Not Found"));
         }
 
-        return InquiryResponseVO.valueOf(inquiry);
+        return inquiryRepository.findAll(SearchInquiryListParam.valueOf(user, dto),
+            dto.getPageRequest());
     }
 
     @Transactional
-    public InquiryResponseVO answerToInquiry(long inquiryId, AnswerInquiryDTO dto) {
-        Inquiry inquiry = inquiryRepository.findById(inquiryId)
-            .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
-        inquiry.setAnswer(dto.getAnswer());
-        inquiry.setChkAnswer(InquiryType.COMPLETE);
-        return InquiryResponseVO.valueOf(inquiry);
-    }
+    public void deleteInquiry(Long userId, Long inquiryId) {
+        User user = userRepository.findById(userId).orElseThrow(
+            () -> new RuntimeException("User Entity Not Found"));
 
-    public InquiryResponseVO getInquiryDetail(String username, Long inquiryId) {
-        Inquiry inquiry = inquiryRepository.getById(inquiryId);
-        // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
-        return InquiryResponseVO.valueOf(inquiry);
-    }
-
-    public Page<InquiryResponseVO> getInquiries(SearchInquiryDTO dto, Pageable pageable) {
-        return inquiryRepository.findAll(dto, pageable);
-    }
-
-    @Transactional
-    public void deleteInquiryById(String username, Long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
             .orElseThrow(() -> new RuntimeException("Inquiry entity not found"));
         // 권한 체크
-        userAuthorityHelper.checkAuthorityValidation(inquiry.getUser(), username);
+        userServiceHelper.checkAuthorityValidation(inquiry.getUser(), user);
         inquiry.getUser().getInquiries().removeIf(item -> item == inquiry);
         inquiryRepository.delete(inquiry);
     }

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class UserAuthorityHelper {
+public class UserServiceHelper {
 
   private final UserRepository userRepository;
 
@@ -23,14 +23,13 @@ public class UserAuthorityHelper {
     }
   }
 
-  public void checkAuthorityValidation(User entityUser, String requestUsername) {
-    User requestUser = userRepository.findByUsername(requestUsername)
-        .orElseThrow(() -> new RuntimeException("User entity not found"));
-
-    if (!(entityUser.equals(requestUser) ||
-        requestUser.getRoleType().equals(ADMIN) || requestUser.getRoleType().equals(SUPER_ADMIN))) {
-      throw new RuntimeException("Not Authority");
+  public User checkLoginUserRequestUserEquals(long loginUserId, long targetUserId) {
+    if (loginUserId != targetUserId) {
+      throw new RuntimeException("not authorized user");
     }
+
+    return userRepository.findById(loginUserId).orElseThrow(
+        () -> new RuntimeException("user not found"));
   }
 
 }

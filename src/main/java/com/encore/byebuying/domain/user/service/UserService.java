@@ -9,6 +9,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.config.properties.AppProperties;
+import com.encore.byebuying.domain.common.service.UserServiceHelper;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
@@ -42,6 +43,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
+    private final UserServiceHelper userServiceHelper;
     private final AppProperties appProperties;
 
 //    // 인증 부여 시 Spring Security 에서 해당 유저에 대한 정보를 찾을 수 있도록 해야함
@@ -82,9 +84,9 @@ public class UserService {
         return user.getUsername();
     }
 
-    public UserVO getUser(long userid) {
-        User user = userRepository.findById(userid).orElseThrow(() ->
-            new RuntimeException("user not found"));
+    public UserVO getUser(long loginUserId, long userId) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
         return UserVO.valueOf(user);
     }
 
@@ -93,8 +95,8 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<Location> getUserLocation(Long userId) {
-        User use = userRepository.findById(userId).orElseThrow(
+    public Page<Location> getUserLocation(long loginUserId, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
             () -> new RuntimeException("user not found"));
 
         // TODO: Querydsl로 사용해서 Paging 후 처리
@@ -108,13 +110,13 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(long userId) {
+    public void deleteUser(long loginUserId, long userId) {
 //        basketRepo.deleteAllByUsername(username);
 //        inquiryRepo.deleteAllByUsername(username);
 //        orderHistoryRepo.deleteAllByUsername(username);
 //        reviewRepository.deleteAllByUsername(username);
-        User user = userRepository.findById(userId).orElseThrow(
-            () -> new RuntimeException("user not found"));
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
         userRepository.delete(user);
     }
 
@@ -146,6 +148,7 @@ public class UserService {
                     .withExpiresAt(new Date(System.currentTimeMillis() + appProperties.getAuth().getAccesstokenExpiration())) // 10분
                     .withIssuer(request.getRequestURL().toString())
                     .withClaim("role", user.getRoleType().getCode())
+                    .withClaim("id", user.getId())
                     .sign(algorithm); // 토큰 서명
 
                 Map<String, String> tokens = new HashMap<>();

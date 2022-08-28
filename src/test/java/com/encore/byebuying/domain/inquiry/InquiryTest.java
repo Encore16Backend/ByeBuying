@@ -1,15 +1,18 @@
 package com.encore.byebuying.domain.inquiry;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.encore.byebuying.domain.code.InquiryType;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
+import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.persistence.EntityManager;
@@ -20,8 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Slf4j
@@ -65,7 +66,7 @@ class InquiryTest {
   }
 
   public UpdateInquiryDTO createInquiry() {
-    return new UpdateInquiryDTO(null, "testInquiry", "testestestest", user.getUsername());
+    return new UpdateInquiryDTO(null, "testInquiry", "testestestest");
   }
 
   @Test
@@ -75,7 +76,7 @@ class InquiryTest {
     log.info(">>> Req : {}", inquiryDTO);
 
     // 문의등록
-    Inquiry saveInquiry = Inquiry.updateInquiry(inquiryDTO, user);
+    Inquiry saveInquiry = Inquiry.createInquiry(inquiryDTO, user);
     inquiryRepository.save(saveInquiry);
     log.info(">>> save Inquiry : {}", saveInquiry);
     em.flush();
@@ -105,7 +106,7 @@ class InquiryTest {
   @Test
   void 문의사항_수정() {
     UpdateInquiryDTO inquiryDTO = createInquiry();
-    Inquiry saveInquiry = Inquiry.updateInquiry(inquiryDTO, user);
+    Inquiry saveInquiry = Inquiry.createInquiry(inquiryDTO, user);
     inquiryRepository.save(saveInquiry);
     em.flush();
     em.clear();
@@ -114,7 +115,7 @@ class InquiryTest {
 
     // 문의사항 수정
     UpdateInquiryDTO updateInquiryDTO =
-        new UpdateInquiryDTO(saveInquiry.getId(), "updateInquiry", "updateupdate", saveInquiry.getUser().getUsername());
+        new UpdateInquiryDTO(saveInquiry.getId(), "updateInquiry", "updateupdate");
     Inquiry updateInquiry = inquiryRepository.findById(saveInquiry.getId())
         .orElseThrow(() -> new RuntimeException("inquiry not found"));
     updateInquiry.setTitle(updateInquiryDTO.getTitle());
@@ -133,7 +134,7 @@ class InquiryTest {
   @Test
   void 문의사항_답변등록() {
     UpdateInquiryDTO inquiryDTO = createInquiry();
-    Inquiry saveInquiry = Inquiry.updateInquiry(inquiryDTO, user);
+    Inquiry saveInquiry = Inquiry.createInquiry(inquiryDTO, user);
     inquiryRepository.save(saveInquiry);
     em.flush();
     em.clear();
@@ -159,7 +160,7 @@ class InquiryTest {
       inquiryDTO = createInquiry();
       inquiryDTO.setTitle((i+1) + ". " + inquiryDTO.getTitle());
       inquiryDTO.setContent((i+1) + ". " +inquiryDTO.getContent());
-      Inquiry saveInquiry = Inquiry.updateInquiry(inquiryDTO, user);
+      Inquiry saveInquiry = Inquiry.createInquiry(inquiryDTO, user);
       inquiryRepository.save(saveInquiry);
     }
     em.flush();
@@ -170,7 +171,9 @@ class InquiryTest {
     dto.setPageNumber(0);
     dto.setSize(10);
 
-    var inquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
+
+    var inquiries = inquiryRepository.findAll(
+        SearchInquiryListParam.valueOf(null, dto), dto.getPageRequest());
     assertThat(inquiries.getContent().size()).isEqualTo(8);
 
 
@@ -182,7 +185,8 @@ class InquiryTest {
 
     log.info("문의사항 유저별 불러오기 TEST");
     dto.setUsername("test");
-    var byUserInquiries = inquiryRepository.findAll(dto, dto.getPageRequest());
+    var byUserInquiries = inquiryRepository.findAll(
+        SearchInquiryListParam.valueOf(user, dto), dto.getPageRequest());
     var byUserInquiriesContent = byUserInquiries.getContent();
     for (int i=0; i<5; i++) {
       assertThat(byUserInquiriesContent.get(i).getUsername()).isEqualTo(user.getUsername());
@@ -192,7 +196,7 @@ class InquiryTest {
   @Test
   void 문의사항_삭제() {
     UpdateInquiryDTO inquiryDTO = createInquiry();
-    Inquiry saveInquiry = Inquiry.updateInquiry(inquiryDTO, user);
+    Inquiry saveInquiry = Inquiry.createInquiry(inquiryDTO, user);
     inquiryRepository.save(saveInquiry);
     em.flush();
     em.clear();
