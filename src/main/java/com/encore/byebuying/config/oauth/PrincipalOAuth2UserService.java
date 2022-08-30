@@ -54,8 +54,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
             .username(oAuth2UserInfo.getUsername())
             .password("OAUTHLOGIN")
             .email(oAuth2UserInfo.getEmail())
-            .defaultLocationIdx(0)
-            .locations(new ArrayList<>()).build();
+            .build();
         return userRepository.save(
             User.initUser()
                 .dto(dto)

@@ -42,7 +42,6 @@ class OrderRepositoryTest {
         User user = User.builder()
                 .username("name")
                 .password("password")
-                .address(address)
                 .build();
         User saveUser = userRepository.save(user);
 

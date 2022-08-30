@@ -40,14 +40,8 @@ class InquiryTest {
 
   @BeforeEach
   public void setUp() {
-
-    Collection<Location> userLocations = new ArrayList<>();
-    userLocations.add(new Location(null, "testetesttest"));
-    CreateUserDTO createUserDTO = new CreateUserDTO("test", "test123", "test@test.com", 0, userLocations);
-
-    Collection<Location> adminLocations = new ArrayList<>();
-    adminLocations.add(new Location(null, "adminadminadmin"));
-    CreateUserDTO adminDTO = new CreateUserDTO("admin", "admin123", "admin@admin.com", 0, adminLocations);
+    CreateUserDTO createUserDTO = new CreateUserDTO("test", "test123", "test@test.com");
+    CreateUserDTO adminDTO = new CreateUserDTO("admin", "admin123", "admin@admin.com");
 
     // 일반 유저 회원가입
     user = userRepository.save(User.initUser()
