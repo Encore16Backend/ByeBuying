@@ -11,7 +11,9 @@ import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
+import org.h2.command.ddl.CreateUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +45,11 @@ public class BasketTest {
 
 
     public User givenUser() {
+        CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
         User user = userRepository.save(
-            User.builder()
-                .username("test")
-                .roleType(RoleType.USER)
+            User.initUser()
+                .dto(dto)
                 .provider(LOCAL)
-                .password("1111")
-                .email("test@naver.com")
-                .basket(Basket.createBasket())
                 .build());
         entityManager.flush();
         entityManager.clear();

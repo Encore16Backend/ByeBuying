@@ -9,6 +9,7 @@ import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.order.service.OrderService;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.filter.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.encore.byebuying.domain.code.ProviderType.LOCAL;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,12 +77,11 @@ class OrderControllerTest {
     public static class TestPrincipalDetailsService implements UserDetailsService {
         public static final String USERNAME = "test";
         private User getUser() {
-            return User.builder()
-                    .username(USERNAME)
-                    .password("password")
-                    .provider(ProviderType.LOCAL)
-                    .roleType(RoleType.USER)
-                    .build();
+            CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
+            return User.initUser()
+                .dto(dto)
+                .provider(LOCAL)
+                .build();
         }
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
