@@ -45,8 +45,7 @@ import static javax.persistence.GenerationType.*;
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"}),
-        @UniqueConstraint(columnNames = {"username", "password"}),
-        @UniqueConstraint(columnNames = {"username", "address"})
+        @UniqueConstraint(columnNames = {"username", "password"})
     },
     indexes = {@Index(columnList = "username"), @Index(columnList = "email")}
 )

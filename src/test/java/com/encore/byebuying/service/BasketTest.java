@@ -43,7 +43,15 @@ public class BasketTest {
 
 
     public User givenUser() {
-        User user = userRepository.save(User.builder().username("test").roleType(RoleType.USER).provider(LOCAL).address(new Address("d","t","t")).password("1111").email("test@naver.com").basket(Basket.createBasket()).build());
+        User user = userRepository.save(
+            User.builder()
+                .username("test")
+                .roleType(RoleType.USER)
+                .provider(LOCAL)
+                .password("1111")
+                .email("test@naver.com")
+                .basket(Basket.createBasket())
+                .build());
         entityManager.flush();
         entityManager.clear();
         return user;

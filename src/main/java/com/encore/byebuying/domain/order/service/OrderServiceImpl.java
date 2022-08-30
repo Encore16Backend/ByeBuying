@@ -1,14 +1,18 @@
 package com.encore.byebuying.domain.order.service;
 
+import com.encore.byebuying.config.Exception.ResourceNotFoundException;
+import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoDTO;
 import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
+import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.repository.OrderRepository;
+import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final UserRepository userRepository;
 	private final ItemRepository itemRepository;
+	private final LocationRepository locationRepository;
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -38,7 +43,11 @@ public class OrderServiceImpl implements OrderService {
 		List<Long> itemIdList = orderRequestDto.getItems().stream().map(OrderItemInfoDTO::getItemId).collect(Collectors.toList());
 
 		// 필요 엔티티 조회
-		User findUser = userRepository.findById(orderRequestDto.getUserId()).orElseThrow(() -> new NullPointerException());
+		User findUser = userRepository.findById(orderRequestDto.getUserId())
+				.orElseThrow(() -> new RuntimeException("user not found"));
+		Location location = locationRepository.findById(orderRequestDto.getLocationId())
+				.orElseThrow(() -> new RuntimeException("location not found"));
+
 
 
 		List<Item> items = itemRepository.findByIds(itemIdList);
@@ -54,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 				.collect(Collectors.toList());
 
 		// 생성 메서드 (연관관계 메서드 사용됨)
-		Order order = Order.createOrder(findUser, orderItems, findUser.getAddress());
+		Order order = Order.createOrder(findUser, orderItems, new Address(location));
 		orderRepository.save(order);
 
 		return new OrderResponseDTO(order);
