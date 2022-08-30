@@ -68,19 +68,13 @@ public class User extends BaseTimeEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Embedded
-    @Column(name = "address")
-    private Address address;
-
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = LAZY)
     private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = LAZY)
+    private List<Location> locations = new ArrayList<>(); // 배송지 목록
 
-    private int defaultLocationIdx; // 기본 배송지 주소 id
-    @OneToMany(cascade = CascadeType.ALL, fetch = LAZY)
-    private Collection<Location> locations = new ArrayList<>(); // 배송지 목록
-
-    @OneToOne(fetch = LAZY , cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = LAZY)
     @JoinColumn(name = "basket_id", referencedColumnName = "basket_id")
     private Basket basket;
 
@@ -125,10 +119,10 @@ public class User extends BaseTimeEntity {
         this.username = dto.getUsername();
         this.password = dto.getPassword();
         this.email = dto.getEmail();
-        this.defaultLocationIdx = 0;
-        this.locations = dto.getLocations();
         this.roleType = RoleType.USER;
         this.provider = provider;
+
+        this.locations = new ArrayList<>();
         this.inquiries = new ArrayList<>();
         this.orders = new ArrayList<>();
         this.reviews = new ArrayList<>();
@@ -141,7 +135,6 @@ public class User extends BaseTimeEntity {
 
     public void changeUser(User user) {
         this.email = user.getEmail();
-        this.defaultLocationIdx = user.getDefaultLocationIdx();
         this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
     }
 
