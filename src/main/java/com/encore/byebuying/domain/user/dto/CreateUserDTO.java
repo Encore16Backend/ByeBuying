@@ -20,7 +20,4 @@ public class CreateUserDTO {
     private String password;
     @NotBlank
     private String email;
-    private int defaultLocationIdx;
-    // todo: Validation 추가 필요
-    private Collection<Location> locations;
 }
