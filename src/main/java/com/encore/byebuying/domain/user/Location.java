@@ -9,9 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user_location_setting")
+@Table(name = "user_location_setting",
+  uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "default_location"})
+  },
+  indexes = {@Index(columnList = "user_id, default_location")}
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Location {
