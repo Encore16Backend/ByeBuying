@@ -7,6 +7,7 @@ import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.review.Review;
 import com.encore.byebuying.domain.review.repository.ReviewRepository;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.encore.byebuying.domain.code.ProviderType.LOCAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -91,11 +93,12 @@ class ReviewServiceImplTest {
 
 
     public User givenUser(String name){
-        User user = User.builder()
-                .username(name)
-                .password("1111")
-                .roleType(RoleType.USER)
-                .build();
+        CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
+        User user = userRepository.save(
+            User.initUser()
+                .dto(dto)
+                .provider(LOCAL)
+                .build());
         return userRepository.save(user);
     }
 

@@ -51,7 +51,6 @@ import static javax.persistence.GenerationType.*;
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Getter
 @ToString(exclude = {"inquiries", "orders"})
 public class User extends BaseTimeEntity {
@@ -67,7 +66,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Builder.Default
     @OneToMany(mappedBy = "user", fetch = LAZY)
     private List<Order> orders = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = LAZY)
@@ -87,11 +85,9 @@ public class User extends BaseTimeEntity {
     @Column(name = "provider_id")
     private String providerId;
 
-    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Inquiry> inquiries = new ArrayList<>();
 
-    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Review> reviews = new ArrayList<>();
 
