@@ -15,7 +15,7 @@ public enum RoleType {
     ;
 
     private final String code;
-    private final String displayName;
+    private final String description;
 
     public static RoleType of(String code) {
         return Arrays.stream(RoleType.values())
