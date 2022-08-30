@@ -1,5 +1,6 @@
 package com.encore.byebuying.domain.order.repository;
 
+import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
@@ -7,6 +8,7 @@ import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -39,10 +41,11 @@ class OrderRepositoryTest {
     public void 테스트() throws Exception {
         // given
         Address address = new Address("111", "test", "tests");
-        User user = User.builder()
-                .username("name")
-                .password("password")
-                .build();
+        CreateUserDTO createUserDTO = new CreateUserDTO("name", "password", "test@test.com");
+        User user = User.initUser()
+            .dto(createUserDTO)
+            .provider(ProviderType.LOCAL)
+            .build();
         User saveUser = userRepository.save(user);
 
         Item item = Item.createItem("test", 1000);
