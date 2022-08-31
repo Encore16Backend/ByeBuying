@@ -6,7 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class OrderItemResponseDTO {
+public class OrderItemResponseVO {
     // TODO: 2022-08-14 모든 response DTO -> VO 로 변경
     // Response 들은 다음과 같이 변경될거임
     // ListVO / DetailVO
@@ -16,7 +16,7 @@ public class OrderItemResponseDTO {
     private int orderPrice;
     private int count;
 
-    public OrderItemResponseDTO(OrderItem orderItem) {
+    public OrderItemResponseVO(OrderItem orderItem) {
         this.item = new ItemResponseDTO(orderItem.getItem());
         this.orderPrice = orderItem.getOrderPrice();
         this.count = orderItem.getCount();
