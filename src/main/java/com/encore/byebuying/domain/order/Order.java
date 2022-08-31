@@ -3,7 +3,7 @@ package com.encore.byebuying.domain.order;
 import com.encore.byebuying.domain.code.OrderType;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
+import com.encore.byebuying.domain.order.dto.OrderResponseVO;
 import com.encore.byebuying.domain.user.User;
 
 import lombok.AllArgsConstructor;
@@ -97,8 +97,8 @@ public class Order extends BaseTimeEntity {
 		orderItem.setOrder(this);
 		orderItems.add(orderItem);
 	}
-	public OrderResponseDTO toOrderResponseDTO() {
-		return new OrderResponseDTO(this);
+	public OrderResponseVO toOrderResponseDTO() {
+		return new OrderResponseVO(this);
 	}
 
 	// 참고(내용 좋음): https://velog.io/@park2348190/JPA-Entity%EC%9D%98-equals%EC%99%80-hashCode

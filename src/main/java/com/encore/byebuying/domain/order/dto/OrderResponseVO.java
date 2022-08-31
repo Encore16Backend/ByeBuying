@@ -11,30 +11,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class OrderResponseDTO {
+public class OrderResponseVO {
     /** 
      *  주문 아이템 목록
      *  배송지 주소
      *  주문일자
      *  주문상태
      */
-    private List<OrderItemResponseDTO> items;
+    private List<OrderItemResponseVO> items;
     private Address address;
     private LocalDateTime orderDate;
     private String orderState;
 
-    public OrderResponseDTO(Order order) {
-        this.items = orderItemInfoDTOList(order.getOrderItems());
+    public OrderResponseVO(Order order) {
+        this.items = orderItemInfoVOList(order.getOrderItems());
         this.address = order.getAddress();
         this.orderDate = order.getCreatedAt();
         this.orderState = order.getOrderType().getStatus();
     }
 
-    public static Page<OrderResponseDTO> toPageOrderResponseDTO(Page<Order> pageOrder) {
-        return pageOrder.map(OrderResponseDTO::new);
+    public static Page<OrderResponseVO> toPageOrderResponseVO(Page<Order> pageOrder) {
+        return pageOrder.map(OrderResponseVO::new);
     }
 
-    private List<OrderItemResponseDTO> orderItemInfoDTOList(List<OrderItem> orderItems) {
-        return orderItems.stream().map(OrderItemResponseDTO::new).collect(Collectors.toList());
+    private List<OrderItemResponseVO> orderItemInfoVOList(List<OrderItem> orderItems) {
+        return orderItems.stream().map(OrderItemResponseVO::new).collect(Collectors.toList());
     }
 }

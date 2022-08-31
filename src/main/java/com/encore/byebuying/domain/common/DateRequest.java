@@ -22,4 +22,8 @@ public class DateRequest {
     public LocalDateTime getStartDate() {
         return startDate;
     }
+
+    public boolean isDateEmpty() {
+        return startDate == null || endDate == null;
+    }
 }

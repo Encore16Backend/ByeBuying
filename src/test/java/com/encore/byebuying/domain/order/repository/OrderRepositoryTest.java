@@ -6,7 +6,7 @@ import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
-import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
+import com.encore.byebuying.domain.order.dto.OrderResponseVO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.domain.user.repository.user.UserRepository;
@@ -70,7 +70,7 @@ class OrderRepositoryTest {
         Order getOrder = orderRepository.getById(save.getId());
 
         // then
-        OrderResponseDTO orderResponseDTO = new OrderResponseDTO(getOrder);
-        log.info("orderResponseDTO => {}", orderResponseDTO);
+        OrderResponseVO orderResponseVO = new OrderResponseVO(getOrder);
+        log.info("orderResponseDTO => {}", orderResponseVO);
     }
 }
