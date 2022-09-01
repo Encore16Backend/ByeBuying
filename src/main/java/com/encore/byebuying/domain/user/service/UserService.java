@@ -129,6 +129,18 @@ public class UserService {
         User user = userServiceHelper
             .checkLoginUserRequestUserEquals(loginUserId, userId);
 
+        // 새로 생성하는 배송지를 기본 배송지로서 저장하려고 할 때
+        if (dto.getDefaultLocation()) {
+            // 기존 기존 배송지가 있는지 확인
+            Location defaultLocation = locationRepository.findByDefaultLocationAndUser(true, user)
+                .orElse(null);
+            // 기존 기본 배송지 해제
+            if (defaultLocation != null) {
+                defaultLocation.setDefaultLocation(false);
+                locationRepository.save(defaultLocation);
+            }
+        }
+
         Location location = Location.createLocation(dto, user);
         locationRepository.save(location);
 
