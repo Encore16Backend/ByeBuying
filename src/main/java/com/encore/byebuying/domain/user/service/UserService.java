@@ -107,12 +107,11 @@ public class UserService {
         return locationRepository.findAll(SearchLocationListParam.valueOf(user.getId()), pageable);
     }
 
-    public LocationVO getUserLocation(long loginUserId, GetLocationDTO dto) {
-        User user = userRepository.findById(loginUserId)
-            .orElseThrow(() -> new RuntimeException("user not found"));
+    public LocationVO getUserLocation(long loginUserId, long userId, GetLocationDTO dto) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
 
         Location location;
-
         if (dto.isDefaultLocation()) {
             location = locationRepository.findByDefaultLocationAndUser(dto.isDefaultLocation(), user)
                 .orElse(Location.createLocation());

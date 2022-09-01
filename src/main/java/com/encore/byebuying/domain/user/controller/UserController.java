@@ -94,7 +94,7 @@ public class UserController {
     @GetMapping("/{user-id}/locations/find-one")
     public ResponseEntity<?> getUserLocation(@AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "user-id") long userId, GetLocationDTO dto) {
-        LocationVO vo = userService.getUserLocation(userId, dto);
+        LocationVO vo = userService.getUserLocation(loginUser.getUserId(), userId, dto);
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
