@@ -99,11 +99,21 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<LocationVO> getUserLocation(long loginUserId, long userId, Pageable pageable) {
+    public Page<LocationVO> getUserLocationList(long loginUserId, long userId, Pageable pageable) {
         User user = userServiceHelper
             .checkLoginUserRequestUserEquals(loginUserId, userId);
 
         return locationRepository.findAll(SearchLocationListParam.valueOf(user.getId()), pageable);
+    }
+
+    public LocationVO getUserLocation(long loginUserId, long userId, long locationId) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
+
+        Location location = locationRepository.findByIdAndUser(locationId, user)
+            .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
+
+        return LocationVO.valueOf(location);
     }
 
     public boolean checkDuplicatedUsername(String username) {
