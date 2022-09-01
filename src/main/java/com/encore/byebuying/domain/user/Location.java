@@ -2,6 +2,7 @@ package com.encore.byebuying.domain.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "user_location_setting",
@@ -29,6 +31,7 @@ import lombok.NoArgsConstructor;
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 public class Location {
   @Id
   @GeneratedValue(strategy = IDENTITY)
@@ -76,4 +79,22 @@ public class Location {
   public static Location createLocation() {
     return new Location();
   }
+
+  public static Location createLocation(CreateLocationDTO dto, User user) {
+    Location location = new Location();
+
+    location.setName(dto.getName());
+    location.setZipcode(dto.getZipcode());
+    location.setAddress(dto.getAddress());
+    location.setDetailAddress(dto.getDetailAddress());
+    location.setDefaultLocation(dto.getDefaultLocation());
+    location.setRequestDeliveryType(dto.getRequestDeliveryType());
+    location.setUser(user);
+
+    user.getLocations().add(location);
+
+    return location;
+  }
+
+
 }

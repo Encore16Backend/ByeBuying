@@ -14,6 +14,7 @@ import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
+import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
@@ -119,6 +120,17 @@ public class UserService {
             location = locationRepository.findByIdAndUser(dto.getLocationId(), user)
                 .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
         }
+
+        return LocationVO.valueOf(location);
+    }
+
+    @Transactional
+    public LocationVO createUserLocation(long loginUserId, long userId, CreateLocationDTO dto) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
+
+        Location location = Location.createLocation(dto, user);
+        locationRepository.save(location);
 
         return LocationVO.valueOf(location);
     }
