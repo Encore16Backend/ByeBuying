@@ -3,12 +3,10 @@ package com.encore.byebuying.domain.user.controller;
 import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.domain.common.paging.PagingRequest;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
-import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
+import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
-import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.LocationVO;
 import com.encore.byebuying.domain.user.vo.UserVO;
@@ -20,10 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,9 +95,9 @@ public class UserController {
     }
 
     @PostMapping("/{user-id}/locations")
-    public ResponseEntity<?> createUserLocation(@AuthenticationPrincipal LoginUser loginUser,
-        @PathVariable(value = "user-id") long userId, CreateLocationDTO dto) {
-        LocationVO vo = userService.createUserLocation(loginUser.getUserId(), userId, dto);
+    public ResponseEntity<?> updateUserLocation(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "user-id") long userId, UpdateLocationDTO dto) {
+        LocationVO vo = userService.updateUserLocation(loginUser.getUserId(), userId, dto);
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 

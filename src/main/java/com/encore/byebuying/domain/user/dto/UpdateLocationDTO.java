@@ -10,7 +10,9 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateLocationDTO {
+public class UpdateLocationDTO {
+
+  private Long locationId;
 
   @Length(max = 255)
   private String name;

@@ -2,7 +2,7 @@ package com.encore.byebuying.domain.user;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
+import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -80,8 +78,9 @@ public class Location {
     return new Location();
   }
 
-  public static Location createLocation(CreateLocationDTO dto, User user) {
-    Location location = new Location();
+  private static Location dtoToEntity(Location location, UpdateLocationDTO dto) {
+    if (location == null)
+      location = new Location();
 
     location.setName(dto.getName());
     location.setZipcode(dto.getZipcode());
@@ -89,12 +88,19 @@ public class Location {
     location.setDetailAddress(dto.getDetailAddress());
     location.setDefaultLocation(dto.getDefaultLocation());
     location.setRequestDeliveryType(dto.getRequestDeliveryType());
-    location.setUser(user);
 
+    return location;
+  }
+
+  public static Location createLocation(UpdateLocationDTO dto, User user) {
+    Location location = Location.dtoToEntity(null, dto);
     user.getLocations().add(location);
 
     return location;
   }
 
+  public static Location updateLocation(Location location, UpdateLocationDTO dto) {
+    return Location.dtoToEntity(location, dto);
+  }
 
 }
