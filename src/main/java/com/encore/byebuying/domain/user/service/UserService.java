@@ -15,6 +15,7 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
 import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
@@ -106,12 +107,19 @@ public class UserService {
         return locationRepository.findAll(SearchLocationListParam.valueOf(user.getId()), pageable);
     }
 
-    public LocationVO getUserLocation(long loginUserId, long userId, long locationId) {
-        User user = userServiceHelper
-            .checkLoginUserRequestUserEquals(loginUserId, userId);
+    public LocationVO getUserLocation(long loginUserId, GetLocationDTO dto) {
+        User user = userRepository.findById(loginUserId)
+            .orElseThrow(() -> new RuntimeException("user not found"));
 
-        Location location = locationRepository.findByIdAndUser(locationId, user)
-            .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
+        Location location;
+
+        if (dto.isDefaultLocation()) {
+            location = locationRepository.findByDefaultLocationAndUser(dto.isDefaultLocation(), user)
+                .orElse(Location.createLocation());
+        } else {
+            location = locationRepository.findByIdAndUser(dto.getLocationId(), user)
+                .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
+        }
 
         return LocationVO.valueOf(location);
     }

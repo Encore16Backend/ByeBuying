@@ -9,4 +9,5 @@ import com.encore.byebuying.domain.user.Location;
 public interface LocationRepository extends JpaRepository<Location, Long>, LocationRepositoryCustom {
 
   Optional<Location> findByIdAndUser(long locationId, User user);
+  Optional<Location> findByDefaultLocationAndUser(boolean defaultLocation, User user);
 }

@@ -6,6 +6,7 @@ import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.LocationVO;
@@ -90,10 +91,10 @@ public class UserController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/{user-id}/locations/{location-id}")
+    @GetMapping("/{user-id}/locations/find-one")
     public ResponseEntity<?> getUserLocation(@AuthenticationPrincipal LoginUser loginUser,
-        @PathVariable(value = "user-id") long userId, @PathVariable(value = "location-id") long locationId) {
-        LocationVO vo = null;
+        @PathVariable(value = "user-id") long userId, GetLocationDTO dto) {
+        LocationVO vo = userService.getUserLocation(userId, dto);
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
