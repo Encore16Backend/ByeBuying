@@ -15,7 +15,10 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
+import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
+import com.encore.byebuying.domain.user.vo.LocationVO;
 import com.encore.byebuying.domain.user.vo.UserVO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +44,7 @@ import org.springframework.util.MimeTypeUtils;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private final UserServiceHelper userServiceHelper;
@@ -95,14 +99,11 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<Location> getUserLocation(long loginUserId, long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-            () -> new RuntimeException("user not found"));
+    public Page<LocationVO> getUserLocation(long loginUserId, long userId, Pageable pageable) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
 
-        // TODO: Querydsl로 사용해서 Paging 후 처리
-        // TODO: 이는 Address, Location에 대한 정의가 끝난 후 처리
-
-        return null;
+        return locationRepository.findAll(SearchLocationListParam.valueOf(user.getId()), pageable);
     }
 
     public boolean checkDuplicatedUsername(String username) {
