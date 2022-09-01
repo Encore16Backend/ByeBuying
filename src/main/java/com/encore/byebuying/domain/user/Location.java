@@ -9,9 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +21,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user_location_setting")
+@Table(name = "user_location_setting",
+  uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "default_location"})
+  },
+  indexes = {@Index(columnList = "user_id, default_location")}
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Location {
@@ -28,13 +35,13 @@ public class Location {
   private Long id;
   @Column(name = "location_name")
   private String name;
-  @Column(name = "zip_code", length = 191)
+  @Column(name = "zip_code", nullable = false, length = 191)
   private String zipcode;
-  @Column(name = "address", length = 1000)
+  @Column(name = "address", nullable = false,  length = 1000)
   private String address;
-  @Column(name = "detail_address", length = 1000)
+  @Column(name = "detail_address", nullable = false, length = 1000)
   private String detailAddress;
-  @Column(name = "default_location")
+  @Column(name = "default_location", nullable = false)
   private boolean defaultLocation;
   @Column(name = "request_delivery_type", length = 1000)
   private String requestDeliveryType;
