@@ -9,12 +9,9 @@ import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
-import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.domain.user.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
@@ -40,17 +37,17 @@ class InquiryTest {
 
   @BeforeEach
   public void setUp() {
-    CreateUserDTO createUserDTO = new CreateUserDTO("test", "test123", "test@test.com");
-    CreateUserDTO adminDTO = new CreateUserDTO("admin", "admin123", "admin@admin.com");
+    UpdateUserDTO updateUserDTO = new UpdateUserDTO(null,"test", "test123", "test@test.com");
+    UpdateUserDTO adminDTO = new UpdateUserDTO(null,"admin", "admin123", "admin@admin.com");
 
     // 일반 유저 회원가입
-    user = userRepository.save(User.initUser()
-        .dto(createUserDTO)
+    user = userRepository.save(User.updateUser()
+        .dto(updateUserDTO)
         .provider(ProviderType.LOCAL).build());
     log.info(">>> 일반 유저 회원가입 : {}", user);
 
     // 관리자 회원가입
-    admin = userRepository.save(User.initUser()
+    admin = userRepository.save(User.updateUser()
         .dto(adminDTO)
         .provider(ProviderType.LOCAL).build());
     admin.changeRoleTypeUser(RoleType.ADMIN);
