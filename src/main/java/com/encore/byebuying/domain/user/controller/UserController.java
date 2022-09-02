@@ -5,7 +5,7 @@ import com.encore.byebuying.domain.common.paging.PagingRequest;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.LocationVO;
@@ -39,10 +39,11 @@ public class UserController {
      * User
      */
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
-        String username = userService.saveUser(createUserDTO);
+    public ResponseEntity<?> createUser(@AuthenticationPrincipal LoginUser loginUser,
+        @Valid @RequestBody UpdateUserDTO updateUserDTO) {
+        UserVO vo = userService.saveUser(loginUser.getUserId(), updateUserDTO);
 //        webClientService.newUser(newUser.getUsername());
-        return new ResponseEntity<>(username, HttpStatus.OK);
+        return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

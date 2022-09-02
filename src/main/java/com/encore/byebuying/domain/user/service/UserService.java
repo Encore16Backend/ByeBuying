@@ -15,7 +15,7 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
 import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
@@ -40,6 +40,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -78,21 +79,35 @@ public class UserService {
      */
 
     @Transactional
-    public String saveUser(CreateUserDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername()).orElseGet(() ->
-                User.initUser().dto(dto).provider(ProviderType.LOCAL).build());
-
-        if (user.getPassword() != null || !user.getPassword().isEmpty()) { // 회원정보수정, 회원가입 공통
-            user.encodePassword(passwordEncoder.encode(user.getPassword()));
+    public UserVO saveUser(Long loginUserId, UpdateUserDTO dto) {
+        if (StringUtils.hasText(dto.getPassword())) { // 회원정보수정, 회원가입 공통
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-
-        if (user.getId() == null) { // 회원가입
-            log.info("Saving new user {} to the database", user.getUsername());
-            userRepository.save(user);
+        User user;
+        if (loginUserId == null) { // 회원가입
+            log.info("Saving new user {} to the database", dto.getUsername());
+            // 아이디 중복 체크
+            User duplicatedUser = userRepository.findByUsername(dto.getUsername())
+                .orElse(null);
+            if (duplicatedUser != null) {
+                throw new RuntimeException("username is duplicated");
+            }
         } else { // 회원정보수정
-            user.changeUser(user);
+            if (dto.getUserId() == null) {
+                throw new RuntimeException("user id required");
+            }
+
+            user = userServiceHelper
+                .checkLoginUserRequestUserEquals(loginUserId, dto.getUserId());
+            log.info("Update user : {}", user.getUsername());
         }
-        return user.getUsername();
+
+        user = User.updateUser()
+            .dto(dto)
+            .provider(ProviderType.LOCAL)
+            .build();
+        userRepository.save(user);
+        return UserVO.valueOf(user);
     }
 
     public UserVO getUser(long loginUserId, long userId) {
