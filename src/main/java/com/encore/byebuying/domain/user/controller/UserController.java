@@ -39,7 +39,7 @@ public class UserController {
      * User
      */
     @PostMapping
-    public ResponseEntity<?> saveUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO) {
         String username = userService.saveUser(createUserDTO);
 //        webClientService.newUser(newUser.getUsername());
         return new ResponseEntity<>(username, HttpStatus.OK);
@@ -101,6 +101,16 @@ public class UserController {
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{user-id}/locations/{location-id}")
+    public ResponseEntity<Void> deleteUserLocation(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "user-id") long userId, @PathVariable(value = "location-id") long locationId) {
+        userService.deleteUserLocation(loginUser.getUserId(), userId, locationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Token
+     */
     @GetMapping("/token/refresh")
     public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         userService.refreshToken(request, response);

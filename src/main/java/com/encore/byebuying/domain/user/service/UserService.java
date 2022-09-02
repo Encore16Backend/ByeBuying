@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,6 +73,10 @@ public class UserService {
 //        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 //    }
 
+    /**
+     * User Service
+     */
+
     @Transactional
     public String saveUser(CreateUserDTO dto) {
         User user = userRepository.findByUsername(dto.getUsername()).orElseGet(() ->
@@ -96,10 +101,30 @@ public class UserService {
         return UserVO.valueOf(user);
     }
 
+    // TODO: 2022/09/02 user Pagination -> QueryDsl
     public Page<User> getUsers(Pageable pageable) {
         log.info("Fetching all users");
         return userRepository.findAll(pageable);
     }
+
+    public boolean checkDuplicatedUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Transactional
+    public void deleteUser(long loginUserId, long userId) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
+
+        List<Location> locations = user.getLocations();
+        locations.forEach(location -> locationRepository.delete(location));
+
+        userRepository.delete(user);
+    }
+
+    /**
+     * Location Service
+     */
 
     public Page<LocationVO> getUserLocationList(long loginUserId, long userId, Pageable pageable) {
         User user = userServiceHelper
@@ -155,20 +180,20 @@ public class UserService {
         return LocationVO.valueOf(location);
     }
 
-    public boolean checkDuplicatedUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
     @Transactional
-    public void deleteUser(long loginUserId, long userId) {
-//        basketRepo.deleteAllByUsername(username);
-//        inquiryRepo.deleteAllByUsername(username);
-//        orderHistoryRepo.deleteAllByUsername(username);
-//        reviewRepository.deleteAllByUsername(username);
+    public void deleteUserLocation(long loginUserId, long userId, long locationId) {
         User user = userServiceHelper
             .checkLoginUserRequestUserEquals(loginUserId, userId);
-        userRepository.delete(user);
+
+        Location location = locationRepository.findByIdAndUser(locationId, user)
+            .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
+
+        locationRepository.delete(location);
     }
+
+    /**
+     * Token Service
+     */
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
