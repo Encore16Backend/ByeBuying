@@ -44,7 +44,7 @@ public class OrderService {
 
 	@Transactional
 	public OrderResponseVO order(OrderRequestVO orderRequestVO) {
-		List<Long> itemIdList = orderRequestVO.getItems().stream().map(OrderItemInfoVO::getItemId).collect(Collectors.toList());
+		List<Long> itemIdList = orderRequestVO.getItems().stream().map(OrderItemInfoVO::getOrderItemId).collect(Collectors.toList());
 
 		// 필요 엔티티 조회
 		User findUser = userRepository.findById(orderRequestVO.getUserId())
@@ -61,7 +61,7 @@ public class OrderService {
 		// OrderItem 생성
 		List<OrderItemInfoVO> infos = orderRequestVO.getItems();
 		List<OrderItem> orderItems = infos.stream()
-				.map(info -> OrderItem.createOrderItem(search.get(info.getItemId()), info.getCount(), info.getOrderPrice()))
+				.map(info -> OrderItem.createOrderItem(search.get(info.getOrderItemId()), info.getCount(), info.getOrderPrice()))
 				.collect(Collectors.toList());
 
 		// 생성 메서드 (연관관계 메서드 사용됨)
