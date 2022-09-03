@@ -22,7 +22,7 @@ public class OrderItemListVO {
     public OrderItemListVO(OrderItem orderItem) {
         this.orderItemId = orderItem.getId();
         this.itemInfo = new ItemResponseDTO(orderItem.getItem());
-        this.count = count;
-        this.orderPrice = orderPrice;
+        this.count = orderItem.getCount();
+        this.orderPrice = orderItem.getOrderPrice();
     }
 }
