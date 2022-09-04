@@ -5,6 +5,7 @@ import com.encore.byebuying.domain.common.paging.PagingRequest;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
@@ -98,7 +99,12 @@ public class UserController {
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
-
+    @PostMapping("/{user-id}/locations")
+    public ResponseEntity<?> createUserLocation(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "user-id") long userId, CreateLocationDTO dto) {
+        LocationVO vo = userService.createUserLocation(loginUser.getUserId(), userId, dto);
+        return new ResponseEntity<>(vo, HttpStatus.OK);
+    }
 
     @GetMapping("/token/refresh")
     public ResponseEntity<Void> refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {

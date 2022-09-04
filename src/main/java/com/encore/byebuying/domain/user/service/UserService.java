@@ -14,6 +14,7 @@ import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
+import com.encore.byebuying.domain.user.dto.CreateLocationDTO;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
@@ -119,6 +120,29 @@ public class UserService {
             location = locationRepository.findByIdAndUser(dto.getLocationId(), user)
                 .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
         }
+
+        return LocationVO.valueOf(location);
+    }
+
+    @Transactional
+    public LocationVO createUserLocation(long loginUserId, long userId, CreateLocationDTO dto) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
+
+        // 새로 생성하는 배송지를 기본 배송지로서 저장하려고 할 때
+        if (dto.getDefaultLocation()) {
+            // 기존 기존 배송지가 있는지 확인
+            Location defaultLocation = locationRepository.findByDefaultLocationAndUser(true, user)
+                .orElse(null);
+            // 기존 기본 배송지 해제
+            if (defaultLocation != null) {
+                defaultLocation.setDefaultLocation(false);
+                locationRepository.save(defaultLocation);
+            }
+        }
+
+        Location location = Location.createLocation(dto, user);
+        locationRepository.save(location);
 
         return LocationVO.valueOf(location);
     }
