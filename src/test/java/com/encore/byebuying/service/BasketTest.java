@@ -6,14 +6,11 @@ import com.encore.byebuying.domain.basket.dto.SearchBasketItemListDTO;
 import com.encore.byebuying.domain.basket.repository.BasketItemRepository;
 import com.encore.byebuying.domain.basket.service.vo.BasketItemVO;
 import com.encore.byebuying.domain.basket.service.vo.SearchBasketItemListParam;
-import com.encore.byebuying.domain.code.RoleType;
-import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
-import org.h2.command.ddl.CreateUser;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +42,9 @@ public class BasketTest {
 
 
     public User givenUser() {
-        CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
+        UpdateUserDTO dto = new UpdateUserDTO(null,"test", "1111","test@naver.com");
         User user = userRepository.save(
-            User.initUser()
+            User.updateUser()
                 .dto(dto)
                 .provider(LOCAL)
                 .build());

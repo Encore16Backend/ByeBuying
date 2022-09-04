@@ -1,4 +1,4 @@
-package com.encore.byebuying.domain.user.repository;
+package com.encore.byebuying.domain.user.repository.location;
 
 import com.encore.byebuying.domain.user.User;
 import java.util.Optional;

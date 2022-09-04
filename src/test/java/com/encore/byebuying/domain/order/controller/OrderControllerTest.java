@@ -5,11 +5,9 @@ import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.config.auth.PrincipalUserDetailsService;
 import com.encore.byebuying.config.oauth.PrincipalOAuth2UserService;
 import com.encore.byebuying.config.properties.AppProperties;
-import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.order.service.OrderService;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.filter.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,8 +75,8 @@ class OrderControllerTest {
     public static class TestPrincipalDetailsService implements UserDetailsService {
         public static final String USERNAME = "test";
         private User getUser() {
-            CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
-            return User.initUser()
+            UpdateUserDTO dto = new UpdateUserDTO(null,"test", "1111","test@naver.com");
+            return User.updateUser()
                 .dto(dto)
                 .provider(LOCAL)
                 .build();

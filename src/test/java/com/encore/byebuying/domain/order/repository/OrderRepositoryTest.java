@@ -8,8 +8,8 @@ import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +41,9 @@ class OrderRepositoryTest {
     public void 테스트() throws Exception {
         // given
         Address address = new Address("111", "test", "tests");
-        CreateUserDTO createUserDTO = new CreateUserDTO("name", "password", "test@test.com");
-        User user = User.initUser()
-            .dto(createUserDTO)
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO(null,"name", "password", "test@test.com");
+        User user = User.updateUser()
+            .dto(updateUserDTO)
             .provider(ProviderType.LOCAL)
             .build();
         User saveUser = userRepository.save(user);

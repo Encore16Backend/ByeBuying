@@ -1,4 +1,4 @@
-package com.encore.byebuying.domain.user.repository.param;
+package com.encore.byebuying.domain.user.repository.location.param;
 
 import lombok.Getter;
 import lombok.Setter;

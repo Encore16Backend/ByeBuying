@@ -1,9 +1,9 @@
-package com.encore.byebuying.domain.user.repository;
+package com.encore.byebuying.domain.user.repository.location;
 
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.QLocation;
 import com.encore.byebuying.domain.user.QUser;
-import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
+import com.encore.byebuying.domain.user.repository.location.param.SearchLocationListParam;
 import com.encore.byebuying.domain.user.vo.LocationVO;
 import com.encore.byebuying.domain.user.vo.QLocationVO;
 import com.querydsl.core.BooleanBuilder;

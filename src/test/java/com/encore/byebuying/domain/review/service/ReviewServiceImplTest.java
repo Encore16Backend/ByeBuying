@@ -1,25 +1,21 @@
 package com.encore.byebuying.domain.review.service;
 
-import com.encore.byebuying.domain.basket.Basket;
-import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.review.Review;
 import com.encore.byebuying.domain.review.repository.ReviewRepository;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.encore.byebuying.domain.code.ProviderType.LOCAL;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -93,9 +89,9 @@ class ReviewServiceImplTest {
 
 
     public User givenUser(String name){
-        CreateUserDTO dto = new CreateUserDTO("test", "1111","test@naver.com");
+        UpdateUserDTO dto = new UpdateUserDTO(null,"test", "1111","test@naver.com");
         User user = userRepository.save(
-            User.initUser()
+            User.updateUser()
                 .dto(dto)
                 .provider(LOCAL)
                 .build());

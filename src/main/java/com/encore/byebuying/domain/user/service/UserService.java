@@ -9,20 +9,23 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.encore.byebuying.config.properties.AppProperties;
+import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.common.service.UserServiceHelper;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
-import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
 import com.encore.byebuying.domain.user.dto.GetLocationDTO;
-import com.encore.byebuying.domain.user.repository.LocationRepository;
-import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
-import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
+import com.encore.byebuying.domain.user.dto.GetUserListDTO;
+import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
+import com.encore.byebuying.domain.user.repository.location.LocationRepository;
+import com.encore.byebuying.domain.user.repository.location.param.SearchLocationListParam;
+import com.encore.byebuying.domain.user.repository.user.UserRefreshTokenRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
+import com.encore.byebuying.domain.user.repository.user.param.SearchUserListParam;
 import com.encore.byebuying.domain.user.vo.LocationVO;
-import com.encore.byebuying.domain.user.vo.UserVO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.vo.UserDetailVO;
+import com.encore.byebuying.domain.user.vo.UserListVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Date;
@@ -35,11 +38,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -78,33 +81,46 @@ public class UserService {
      */
 
     @Transactional
-    public String saveUser(CreateUserDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername()).orElseGet(() ->
-                User.initUser().dto(dto).provider(ProviderType.LOCAL).build());
-
-        if (user.getPassword() != null || !user.getPassword().isEmpty()) { // 회원정보수정, 회원가입 공통
-            user.encodePassword(passwordEncoder.encode(user.getPassword()));
+    public UserDetailVO saveUser(Long loginUserId, UpdateUserDTO dto) {
+        if (StringUtils.hasText(dto.getPassword())) { // 회원정보수정, 회원가입 공통
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-
-        if (user.getId() == null) { // 회원가입
-            log.info("Saving new user {} to the database", user.getUsername());
-            userRepository.save(user);
+        User user;
+        if (loginUserId == null) { // 회원가입
+            log.info("Saving new user {} to the database", dto.getUsername());
+            // 아이디 중복 체크
+            User duplicatedUser = userRepository.findByUsername(dto.getUsername())
+                .orElse(null);
+            if (duplicatedUser != null) {
+                throw new RuntimeException("username is duplicated");
+            }
         } else { // 회원정보수정
-            user.changeUser(user);
+            if (dto.getUserId() == null) {
+                throw new RuntimeException("user id required");
+            }
+
+            user = userServiceHelper
+                .checkLoginUserRequestUserEquals(loginUserId, dto.getUserId());
+            log.info("Update user : {}", user.getUsername());
         }
-        return user.getUsername();
+
+        user = User.updateUser()
+            .dto(dto)
+            .provider(ProviderType.LOCAL)
+            .build();
+        userRepository.save(user);
+        return UserDetailVO.valueOf(user);
     }
 
-    public UserVO getUser(long loginUserId, long userId) {
+    public UserDetailVO getUser(long loginUserId, long userId) {
         User user = userServiceHelper
             .checkLoginUserRequestUserEquals(loginUserId, userId);
-        return UserVO.valueOf(user);
+        return UserDetailVO.valueOf(user);
     }
 
-    // TODO: 2022/09/02 user Pagination -> QueryDsl
-    public Page<User> getUsers(Pageable pageable) {
-        log.info("Fetching all users");
-        return userRepository.findAll(pageable);
+    public Page<UserListVO> getUserList(GetUserListDTO dto) {
+        return userRepository
+            .findAll(SearchUserListParam.valueOf(dto), dto.getPageRequest());
     }
 
     public boolean checkDuplicatedUsername(String username) {

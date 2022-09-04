@@ -1,6 +1,5 @@
 package com.encore.byebuying.domain.order.service;
 
-import com.encore.byebuying.config.Exception.ResourceNotFoundException;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoDTO;
@@ -12,8 +11,8 @@ import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.repository.OrderRepository;
-import com.encore.byebuying.domain.user.repository.LocationRepository;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.location.LocationRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

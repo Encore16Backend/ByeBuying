@@ -6,17 +6,14 @@ import com.encore.byebuying.domain.common.BaseTimeEntity;
 import com.encore.byebuying.domain.basket.Basket;
 import com.encore.byebuying.domain.inquiry.Inquiry;
 import com.encore.byebuying.domain.order.Order;
-import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.review.Review;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -89,7 +86,7 @@ public class User extends BaseTimeEntity {
     private List<Inquiry> inquiries = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -108,15 +105,7 @@ public class User extends BaseTimeEntity {
         return Objects.hash(id);
     }
 
-    // 일반
-    @Builder(builderClassName = "init", builderMethodName = "initUser")
-    private User(CreateUserDTO dto, ProviderType provider) {
-        this.username = dto.getUsername();
-        this.password = dto.getPassword();
-        this.email = dto.getEmail();
-        this.roleType = RoleType.USER;
-        this.provider = provider;
-
+    private void requiredEntity() {
         this.locations = new ArrayList<>();
         this.inquiries = new ArrayList<>();
         this.orders = new ArrayList<>();
@@ -124,13 +113,17 @@ public class User extends BaseTimeEntity {
         this.basket = Basket.createBasket();
     }
 
-    public void encodePassword(String password) {
-        this.password = password;
-    }
+    @Builder(builderClassName = "update", builderMethodName = "updateUser")
+    private User(UpdateUserDTO dto, ProviderType provider) {
+        this.username = dto.getUsername();
+        this.password = dto.getPassword();
+        this.email = dto.getEmail();
 
-    public void changeUser(User user) {
-        this.email = user.getEmail();
-        this.locations = user.getLocations(); // 일단 그냥 이렇게 둠
+        if (dto.getUserId() == null) { // 신규 유저
+            this.roleType = RoleType.USER;
+            this.provider = provider;
+            requiredEntity();
+        }
     }
 
     public void changeRoleTypeUser(RoleType roleType) {

@@ -4,13 +4,13 @@ import com.encore.byebuying.config.Exception.OAuth2AuthenticationProcessingExcep
 import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.user.dto.CreateUserDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
-import java.util.ArrayList;
+import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -50,13 +51,13 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createUser(OAuth2UserInfo oAuth2UserInfo, ProviderType providerType) {
-        CreateUserDTO dto = CreateUserDTO.builder()
+        UpdateUserDTO dto = UpdateUserDTO.builder()
             .username(oAuth2UserInfo.getUsername())
-            .password("OAUTHLOGIN")
+            .password(passwordEncoder.encode("OAUTHLOGIN"))
             .email(oAuth2UserInfo.getEmail())
             .build();
         return userRepository.save(
-            User.initUser()
+            User.updateUser()
                 .dto(dto)
                 .provider(providerType).build());
     }

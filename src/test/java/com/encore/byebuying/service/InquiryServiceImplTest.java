@@ -11,7 +11,7 @@
 //import com.encore.byebuying.domain.item.Item;
 //import com.encore.byebuying.domain.item.repository.ItemRepository;
 //import com.encore.byebuying.domain.user.User;
-//import com.encore.byebuying.domain.user.repository.UserRepository;
+//import com.encore.byebuying.domain.user.repository.user.UserRepository;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
 //import org.springframework.beans.factory.annotation.Autowired;

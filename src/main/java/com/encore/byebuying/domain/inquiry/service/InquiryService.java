@@ -11,7 +11,7 @@ import com.encore.byebuying.domain.inquiry.repository.InquiryRepository;
 import com.encore.byebuying.domain.inquiry.repository.param.SearchInquiryListParam;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
