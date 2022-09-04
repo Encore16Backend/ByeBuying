@@ -9,7 +9,7 @@ import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.order.dto.OrderResponseDTO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

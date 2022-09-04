@@ -1,7 +1,7 @@
 package com.encore.byebuying.config.auth;
 
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;

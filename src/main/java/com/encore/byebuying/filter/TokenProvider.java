@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.encore.byebuying.config.auth.PrincipalDetails;
 import com.encore.byebuying.config.properties.AppProperties;
 import com.encore.byebuying.domain.user.UserRefreshToken;
-import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

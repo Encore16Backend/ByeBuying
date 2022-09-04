@@ -7,7 +7,7 @@
 //import com.encore.byebuying.domain.user.User;
 //import com.encore.byebuying.domain.basket.repository.BasketRepository;
 //import com.encore.byebuying.domain.item.repository.ItemRepository;
-//import com.encore.byebuying.domain.user.repository.UserRepository;
+//import com.encore.byebuying.domain.user.repository.user.UserRepository;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

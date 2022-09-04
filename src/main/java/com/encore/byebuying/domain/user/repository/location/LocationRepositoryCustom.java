@@ -1,6 +1,6 @@
-package com.encore.byebuying.domain.user.repository;
+package com.encore.byebuying.domain.user.repository.location;
 
-import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
+import com.encore.byebuying.domain.user.repository.location.param.SearchLocationListParam;
 import com.encore.byebuying.domain.user.vo.LocationVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

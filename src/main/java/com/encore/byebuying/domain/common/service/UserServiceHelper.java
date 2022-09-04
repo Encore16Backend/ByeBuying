@@ -4,7 +4,7 @@ import static com.encore.byebuying.domain.code.RoleType.ADMIN;
 import static com.encore.byebuying.domain.code.RoleType.SUPER_ADMIN;
 
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
