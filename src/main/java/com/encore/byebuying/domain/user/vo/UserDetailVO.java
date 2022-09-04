@@ -1,7 +1,5 @@
 package com.encore.byebuying.domain.user.vo;
 
-import com.encore.byebuying.domain.code.ProviderType;
-import com.encore.byebuying.domain.code.RoleType;
 import com.encore.byebuying.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;

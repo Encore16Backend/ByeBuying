@@ -4,12 +4,14 @@ import com.encore.byebuying.config.auth.LoginUser;
 import com.encore.byebuying.domain.common.paging.PagingRequest;
 import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.encore.byebuying.domain.user.User;
+import com.encore.byebuying.domain.user.dto.GetLocationDTO;
+import com.encore.byebuying.domain.user.dto.GetUserListDTO;
 import com.encore.byebuying.domain.user.dto.UpdateLocationDTO;
 import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
-import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.LocationVO;
-import com.encore.byebuying.domain.user.vo.UserVO;
+import com.encore.byebuying.domain.user.vo.UserDetailVO;
+import com.encore.byebuying.domain.user.vo.UserListVO;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +43,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@AuthenticationPrincipal LoginUser loginUser,
         @Valid @RequestBody UpdateUserDTO updateUserDTO) {
-        UserVO vo = userService.saveUser(loginUser.getUserId(), updateUserDTO);
+        UserDetailVO vo = userService.saveUser(loginUser.getUserId(), updateUserDTO);
 //        webClientService.newUser(newUser.getUsername());
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
@@ -49,15 +51,15 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "id") long userId) {
-        UserVO user = userService.getUser(loginUser.getUserId(), userId);
+        UserDetailVO user = userService.getUser(loginUser.getUserId(), userId);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/sy/user") // 관리자 유저들 확인 todo: 관리자 UserDTO 나중에 수정, 유저 정보에 들어갈 것들 생각 필요함
-    public ResponseEntity<Page<User>> getUsers(
-            @Valid PagingRequest pagingRequest) {
-        Page<User> users = userService.getUsers(pagingRequest.getPageRequest());
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> getUserList(
+            @Valid GetUserListDTO dto) {
+        Page<UserListVO> result = userService.getUserList(dto);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // todo: 수정 or 삭제 시 비밀번호 확인할 것인지 확인 필요?
