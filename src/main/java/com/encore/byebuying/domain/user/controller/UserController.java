@@ -6,6 +6,7 @@ import com.encore.byebuying.domain.platfrom2server.service.WebClientService;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.service.UserService;
 import com.encore.byebuying.domain.user.vo.LocationVO;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,12 +83,19 @@ public class UserController {
      * Location
      */
 
-    @GetMapping("/{id}/locations") // 회원 배송지
-    public ResponseEntity<?> getUserLocation(@AuthenticationPrincipal LoginUser loginUser,
-        @PathVariable(value = "id") long userId, @Valid PagingRequest pagingRequest) {
+    @GetMapping("/{user-id}/locations") // 회원 배송지
+    public ResponseEntity<?> getUserLocationList(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "user-id") long userId, @Valid PagingRequest pagingRequest) {
         Page<LocationVO> result = userService
-            .getUserLocation(loginUser.getUserId(), userId, pagingRequest.getPageRequest());
+            .getUserLocationList(loginUser.getUserId(), userId, pagingRequest.getPageRequest());
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/{user-id}/locations/find-one")
+    public ResponseEntity<?> getUserLocation(@AuthenticationPrincipal LoginUser loginUser,
+        @PathVariable(value = "user-id") long userId, GetLocationDTO dto) {
+        LocationVO vo = userService.getUserLocation(loginUser.getUserId(), userId, dto);
+        return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
 

@@ -15,6 +15,7 @@ import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.code.ProviderType;
 import com.encore.byebuying.domain.user.UserRefreshToken;
 import com.encore.byebuying.domain.user.dto.CreateUserDTO;
+import com.encore.byebuying.domain.user.dto.GetLocationDTO;
 import com.encore.byebuying.domain.user.repository.LocationRepository;
 import com.encore.byebuying.domain.user.repository.UserRefreshTokenRepository;
 import com.encore.byebuying.domain.user.repository.param.SearchLocationListParam;
@@ -99,11 +100,27 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<LocationVO> getUserLocation(long loginUserId, long userId, Pageable pageable) {
+    public Page<LocationVO> getUserLocationList(long loginUserId, long userId, Pageable pageable) {
         User user = userServiceHelper
             .checkLoginUserRequestUserEquals(loginUserId, userId);
 
         return locationRepository.findAll(SearchLocationListParam.valueOf(user.getId()), pageable);
+    }
+
+    public LocationVO getUserLocation(long loginUserId, long userId, GetLocationDTO dto) {
+        User user = userServiceHelper
+            .checkLoginUserRequestUserEquals(loginUserId, userId);
+
+        Location location;
+        if (dto.isDefaultLocation()) {
+            location = locationRepository.findByDefaultLocationAndUser(dto.isDefaultLocation(), user)
+                .orElse(Location.createLocation());
+        } else {
+            location = locationRepository.findByIdAndUser(dto.getLocationId(), user)
+                .orElseThrow(() -> new RuntimeException("리소스가 없거나 권한이 없음"));
+        }
+
+        return LocationVO.valueOf(location);
     }
 
     public boolean checkDuplicatedUsername(String username) {

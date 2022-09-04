@@ -72,4 +72,8 @@ public class Location {
     this.address = address;
     this.detailAddress = detailAddress;
   }
+
+  public static Location createLocation() {
+    return new Location();
+  }
 }
