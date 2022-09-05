@@ -33,15 +33,16 @@ import java.net.URI;
 import java.util.*;
 
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/api/items")
 @RequiredArgsConstructor
 @Slf4j
+// TODO: 2022/09/05 Item 전체 수정 필요 
 public class ItemController {
     private final ItemService itemService;
     private final CategoryRepository categoryRepository;
     private final ItemImageRepository itemImageRepository;
 
-    @GetMapping("/items")
+    @GetMapping
     public ResponseEntity<?> getItems(
             @RequestParam(required = false, defaultValue = "", value = "category") String cateanme,
             @RequestParam(required = false, defaultValue = "", value = "itemname") String itemname,

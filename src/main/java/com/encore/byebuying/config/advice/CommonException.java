@@ -1,6 +1,6 @@
 package com.encore.byebuying.config.advice;
 
-import com.encore.byebuying.utils.ResponseCode;
+import com.encore.byebuying.utils.response.ResponseCode;
 import lombok.Getter;
 
 @Getter

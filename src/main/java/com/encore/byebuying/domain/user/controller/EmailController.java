@@ -1,6 +1,8 @@
 package com.encore.byebuying.domain.user.controller;
 
 import com.encore.byebuying.domain.user.repository.user.UserRepository;
+import com.encore.byebuying.utils.response.CommonResponse;
+import com.encore.byebuying.utils.response.CommonResponseCode;
 import java.util.Random;
 
 import org.springframework.mail.SimpleMailMessage;
@@ -11,19 +13,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/email")
 @RequiredArgsConstructor
 @Slf4j
 public class EmailController {
 	private final JavaMailSender javaMailSender;
 	private final UserRepository userRepository;
 	
-	@GetMapping("/checkMail")
-	public String SendMail(@RequestParam(value = "email") String email) throws Exception {
+	@GetMapping("/check-email")
+	public CommonResponse<String> SendMail(@RequestParam(value = "email") String email) throws Exception {
 		log.info("email : {}",email);
 		boolean flag = userRepository.existsByEmail(email);
 		if (flag) {
-			return "EXIST";
+			return new CommonResponse<>(CommonResponseCode.FAIL); // 이미 존재
 		}
 		try {
 			Random random = new Random();
@@ -41,11 +43,11 @@ public class EmailController {
 			message.setSubject("인증번호 입력을 위한 메일 전송");
 			message.setText("인증 번호 : " + key);
 			javaMailSender.send(message);
-			return key;
+			return new CommonResponse<>(key, CommonResponseCode.SUCCESS);
 			
 		} catch (Exception e) {
-			
-			return "FAIL";
+
+			return new CommonResponse<>(CommonResponseCode.FAIL);
 		}
 	}
 }

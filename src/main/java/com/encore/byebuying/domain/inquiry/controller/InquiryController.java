@@ -6,6 +6,8 @@ import com.encore.byebuying.domain.inquiry.controller.dto.SearchInquiryDTO;
 import com.encore.byebuying.domain.inquiry.controller.dto.UpdateInquiryDTO;
 import com.encore.byebuying.domain.inquiry.service.InquiryService;
 import com.encore.byebuying.domain.inquiry.service.vo.InquiryResponseVO;
+import com.encore.byebuying.utils.response.CommonResponse;
+import com.encore.byebuying.utils.response.CommonResponseCode;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,47 +30,47 @@ public class InquiryController {
 
     // 문의사항 등록 및 수정
     @PostMapping
-    public ResponseEntity<?> updateInquiry(@AuthenticationPrincipal LoginUser loginUser,
+    public CommonResponse<InquiryResponseVO> updateInquiry(@AuthenticationPrincipal LoginUser loginUser,
         @Valid @RequestBody UpdateInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService
+        InquiryResponseVO vo = inquiryService
             .updateInquiry(loginUser.getUserId(), dto);
-        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
+        return new CommonResponse<>(vo, CommonResponseCode.SUCCESS);
     }
 
     // 문의사항 답변 등록 - 관리자
     @PostMapping("/sy/{id}/answer")
-    public ResponseEntity<?> updateAnswerInquiry(@PathVariable(value = "id") long inquiryId,
+    public CommonResponse<InquiryResponseVO> updateAnswerInquiry(@PathVariable(value = "id") long inquiryId,
         @Valid @RequestBody AnswerInquiryDTO dto){
-        InquiryResponseVO inquiryResponseVO = inquiryService.updateAnswerInquiry(inquiryId, dto);
-        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
+        InquiryResponseVO vo = inquiryService.updateAnswerInquiry(inquiryId, dto);
+        return new CommonResponse<>(vo, CommonResponseCode.SUCCESS);
     }
 
     // 문의사항 상세 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getInquiryDetail(
+    public CommonResponse<InquiryResponseVO> getInquiryDetail(
         @AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "id") Long inquiryId){
-        InquiryResponseVO inquiryResponseVO = inquiryService.getInquiryDetail(loginUser.getUserId(), inquiryId);
-        return new ResponseEntity<>(inquiryResponseVO, HttpStatus.OK);
+        InquiryResponseVO vo = inquiryService.getInquiryDetail(loginUser.getUserId(), inquiryId);
+        return new CommonResponse<>(vo, CommonResponseCode.SUCCESS);
     }
 
     // 문의사항 목록 불러오기 - 유저 or 관리자
     @GetMapping
-    public ResponseEntity<?> getInquiries(
+    public CommonResponse<Page<InquiryResponseVO>> getInquiries(
         @AuthenticationPrincipal LoginUser loginUser,
         SearchInquiryDTO dto) {
-        Page<InquiryResponseVO> inquiries = inquiryService
+        Page<InquiryResponseVO> result = inquiryService
             .getInquiries(loginUser.getUserId(), loginUser.getRoleType(), dto);
-        return new ResponseEntity<>(inquiries, HttpStatus.OK);
+        return new CommonResponse<>(result, CommonResponseCode.SUCCESS);
     }
 
     // 문의사항 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteInquiry(
+    public CommonResponse<Void> deleteInquiry(
         @AuthenticationPrincipal LoginUser loginUser,
         @PathVariable(value = "id") Long inquiryId){
         inquiryService.deleteInquiry(loginUser.getUserId(), inquiryId);
-        return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        return new CommonResponse<>(CommonResponseCode.SUCCESS);
     }
 
     // 지금 필요없어서 주석 처리
