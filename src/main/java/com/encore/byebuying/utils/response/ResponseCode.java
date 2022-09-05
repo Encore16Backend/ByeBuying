@@ -1,4 +1,4 @@
-package com.encore.byebuying.utils;
+package com.encore.byebuying.utils.response;
 
 public interface ResponseCode {
 
