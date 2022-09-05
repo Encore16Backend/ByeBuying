@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ItemResponseDTO {
+    private Long itemId;
     private String name;
     private int price;
 

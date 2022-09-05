@@ -6,9 +6,11 @@ import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoVO;
+import com.encore.byebuying.domain.order.dto.OrderListVO;
 import com.encore.byebuying.domain.order.dto.OrderRequestVO;
 import com.encore.byebuying.domain.order.dto.OrderResponseVO;
 import com.encore.byebuying.domain.order.repository.OrderRepository;
+import com.encore.byebuying.domain.order.repository.OrderRepositoryImpl;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.repository.location.LocationRepository;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderService {
 	private final OrderRepository orderRepository;
+	private final OrderRepositoryImpl queryOrderRepository;
 	private final UserRepository userRepository;
 	private final ItemRepository itemRepository;
 	private final LocationRepository locationRepository;
@@ -83,15 +86,15 @@ public class OrderService {
 		return new OrderResponseVO(order);
 	}
 
-	public Page<Order> getPageOrders(Pageable pageable, String username) {
+	public Page<OrderListVO> getPageOrders(Pageable pageable, String username) {
 		log.info("get OrderHistory by Username : {}",username);
-		return orderRepository.findByUsername(pageable, username);
+		return queryOrderRepository.findByUsername(pageable, username);
 	}
 
-	public Page<Order> getPageOrdersAndBetweenDate
+	public Page<OrderListVO> getPageOrdersAndBetweenDate
 			(Pageable pageable, String username, LocalDateTime startDate, LocalDateTime endDate) throws ParseException {
 		log.info("Get OrderHistory Date start: {}, end: {}", startDate, endDate);
-		return orderRepository.findByCreatedAtBetweenAndUser(pageable, startDate, endDate, username);
+		return queryOrderRepository.findByCreatedAtBetweenAndUser(pageable, startDate, endDate, username);
 	}
 
 	@Transactional
