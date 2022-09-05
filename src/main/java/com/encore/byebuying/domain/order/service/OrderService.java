@@ -2,17 +2,17 @@ package com.encore.byebuying.domain.order.service;
 
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.item.Item;
+import com.encore.byebuying.domain.item.repository.ItemRepository;
+import com.encore.byebuying.domain.order.Order;
+import com.encore.byebuying.domain.order.OrderItem;
 import com.encore.byebuying.domain.order.dto.OrderItemInfoVO;
 import com.encore.byebuying.domain.order.dto.OrderRequestVO;
 import com.encore.byebuying.domain.order.dto.OrderResponseVO;
+import com.encore.byebuying.domain.order.repository.OrderRepository;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
-import com.encore.byebuying.domain.order.Order;
-import com.encore.byebuying.domain.order.OrderItem;
-import com.encore.byebuying.domain.item.repository.ItemRepository;
-import com.encore.byebuying.domain.order.repository.OrderRepository;
-import com.encore.byebuying.domain.user.repository.LocationRepository;
-import com.encore.byebuying.domain.user.repository.UserRepository;
+import com.encore.byebuying.domain.user.repository.location.LocationRepository;
+import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
