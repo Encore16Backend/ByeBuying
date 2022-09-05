@@ -211,6 +211,7 @@ public class UserService {
      * Token Service
      */
 
+    // TODO: 2022/09/05 RefreshToken 서비스 수정 및 API 요청으로 Refresh 할 것인가에 대한 고민 필요
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

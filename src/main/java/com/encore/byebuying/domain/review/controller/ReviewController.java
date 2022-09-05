@@ -25,7 +25,7 @@ import com.encore.byebuying.domain.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/api/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 	private final ReviewService reviewService;
