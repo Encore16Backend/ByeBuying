@@ -1,12 +1,8 @@
 package com.encore.byebuying.domain.order.repository;
 
-import com.encore.byebuying.domain.item.QItem;
 import com.encore.byebuying.domain.order.Order;
-import com.encore.byebuying.domain.order.QOrder;
-import com.encore.byebuying.domain.order.QOrderItem;
 import com.encore.byebuying.domain.order.dto.OrderItemListVO;
 import com.encore.byebuying.domain.order.dto.OrderListVO;
-import com.encore.byebuying.domain.user.QUser;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -23,23 +19,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.encore.byebuying.domain.item.QItem.item;
+import static com.encore.byebuying.domain.order.QOrder.order;
+import static com.encore.byebuying.domain.order.QOrderItem.orderItem;
+import static com.encore.byebuying.domain.user.QUser.user;
+
 @Repository
 @Transactional(readOnly = true)
 public class OrderRepositoryImpl extends QuerydslRepositorySupport implements OrderRepositoryCustom {
 
-     final JPAQueryFactory query;
-    private final QOrder order;
-    private final QUser user;
-    private final QOrderItem orderItem;
-    private final QItem item;
+     private final JPAQueryFactory query;
 
     public OrderRepositoryImpl(EntityManager em) {
         super(Order.class);
         this.query = new JPAQueryFactory(em);
-        this.order = new QOrder("order");
-        this.user = new QUser("user");
-        this.orderItem = new QOrderItem("orderItem");
-        this.item = new QItem("item");
     }
 
     //	@Query("select o from Order o where o.user.username = :username")
@@ -53,6 +46,25 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
                         usernameEq(username)
                 );
 
+        return getOrderListVOS(pageable, jpaQuery);
+    }
+
+    // TODO: 2022-09-06 할거임
+    @Override
+    public Page<OrderListVO> findByCreatedAtBetweenAndUser(Pageable pageable, LocalDateTime start, LocalDateTime end, String username) {
+        JPAQuery<OrderListVO> jpaQuery = query
+                .select(Projections.constructor(OrderListVO.class, order))
+                .from(order)
+                .join(order.user, user)
+                .where(
+                        usernameEq(username),
+                        betweenDate(start, end)
+                );
+
+        return getOrderListVOS(pageable, jpaQuery);
+    }
+
+    private Page<OrderListVO> getOrderListVOS(Pageable pageable, JPAQuery<OrderListVO> jpaQuery) {
         List<OrderListVO> result = getQuerydsl().applyPagination(pageable, jpaQuery).fetch();
 
         Map<Long, List<OrderItemListVO>> orderItemMap = findOrderItemMap(toOrderIds(result));
@@ -80,12 +92,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
 
     }
 
-    // TODO: 2022-09-06 할거임
-    @Override
-    public Page<OrderListVO> findByCreatedAtBetweenAndUser(Pageable pageable, LocalDateTime start, LocalDateTime end, String username) {
-        return null;
-    }
-
     private BooleanExpression usernameEq(String usernameCond) {
         if (usernameCond == null) {
             return null;
@@ -93,9 +99,20 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
         return order.user.username.eq(usernameCond);
     }
 
-/*
-    private BooleanExpression betweenDate() {
 
-   }
- */
+    private BooleanExpression betweenDate(LocalDateTime start, LocalDateTime end) {
+        // goe >= , loe <=
+        if (start == null && end == null) {
+            return null;
+        }
+        if (start != null && end == null) {
+            return order.createdAt.goe(start);
+        }
+        if (start == null && end != null) {
+            return order.createdAt.loe(end);
+        }
+
+        return order.createdAt.goe(start).and(order.createdAt.loe(end));
+    }
+
 }

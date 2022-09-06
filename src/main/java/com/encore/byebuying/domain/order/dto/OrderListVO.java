@@ -22,6 +22,7 @@ public class OrderListVO {
      */
     private Long orderId;
     private Address address;
+
     private LocalDateTime orderDate;
     private String orderState;
     private List<OrderItemListVO> items;
