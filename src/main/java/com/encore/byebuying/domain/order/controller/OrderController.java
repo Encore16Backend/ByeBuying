@@ -36,14 +36,11 @@ public class OrderController {
 
 		Pageable pageable = page.getPageRequest();
 		Page<OrderListVO> orderListVOPage;
-//		if (page.isDateEmpty()) {
+		if (page.isDateEmpty()) {
 			orderListVOPage = orderService.getPageOrders(pageable, username);
-//		} else {
-//			orderListVOPage =
-//					OrderListVO.toPageOrderListVO(
-//							orderService.getPageOrdersAndBetweenDate(pageable, username, page.getStartDate(), page.getEndDate()),
-//							pageable);
-//		}
+		} else {
+			orderListVOPage = orderService.getPageOrdersAndBetweenDate(pageable, username, page.getStartDate(), page.getEndDate());
+		}
 		return new ResponseEntity<>(orderListVOPage, HttpStatus.OK);
 	}
 
