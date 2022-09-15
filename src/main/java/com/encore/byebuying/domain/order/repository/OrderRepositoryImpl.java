@@ -1,9 +1,10 @@
 package com.encore.byebuying.domain.order.repository;
 
 import com.encore.byebuying.domain.order.Order;
-import com.encore.byebuying.domain.order.dto.OrderItemListVO;
-import com.encore.byebuying.domain.order.dto.OrderListVO;
-import com.querydsl.core.types.Projections;
+import com.encore.byebuying.domain.order.vo.OrderItemListVO;
+import com.encore.byebuying.domain.order.vo.OrderListVO;
+import com.encore.byebuying.domain.order.vo.QOrderItemListVO;
+import com.encore.byebuying.domain.order.vo.QOrderListVO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -36,28 +37,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
     }
 
     //	@Query("select o from Order o where o.user.username = :username")
+//    @Override
+//    public Page<OrderListVO> findByUsername(Pageable pageable, Long userId) {
+//        JPAQuery<OrderListVO> jpaQuery = query
+//                .select(Projections.constructor(OrderListVO.class, order))
+//                .from(order)
+//                .join(order.user, user)
+//                .where(
+//                        userIdEq(userId)
+//                );
+//
+//        return getOrderListVOS(pageable, jpaQuery);
+//    }
+
     @Override
-    public Page<OrderListVO> findByUsername(Pageable pageable, String username) {
+    public Page<OrderListVO> findByCreatedAtBetweenAndUser(Pageable pageable, LocalDateTime start, LocalDateTime end, Long userId) {
         JPAQuery<OrderListVO> jpaQuery = query
-                .select(Projections.constructor(OrderListVO.class, order))
-                .from(order)
+                .select(
+                        getOrderList()
+                ).from(order)
                 .join(order.user, user)
                 .where(
-                        usernameEq(username)
-                );
-
-        return getOrderListVOS(pageable, jpaQuery);
-    }
-
-    // TODO: 2022-09-06 할거임
-    @Override
-    public Page<OrderListVO> findByCreatedAtBetweenAndUser(Pageable pageable, LocalDateTime start, LocalDateTime end, String username) {
-        JPAQuery<OrderListVO> jpaQuery = query
-                .select(Projections.constructor(OrderListVO.class, order))
-                .from(order)
-                .join(order.user, user)
-                .where(
-                        usernameEq(username),
+                        userIdEq(userId),
                         betweenDate(start, end)
                 );
 
@@ -75,10 +76,13 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
     }
 
     private Map<Long, List<OrderItemListVO>> findOrderItemMap(List<Long> ids) {
-        List<OrderItemListVO> result = query.select(Projections.constructor(OrderItemListVO.class, orderItem))
+        List<OrderItemListVO> result = query.select(
+                    getOrderItemList()
+                )
                 .from(orderItem)
                 .join(orderItem.item, item)
-                .where(orderItem.order.id.in(ids))
+                .join(orderItem.order, order)
+                .where(order.id.in(ids))
                 .fetch();
 
         return result.stream()
@@ -89,14 +93,13 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
         return result.stream()
                 .map(o -> o.getOrderId())
                 .collect(Collectors.toList());
-
     }
 
-    private BooleanExpression usernameEq(String usernameCond) {
-        if (usernameCond == null) {
+    private BooleanExpression userIdEq(Long userIdCond) {
+        if (userIdCond == null) {
             return null;
         }
-        return order.user.username.eq(usernameCond);
+        return order.user.id.eq(userIdCond);
     }
 
 
@@ -111,8 +114,25 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
         if (start == null && end != null) {
             return order.createdAt.loe(end);
         }
-
         return order.createdAt.goe(start).and(order.createdAt.loe(end));
     }
 
+    private QOrderListVO getOrderList() {
+        return new QOrderListVO(
+                order.id,
+                order.address,
+                order.createdAt,
+                order.orderType.stringValue()
+        );
+    }
+
+    private QOrderItemListVO getOrderItemList() {
+        return new QOrderItemListVO(
+                order.id,
+                item.name,
+                item.price,
+                orderItem.count,
+                orderItem.orderPrice
+        );
+    }
 }

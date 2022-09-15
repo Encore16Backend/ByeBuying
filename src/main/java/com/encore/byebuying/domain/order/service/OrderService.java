@@ -1,16 +1,17 @@
 package com.encore.byebuying.domain.order.service;
 
 import com.encore.byebuying.domain.common.Address;
+import com.encore.byebuying.domain.common.paging.PagingRequest;
 import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
-import com.encore.byebuying.domain.order.dto.OrderItemInfoVO;
-import com.encore.byebuying.domain.order.dto.OrderListVO;
-import com.encore.byebuying.domain.order.dto.OrderRequestVO;
-import com.encore.byebuying.domain.order.dto.OrderResponseVO;
+import com.encore.byebuying.domain.order.dto.OrderRequestDTO;
 import com.encore.byebuying.domain.order.repository.OrderRepository;
 import com.encore.byebuying.domain.order.repository.OrderRepositoryImpl;
+import com.encore.byebuying.domain.order.vo.OrderItemVO;
+import com.encore.byebuying.domain.order.vo.OrderListVO;
+import com.encore.byebuying.domain.order.vo.OrderResponseVO;
 import com.encore.byebuying.domain.user.Location;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.repository.location.LocationRepository;
@@ -18,11 +19,9 @@ import com.encore.byebuying.domain.user.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -45,13 +44,13 @@ public class OrderService {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Transactional
-	public OrderResponseVO order(OrderRequestVO orderRequestVO) {
-		List<Long> itemIdList = orderRequestVO.getItems().stream().map(OrderItemInfoVO::getOrderItemId).collect(Collectors.toList());
+	public OrderResponseVO order(OrderRequestDTO orderRequestDTO) {
+		List<Long> itemIdList = orderRequestDTO.getItems().stream().map(OrderItemVO::getOrderItemId).collect(Collectors.toList());
 
 		// 필요 엔티티 조회
-		User findUser = userRepository.findById(orderRequestVO.getUserId())
+		User findUser = userRepository.findById(orderRequestDTO.getUserId())
 				.orElseThrow(() -> new RuntimeException("user not found"));
-		Location location = locationRepository.findById(orderRequestVO.getLocationId())
+		Location location = locationRepository.findById(orderRequestDTO.getLocationId())
 				.orElseThrow(() -> new RuntimeException("location not found"));
 
 
@@ -61,7 +60,7 @@ public class OrderService {
 			search.put(item.getId(), item);
 		}
 		// OrderItem 생성
-		List<OrderItemInfoVO> infos = orderRequestVO.getItems();
+		List<OrderItemVO> infos = orderRequestDTO.getItems();
 		List<OrderItem> orderItems = infos.stream()
 				.map(info -> OrderItem.createOrderItem(search.get(info.getOrderItemId()), info.getCount(), info.getOrderPrice()))
 				.collect(Collectors.toList());
@@ -86,16 +85,24 @@ public class OrderService {
 		return new OrderResponseVO(order);
 	}
 
-	public Page<OrderListVO> getPageOrders(Pageable pageable, String username) {
-		log.info("get OrderHistory by Username : {}",username);
-		return queryOrderRepository.findByUsername(pageable, username);
+	public Page<OrderListVO> getPageOrders(PagingRequest page, Long userId) {
+		Page<OrderListVO> orderListVOS;
+
+		log.info("get OrderHistory by UserId : {}",userId);
+		LocalDateTime startDate = page.getStartDate();
+		LocalDateTime endDate = page.getEndDate();
+
+		log.info("Get OrderHistory Date start: {}, end: {}", startDate, endDate);
+		orderListVOS = queryOrderRepository.findByCreatedAtBetweenAndUser(page.getPageRequest(), startDate, endDate, userId);
+
+		return orderListVOS;
 	}
 
-	public Page<OrderListVO> getPageOrdersAndBetweenDate
-			(Pageable pageable, String username, LocalDateTime startDate, LocalDateTime endDate) throws ParseException {
-		log.info("Get OrderHistory Date start: {}, end: {}", startDate, endDate);
-		return queryOrderRepository.findByCreatedAtBetweenAndUser(pageable, startDate, endDate, username);
-	}
+//	public Page<OrderListVO> getPageOrdersAndBetweenDate
+//			(PagingRequest page, Long userId, LocalDateTime startDate, LocalDateTime endDate) throws ParseException {
+//		log.info("Get OrderHistory Date start: {}, end: {}", startDate, endDate);
+//		return queryOrderRepository.findByCreatedAtBetweenAndUser(page.getPageRequest(), startDate, endDate, userId);
+//	}
 
 	@Transactional
 	public void deleteOrder(Long id) {

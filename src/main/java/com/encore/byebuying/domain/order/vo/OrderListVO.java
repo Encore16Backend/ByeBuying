@@ -1,8 +1,9 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,11 +28,12 @@ public class OrderListVO {
     private String orderState;
     private List<OrderItemListVO> items;
 
-    public OrderListVO(Order order) {
-        this.orderId = order.getId();
-        this.address = order.getAddress();
-        this.orderDate = order.getCreatedAt();
-        this.orderState = order.getOrderType().getStatus();
+    @QueryProjection
+    public OrderListVO(Long orderId, Address address, LocalDateTime orderDate, String orderState) {
+        this.orderId = orderId;
+        this.address = address;
+        this.orderDate = orderDate;
+        this.orderState = orderState;
     }
 
     public static Page<OrderListVO> toPageOrderListVO(List<OrderListVO> orderListVOList, Pageable pageable) {

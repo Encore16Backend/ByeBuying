@@ -1,6 +1,6 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
-import com.encore.byebuying.domain.item.dto.ItemResponseDTO;
+import com.encore.byebuying.domain.item.vo.ItemResponseVO;
 import com.encore.byebuying.domain.order.OrderItem;
 import lombok.Data;
 
@@ -12,12 +12,12 @@ public class OrderItemResponseVO {
     // ListVO / DetailVO
     // Entity+VO
     // ListVO, DetailVO, DefaultVO
-    private ItemResponseDTO item;
+    private ItemResponseVO item;
     private int orderPrice;
     private int count;
 
     public OrderItemResponseVO(OrderItem orderItem) {
-        this.item = new ItemResponseDTO(orderItem.getItem());
+        this.item = new ItemResponseVO(orderItem.getItem());
         this.orderPrice = orderItem.getOrderPrice();
         this.count = orderItem.getCount();
     }

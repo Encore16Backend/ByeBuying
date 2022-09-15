@@ -1,4 +1,4 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.order.Order;

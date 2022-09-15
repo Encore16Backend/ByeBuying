@@ -1,6 +1,5 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
-import com.encore.byebuying.domain.order.OrderItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -20,11 +19,11 @@ public class OrderItemListVO {
     private int count;
     private int orderPrice;
 
-    public OrderItemListVO(OrderItem orderItem) {
-        this.orderId = orderItem.getOrder().getId();
-        this.itemName = orderItem.getItem().getName();
-        this.itemPrice = orderItem.getItem().getPrice();
-        this.count = orderItem.getCount();
-        this.orderPrice = orderItem.getOrderPrice();
+    public OrderItemListVO(Long orderId, String itemName, int itemPrice, int count, int orderPrice) {
+        this.orderId = orderId;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.count = count;
+        this.orderPrice = orderPrice;
     }
 }

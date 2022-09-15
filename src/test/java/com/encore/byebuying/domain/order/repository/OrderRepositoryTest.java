@@ -7,8 +7,8 @@ import com.encore.byebuying.domain.item.Item;
 import com.encore.byebuying.domain.item.repository.ItemRepository;
 import com.encore.byebuying.domain.order.Order;
 import com.encore.byebuying.domain.order.OrderItem;
-import com.encore.byebuying.domain.order.dto.OrderListVO;
-import com.encore.byebuying.domain.order.dto.OrderResponseVO;
+import com.encore.byebuying.domain.order.vo.OrderListVO;
+import com.encore.byebuying.domain.order.vo.OrderResponseVO;
 import com.encore.byebuying.domain.user.User;
 import com.encore.byebuying.domain.user.dto.UpdateUserDTO;
 import com.encore.byebuying.domain.user.repository.user.UserRepository;
@@ -78,8 +78,8 @@ class OrderRepositoryTest {
         Order getOrder = orderRepository.getById(save.getId());
 
         Pageable pageRequest = new PagingRequest().getPageRequest();
-
-        Page<OrderListVO> name = orderRepositoryCustom.findByUsername(pageRequest, "name");
+        log.info("===============");
+        Page<OrderListVO> name = orderRepositoryCustom.findByCreatedAtBetweenAndUser(pageRequest, null, null, 1L);
 
         // then
         OrderResponseVO orderResponseVO = new OrderResponseVO(getOrder);

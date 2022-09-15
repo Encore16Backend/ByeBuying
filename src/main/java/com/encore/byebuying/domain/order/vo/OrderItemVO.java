@@ -1,9 +1,9 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
 import lombok.Data;
 
 @Data
-public class OrderItemInfoVO {
+public class OrderItemVO {
     private Long orderItemId;
     private int count;
     private int orderPrice;
