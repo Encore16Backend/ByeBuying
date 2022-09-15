@@ -3,7 +3,7 @@ package com.encore.byebuying.domain.order;
 import com.encore.byebuying.domain.code.OrderType;
 import com.encore.byebuying.domain.common.Address;
 import com.encore.byebuying.domain.common.BaseTimeEntity;
-import com.encore.byebuying.domain.order.dto.OrderResponseVO;
+import com.encore.byebuying.domain.order.vo.OrderResponseVO;
 import com.encore.byebuying.domain.user.User;
 
 import lombok.AllArgsConstructor;
