@@ -64,27 +64,51 @@ class OrderRepositoryTest {
         itemRepository.save(item2);
         OrderItem orderItem = OrderItem.createOrderItem(item, 1, 800);
         OrderItem orderItem1 = OrderItem.createOrderItem(item2, 1, 100);
-        List<OrderItem> list = new ArrayList<>();
-        list.add(orderItem);
-        list.add(orderItem1);
+        List<OrderItem> list = List.of(orderItem, orderItem1);
+
+        OrderItem orderItem2 = OrderItem.createOrderItem(item, 1, 800);
+        OrderItem orderItem3 = OrderItem.createOrderItem(item2, 1, 100);
+        List<OrderItem> list2 = List.of(orderItem2, orderItem3);
+
+        OrderItem orderItem4 = OrderItem.createOrderItem(item, 1, 800);
+        OrderItem orderItem5 = OrderItem.createOrderItem(item2, 1, 100);
+        List<OrderItem> list3 = List.of(orderItem4, orderItem5);
 
 
         Order order = Order.createOrder(saveUser, list, address);
+        Order order2 = Order.createOrder(saveUser, list2, address);
+        Order order3 = Order.createOrder(saveUser, list3, address);
 
         // when
         Order save = orderRepository.save(order);
+        Order save2 = orderRepository.save(order2);
+        Order save3 = orderRepository.save(order3);
+        log.info("save2 :: {}", save2.getId());
+//        Order getOrder = orderRepository.getById(save.getId());
         em.flush();
         em.clear();
-        Order getOrder = orderRepository.getById(save.getId());
 
-        Pageable pageRequest = new PagingRequest().getPageRequest();
+        PagingRequest pagingRequest = new PagingRequest();
+        pagingRequest.setSize(2);
+        Pageable pageable = pagingRequest.getPageRequest();
+
+        PagingRequest pagingRequest2 = new PagingRequest();
+        pagingRequest.setSize(2);
+        pagingRequest.setPageNumber(1);
+        Pageable pageable2 = pagingRequest.getPageRequest();
+
         log.info("===============");
-        Page<OrderListVO> name = orderRepositoryCustom.findByCreatedAtBetweenAndUser(pageRequest, null, null, 1L);
+        Page<OrderListVO> pageOrderList1 =
+                orderRepositoryCustom.findByCreatedAtBetweenAndUser(pageable, null, null, saveUser.getId());
+        Page<OrderListVO> pageOrderList2 =
+                orderRepositoryCustom.findByCreatedAtBetweenAndUser(pageable2, null, null, saveUser.getId());
 
         // then
-        OrderResponseVO orderResponseVO = new OrderResponseVO(getOrder);
-        log.info("orderResponseDTO => {}", orderResponseVO);
-        log.info("OrderListVO => {}", name.get().collect(Collectors.toList()));
-
+//        OrderResponseVO orderResponseVO = new OrderResponseVO(getOrder);
+//        log.info("orderResponseDTO => {}", orderResponseVO);
+        log.info("OrderListVO 1page => {}", pageOrderList1.getContent());
+        log.info("OrderListVO 2page => {}", pageOrderList2.getContent());
+        // TODO: 2022-09-16 예상 total page : 2, 결과 total page : 1 확인해야징
+        log.info("Total pages => {}", pageOrderList1.getTotalPages());
     }
 }

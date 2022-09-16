@@ -8,7 +8,9 @@ import com.encore.byebuying.domain.order.vo.QOrderListVO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -23,8 +25,8 @@ import java.util.stream.Collectors;
 import static com.encore.byebuying.domain.item.QItem.item;
 import static com.encore.byebuying.domain.order.QOrder.order;
 import static com.encore.byebuying.domain.order.QOrderItem.orderItem;
-import static com.encore.byebuying.domain.user.QUser.user;
 
+@Slf4j
 @Repository
 @Transactional(readOnly = true)
 public class OrderRepositoryImpl extends QuerydslRepositorySupport implements OrderRepositoryCustom {
@@ -36,47 +38,34 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
         this.query = new JPAQueryFactory(em);
     }
 
-    //	@Query("select o from Order o where o.user.username = :username")
-//    @Override
-//    public Page<OrderListVO> findByUsername(Pageable pageable, Long userId) {
-//        JPAQuery<OrderListVO> jpaQuery = query
-//                .select(Projections.constructor(OrderListVO.class, order))
-//                .from(order)
-//                .join(order.user, user)
-//                .where(
-//                        userIdEq(userId)
-//                );
-//
-//        return getOrderListVOS(pageable, jpaQuery);
-//    }
-
     @Override
     public Page<OrderListVO> findByCreatedAtBetweenAndUser(Pageable pageable, LocalDateTime start, LocalDateTime end, Long userId) {
         JPAQuery<OrderListVO> jpaQuery = query
                 .select(
                         getOrderList()
                 ).from(order)
-                .join(order.user, user)
                 .where(
                         userIdEq(userId),
                         betweenDate(start, end)
                 );
+
 
         return getOrderListVOS(pageable, jpaQuery);
     }
 
     private Page<OrderListVO> getOrderListVOS(Pageable pageable, JPAQuery<OrderListVO> jpaQuery) {
         List<OrderListVO> result = getQuerydsl().applyPagination(pageable, jpaQuery).fetch();
-
+        log.info("확인 :: {}", result);
         Map<Long, List<OrderItemListVO>> orderItemMap = findOrderItemMap(toOrderIds(result));
 
         result.forEach(o -> o.setItems(orderItemMap.get(o.getOrderId())));
 
-        return OrderListVO.toPageOrderListVO(result, pageable);
+        return new PageImpl<>(result, pageable, result.size());
     }
 
     private Map<Long, List<OrderItemListVO>> findOrderItemMap(List<Long> ids) {
-        List<OrderItemListVO> result = query.select(
+        List<OrderItemListVO> result =
+                query.select(
                     getOrderItemList()
                 )
                 .from(orderItem)
@@ -91,7 +80,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements Or
 
     private List<Long> toOrderIds(List<OrderListVO> result) {
         return result.stream()
-                .map(o -> o.getOrderId())
+                .map(OrderListVO::getOrderId)
                 .collect(Collectors.toList());
     }
 
