@@ -1,23 +1,23 @@
-package com.encore.byebuying.domain.order.dto;
+package com.encore.byebuying.domain.order.vo;
 
-import com.encore.byebuying.domain.item.dto.ItemResponseDTO;
+import com.encore.byebuying.domain.item.vo.ItemResponseVO;
 import com.encore.byebuying.domain.order.OrderItem;
 import lombok.Data;
 
 
 @Data
-public class OrderItemResponseDTO {
+public class OrderItemResponseVO {
     // TODO: 2022-08-14 모든 response DTO -> VO 로 변경
     // Response 들은 다음과 같이 변경될거임
     // ListVO / DetailVO
     // Entity+VO
     // ListVO, DetailVO, DefaultVO
-    private ItemResponseDTO item;
+    private ItemResponseVO item;
     private int orderPrice;
     private int count;
 
-    public OrderItemResponseDTO(OrderItem orderItem) {
-        this.item = new ItemResponseDTO(orderItem.getItem());
+    public OrderItemResponseVO(OrderItem orderItem) {
+        this.item = new ItemResponseVO(orderItem.getItem());
         this.orderPrice = orderItem.getOrderPrice();
         this.count = orderItem.getCount();
     }

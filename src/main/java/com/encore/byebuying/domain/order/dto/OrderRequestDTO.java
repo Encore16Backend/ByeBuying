@@ -1,7 +1,7 @@
 package com.encore.byebuying.domain.order.dto;
 
 import com.encore.byebuying.domain.common.Address;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.encore.byebuying.domain.order.vo.OrderItemVO;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -12,7 +12,7 @@ public class OrderRequestDTO {
     @NotBlank
     private Long userId;
     @NotBlank
-    private List<OrderItemInfoDTO> items;
+    private List<OrderItemVO> items;
     private Address address;
     private Long locationId;
 }
